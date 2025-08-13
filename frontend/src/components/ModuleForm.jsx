@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
 import axiosInstance from '../axiosConfig';
 
-const ModuleForm = ({ module, setModules, editingModule, setEditingModule }) => {
+const ModuleForm = ({ modules, setModules, editingModule, setEditingModule }) => {
   const { user } = useAuth();
   const [formData, setFormData] = useState({ title: '', description: '', deadline: '' });
 
