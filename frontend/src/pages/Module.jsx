@@ -1,40 +1,44 @@
 import { useState, useEffect } from 'react';
 import axiosInstance from '../axiosConfig';
-import TaskForm from '../components/TaskForm';
-import TaskList from '../components/TaskList';
+import ModuleForm from '../components/ModuleForm';
+import ModuleList from '../components/ModuleList';
 import { useAuth } from '../context/AuthContext';
 
-const Tasks = () => {
+const Modules = () => {
   const { user } = useAuth();
-  const [tasks, setTasks] = useState([]);
-  const [editingTask, setEditingTask] = useState(null);
+  const [modules, setModules] = useState([]);
+  const [editingModule, setEditingModule] = useState(null);
 
   useEffect(() => {
-    const fetchTasks = async () => {
+    const fetchModules = async () => {
       try {
-        const response = await axiosInstance.get('/api/tasks', {
+        const response = await axiosInstance.get('/api/modules', {
           headers: { Authorization: `Bearer ${user.token}` },
         });
-        setTasks(response.data);
+        setModules(response.data);
       } catch (error) {
-        alert('Failed to fetch tasks.');
+        alert('Failed to fetch modules.');
       }
     };
 
-    fetchTasks();
+    fetchModules();
   }, [user]);
 
   return (
     <div className="container mx-auto p-6">
-      <TaskForm
-        tasks={tasks}
-        setTasks={setTasks}
-        editingTask={editingTask}
-        setEditingTask={setEditingTask}
+      <ModuleForm
+        modules={modules}
+        setModules={setModules}
+        editingModule={editingModule}
+        setEditingModule={setEditingModule}
       />
-      <TaskList tasks={tasks} setTasks={setTasks} setEditingTask={setEditingTask} />
+      <ModuleList 
+        modules={modules} 
+        setModules={setModules} 
+        setEditingModule={setEditingModule} 
+      />
     </div>
   );
 };
 
-export default Tasks;
+export default Modules;

@@ -2,46 +2,46 @@ import { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
 import axiosInstance from '../axiosConfig';
 
-const TaskForm = ({ tasks, setTasks, editingTask, setEditingTask }) => {
+const ModuleForm = ({ module, setModules, editingModule, setEditingModule }) => {
   const { user } = useAuth();
   const [formData, setFormData] = useState({ title: '', description: '', deadline: '' });
 
   useEffect(() => {
-    if (editingTask) {
+    if (editingModule) {
       setFormData({
-        title: editingTask.title,
-        description: editingTask.description,
-        deadline: editingTask.deadline,
+        title: editingModule.title,
+        description: editingModule.description,
+        deadline: editingModule.deadline,
       });
     } else {
       setFormData({ title: '', description: '', deadline: '' });
     }
-  }, [editingTask]);
+  }, [editingModule]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      if (editingTask) {
-        const response = await axiosInstance.put(`/api/tasks/${editingTask._id}`, formData, {
+      if (editingModule) {
+        const response = await axiosInstance.put(`/api/modules/${editingModule._id}`, formData, {
           headers: { Authorization: `Bearer ${user.token}` },
         });
-        setTasks(tasks.map((task) => (task._id === response.data._id ? response.data : task)));
+        setModules(modules.map((module) => (module._id === response.data._id ? response.data : module)));
       } else {
-        const response = await axiosInstance.post('/api/tasks', formData, {
+        const response = await axiosInstance.post('/api/modules', formData, {
           headers: { Authorization: `Bearer ${user.token}` },
         });
-        setTasks([...tasks, response.data]);
+        setModules([...modules, response.data]);
       }
-      setEditingTask(null);
+      setEditingModule(null);
       setFormData({ title: '', description: '', deadline: '' });
     } catch (error) {
-      alert('Failed to save task.');
+      alert('Failed to save module.');
     }
   };
 
   return (
     <form onSubmit={handleSubmit} className="bg-white p-6 shadow-md rounded mb-6">
-      <h1 className="text-2xl font-bold mb-4">{editingTask ? 'Edit Task' : 'Add Task'}</h1>
+      <h1 className="text-2xl font-bold mb-4">{editingModule ? 'Edit Module' : 'Add Module'}</h1>
       <input
         type="text"
         placeholder="Title"
@@ -63,10 +63,10 @@ const TaskForm = ({ tasks, setTasks, editingTask, setEditingTask }) => {
         className="w-full mb-4 p-2 border rounded"
       />
       <button type="submit" className="w-full bg-blue-600 text-white p-2 rounded">
-        {editingTask ? 'Update Task' : 'Add Task'}
+        {editingModule ? 'Update Module' : 'Add Module'}
       </button>
     </form>
   );
 };
 
-export default TaskForm;
+export default ModuleForm;
