@@ -48,7 +48,6 @@ const ModuleList = ({ modules, setModules, setEditingModule }) => {
     return 'bg-red-500';
   };
 
-  // Add safety check for modules
   if (!modules) {
     return <div>Loading modules...</div>;
   }
