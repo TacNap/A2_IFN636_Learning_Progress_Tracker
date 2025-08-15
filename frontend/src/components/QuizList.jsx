@@ -37,7 +37,7 @@ const QuizList = ({ quizzes, setQuizzes, setEditingQuiz }) => {
     <div>
       {quizzes.map((quiz) => {
         const scoreColor = getScoreColor(quiz.score);
-        const gradeLetter = getGradeLetter(quiz.score);
+        const gradeLetter = getScoreText(quiz.score);
         
         return (
           <div key={quiz._id} className="bg-gray-100 p-4 mb-4 rounded shadow">

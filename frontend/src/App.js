@@ -4,7 +4,7 @@ import Login from './pages/Login';
 import Register from './pages/Register';
 import Profile from './pages/Profile';
 import Module from './pages/Module';
-import Quiz from '../pages/Quiz';
+import Quiz from './pages/Quiz';
 
 function App() {
   return (
