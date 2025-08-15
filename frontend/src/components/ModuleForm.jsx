@@ -38,7 +38,6 @@ const ModuleForm = ({ modules, setModules, editingModule, setEditingModule }) =>
     e.preventDefault();
     setError('');
     
-    // Client-side validation
     const totalLessons = parseInt(formData.totalLessons) || 0;
     const completedLessons = parseInt(formData.completedLessons) || 0;
     

@@ -10,7 +10,7 @@ const moduleSchema = new mongoose.Schema({
     completedLessons: { type: Number, default: 0, min: 0 }
 });
 
-// Validation to ensure completedLessons doesn't exceed totalLessons
+
 moduleSchema.pre('save', function(next) {
     if (this.completedLessons > this.totalLessons) {
         const error = new Error(`Completed lessons (${this.completedLessons}) cannot exceed total lessons (${this.totalLessons})`);
