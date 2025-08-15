@@ -42,25 +42,77 @@ const QuizForm = ({quizzes, setQuizzes, editingQuiz, setEditingQuiz}) => {
         try {
             const submitData = { ...formData, score };
             if (editingQuiz) {
-                // Update existing quiz
-                const updatedQuizzes = quizzes.map((quiz) =>
-                    quiz.id === editingQuiz.id ? { ...quiz, ...formData, score } : quiz
-                );
-                setQuizzes(updatedQuizzes);
-                setEditingQuiz(null);
+                const response = await axiosInstance.put(`/api/quizzes/${editingQuiz._id}`, submitData, {
+                    headers: { Authorization: `Bearer ${user.token}` },
+                });
+                setQuizzes(quizzes.map((quiz) => (quiz._id === response.data._id ? response.data : quiz)));
             } else {
-                // Create new quiz
-                const newQuiz = { id: Date.now(), ...formData, score };
-                setQuizzes([...quizzes, newQuiz]);
+                const response = await axiosInstance.post('/api/quizzes', submitData, {
+                    headers: { Authorization: `Bearer ${user.token}` },
+                });
+                setQuizzes([...quizzes, response.data]);
             }
-
-            // Clear form
+            setEditingQuiz(null);
             setFormData({
                 title: '',
                 description: '',
                 score: ''
             });
-        } catch (err) {
-            setError('Failed to save quiz');
+        } catch (error) {
+            if (error.response?.data ?.message) {
+                setError(error.response.data.message);
+            } else {
+                setError('Failed to save quiz.');
+            }
         }
     };
+
+    return (
+    <form onSubmit={handleSubmit} className="bg-white p-6 shadow-md rounded mb-6">
+      <h1 className="text-2xl font-bold mb-4">{editingQuiz ? 'Edit Quiz' : 'Add Quiz'}</h1>
+      
+      {error && (
+        <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
+          {error}
+        </div>
+      )}
+
+      <input
+        type="text"
+        placeholder="Quiz Title"
+        value={formData.title}
+        onChange={(e) => setFormData({ ...formData, title: e.target.value })}
+        className="w-full mb-4 p-2 border rounded"
+        required
+      />
+      
+      <textarea
+        placeholder="Description"
+        value={formData.description}
+        onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+        className="w-full mb-4 p-2 border rounded h-20 resize-none"
+      />
+      
+      <div className="mb-4">
+        <label className="block text-sm font-medium text-gray-700 mb-1">
+          Score (0-100)
+        </label>
+        <input
+          type="number"
+          placeholder="Score"
+          value={formData.score}
+          onChange={(e) => setFormData({ ...formData, score: e.target.value })}
+          className="w-full p-2 border rounded"
+          min="0"
+          max="100"
+        />
+      </div>
+      
+      <button type="submit" className="w-full bg-blue-600 text-white p-2 rounded hover:bg-blue-700">
+        {editingQuiz ? 'Update Quiz' : 'Add Quiz'}
+      </button>
+    </form>
+  );
+};
+
+export default QuizForm;
