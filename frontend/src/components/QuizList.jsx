@@ -2,7 +2,7 @@ import { useAuth } from "../context/AuthContext";
 import axiosInstance from "../axiosConfig";
 
 const QuizList = ({ quizzes, setQuizzes, setEditingQuiz }) => {
-    const user = useAuth();
+    const { user } = useAuth();
 
     const handleDelete = async (quizId) => { 
         try {
