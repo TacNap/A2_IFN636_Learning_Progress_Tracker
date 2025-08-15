@@ -16,10 +16,10 @@ const QuizList = ({ quizzes, setQuizzes, setEditingQuiz }) => {
     };
 
     const getScoreColor = (score) => {
-        if (score >= 85) return "text-green-500";
-        if (score >= 55) return "text-yellow-500";
-        if (score >= 35) return "text-orange-500";
-        return "text-red-500";
+        if (score >= 85) return "bg-green-500";
+        if (score >= 55) return "bg-yellow-500";
+        if (score >= 35) return "bg-orange-500";
+        return "bg-red-500";
     };
 
     const getScoreText = (score) => {
