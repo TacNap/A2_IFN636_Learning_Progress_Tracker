@@ -87,7 +87,7 @@ Online Learning Progress Tracker
           <div className="flex justify-center space-x-2">
             <button
               onClick={() => handleDownload(certificate)}
-              className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+              className="bg-[#005691] text-white px-4 py-2 rounded hover:bg-[#004080]"
             >
               Download TXT
             </button>

@@ -145,8 +145,8 @@ const ModuleForm = ({ modules, setModules, editingModule, setEditingModule }) =>
           </div>
         )}
       </div>
-      
-      <button type="submit" className="w-full bg-blue-600 text-white p-2 rounded hover:bg-blue-700">
+
+      <button type="submit" className="w-full bg-[#005691] text-white p-2 rounded hover:bg-[#004080]">
         {editingModule ? 'Update Module' : 'Add Module'}
       </button>
     </form>

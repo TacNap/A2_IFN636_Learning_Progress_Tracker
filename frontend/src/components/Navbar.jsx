@@ -11,7 +11,7 @@ const Navbar = () => {
   };
 
   return (
-    <nav className="bg-blue-600 text-white p-4 flex justify-between items-center">
+    <nav className="bg-[#005691] text-white p-4 flex justify-between items-center">
       <Link to="/" className="text-2xl font-bold">Online Learning Progress Tracker</Link>
       <div>
         {user ? (

@@ -107,8 +107,8 @@ const QuizForm = ({quizzes, setQuizzes, editingQuiz, setEditingQuiz}) => {
           max="100"
         />
       </div>
-      
-      <button type="submit" className="w-full bg-blue-600 text-white p-2 rounded hover:bg-blue-700">
+
+      <button type="submit" className="w-full bg-[#005691] text-white p-2 rounded hover:bg-[#004080]">
         {editingQuiz ? 'Update Quiz' : 'Add Quiz'}
       </button>
     </form>
