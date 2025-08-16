@@ -89,7 +89,7 @@ Online Learning Progress Tracker
               onClick={() => handleDownload(certificate)}
               className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
             >
-              Download PNG
+              Download TXT
             </button>
             <button
               onClick={() => handleDelete(certificate._id)}
