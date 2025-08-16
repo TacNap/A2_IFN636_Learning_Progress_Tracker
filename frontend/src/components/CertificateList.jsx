@@ -17,7 +17,27 @@ const CertificateList = ({ certificates, setCertificates }) => {
 
 
   const handleDownload = (certificate) => {
-    
+    // Create simple text content
+    const textContent = `
+CERTIFICATE OF COMPLETION
+
+This certifies that ${certificate.userName} has successfully completed the ${certificate.moduleName} module.
+
+Completed: ${certificate.totalLessons} lessons
+Date: ${formatDate(certificate.completionDate)}
+
+Online Learning Progress Tracker
+    `;
+
+    const blob = new Blob([textContent], { type: 'text/plain' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `certificate-${certificate.moduleName.replace(/\s+/g, '-')}.txt`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
   };
 
   const formatDate = (dateString) => {
