@@ -16,14 +16,6 @@ const getCertificates = async (req, res) => {
 const createCertificate = async (req, res) => {
     const { moduleId } = req.body;
     try {
-        const existingCertificate = await Certificate.findOne({
-            userId: req.user.id,
-            moduleId
-        });
-
-        if(existingCertificate) {
-            return res.status(400).json({ message: 'Certificate already exists for this module.' });
-        }
 
         const module = await Module.findById(moduleId);
         const user = await User.findById(req.user.id);
