@@ -31,4 +31,4 @@ const certificateSchema = new mongoose.Schema({
     timestamps: true
 });
 
-certificateSchema.index({ userId: 1, moduleId:1}, { unique: true });
+module.exports = mongoose.model('Certificate', certificateSchema);

@@ -76,7 +76,8 @@ const updateLessons = async (req, res) => {
   try {
     const module = await Module.findById(req.params.id);
     if (!module) return res.status(404).json({ message: 'Module not found' });
-    
+
+    const previousCompletedLessons = module.completedLessons;
     const newCompletedLessons = module.completedLessons + increment;
     
     if (newCompletedLessons < 0) {
@@ -95,7 +96,7 @@ const updateLessons = async (req, res) => {
     const certificateResult = await handleCertificateCreation(
       updatedModule,
       req.user.id,
-      module.completedLessons,
+      previousCompletedLessons,
       newCompletedLessons
     );
 
@@ -119,7 +120,7 @@ const handleCertificateCreation = async (module, userId, previousCompletedLesson
       const user = await User.findById(userId);
       if (user) {
         await Certificate.create({
-          userId,
+          userId: user._id,
           moduleId: module._id,
           moduleName: module.title,
           userName: user.name,
@@ -132,7 +133,7 @@ const handleCertificateCreation = async (module, userId, previousCompletedLesson
 
 
   } catch (error) {
-    console.error('Error creating certificate', error);  
+    console.error('Error creating certificate:', error);  
   }
   return { certificateEarned };
 };
