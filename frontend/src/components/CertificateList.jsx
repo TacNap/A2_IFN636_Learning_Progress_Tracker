@@ -5,18 +5,19 @@ const CertificateList = ({ certificates, setCertificates }) => {
   const { user } = useAuth();
 
   const handleDelete = async (certificateId) => {
-    if (!confirm('Are you sure you want to delete this certificate?')) {
-      return;
-    }
-    
     try {
       await axiosInstance.delete(`/api/certificates/${certificateId}`, {
         headers: { Authorization: `Bearer ${user.token}` },
       });
       setCertificates(certificates.filter((cert) => cert._id !== certificateId));
     } catch (error) {
-      alert('Failed to delete certificate.');
+      console.error('Failed to delete certificate', error);
     }
+  };
+
+
+  const handleDownload = (certificate) => {
+    
   };
 
   const formatDate = (dateString) => {
@@ -34,7 +35,6 @@ const CertificateList = ({ certificates, setCertificates }) => {
   if (certificates.length === 0) {
     return (
       <div className="text-center py-8">
-        <div className="text-gray-500 text-lg mb-2">CONGRATULATION!</div>
         <h3 className="text-lg font-medium text-gray-700 mb-2">No Certificates Yet</h3>
         <p className="text-gray-500">Complete modules to earn your first certificate!</p>
       </div>
@@ -45,7 +45,7 @@ const CertificateList = ({ certificates, setCertificates }) => {
     <div>
       <div className="mb-4">
         <h2 className="text-xl font-bold text-gray-800">
-           Your Certificates ({certificates.length})
+          Your Certificates ({certificates.length})
         </h2>
         <p className="text-gray-600">Congratulations on completing these modules!</p>
       </div>
@@ -53,7 +53,6 @@ const CertificateList = ({ certificates, setCertificates }) => {
       {certificates.map((certificate) => (
         <div key={certificate._id} className="bg-gray-100 p-4 mb-4 rounded shadow">
           <div className="text-center p-6">
-            <div className="text-4xl mb-4">CONGRATULATION!</div>
             <h3 className="text-xl font-bold text-gray-800 mb-2">
               Congratulations!
             </h3>
@@ -66,6 +65,12 @@ const CertificateList = ({ certificates, setCertificates }) => {
           </div>
 
           <div className="flex justify-center space-x-2">
+            <button
+              onClick={() => handleDownload(certificate)}
+              className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+            >
+              Download PNG
+            </button>
             <button
               onClick={() => handleDelete(certificate._id)}
               className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600"

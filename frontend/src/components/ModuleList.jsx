@@ -25,8 +25,12 @@ const ModuleList = ({ modules, setModules, setEditingModule }) => {
       );
       
       setModules(modules.map((module) => 
-        module._id === moduleId ? response.data : module
+        module._id === moduleId ? response.data.module : module
       ));
+
+      if (response.data.certificateEarned) {
+        alert('Congratulations! You earned a certificate for completing this module!');
+      }
     } catch (error) {
       if (error.response?.data?.message) {
         alert(error.response.data.message);
@@ -43,8 +47,8 @@ const ModuleList = ({ modules, setModules, setEditingModule }) => {
 
   const getProgressColor = (percentage) => {
     if (percentage === 100) return 'bg-green-500';
-    if (percentage >= 70) return 'bg-blue-500';
-    if (percentage >= 40) return 'bg-yellow-500';
+    if (percentage >= 70) return 'bg-yellow-500';
+    if (percentage >= 40) return 'bg-orange-500';
     return 'bg-red-500';
   };
 
@@ -73,14 +77,12 @@ const ModuleList = ({ modules, setModules, setEditingModule }) => {
               Deadline: {new Date(module.deadline).toLocaleDateString()}
             </p>
             
-            {/* Lessons Section */}
             <div className="mb-3">
               <div className="flex items-center justify-between mb-2">
                 <span className="text-sm font-medium">
                   Lessons: {module.completedLessons || 0} / {module.totalLessons || 0}
                 </span>
                 
-                {/* +/- Buttons */}
                 <div className="flex items-center space-x-2">
                   <button
                     onClick={() => handleLessonUpdate(module._id, -1)}
@@ -104,7 +106,6 @@ const ModuleList = ({ modules, setModules, setEditingModule }) => {
                 </div>
               </div>
               
-              {/* Progress Bar */}
               {module.totalLessons > 0 && (
                 <div className="w-full bg-gray-200 rounded-full h-2">
                   <div 
@@ -115,7 +116,6 @@ const ModuleList = ({ modules, setModules, setEditingModule }) => {
               )}
             </div>
             
-            {/* Action Buttons */}
             <div className="flex space-x-2">
               <button
                 onClick={() => setEditingModule(module)}

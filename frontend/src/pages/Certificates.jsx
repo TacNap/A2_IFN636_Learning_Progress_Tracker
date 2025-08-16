@@ -2,11 +2,10 @@ import { useState, useEffect } from 'react';
 import axiosInstance from '../axiosConfig';
 import CertificateList from '../components/CertificateList';
 import { useAuth } from '../context/AuthContext';
-import { use } from 'chai';
 
 const Certificates = () => {
     const { user } = useAuth();
-    const [certificate, setCertificates] = useState([]);
+    const [certificates, setCertificates] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
@@ -14,13 +13,14 @@ const Certificates = () => {
         const fetchCertificates = async () => {
             try {
                 setLoading(true);
-                const response = await axiosInstance.get('/certificates', {
+                const response = await axiosInstance.get('/api/certificates', {
                     headers: { Authorization: `Bearer ${user.token}` },
                 });
                 setCertificates(response.data);
                 setError(null);
             } catch (error) {
-                setError('Failed to fetch certificates', error);
+                console.error('Error fetching certificates:', error);
+                setError('Failed to fetch certificates');
             } finally {
                 setLoading(false);
             }
@@ -60,8 +60,8 @@ const Certificates = () => {
     return(
         <div className="container mx-auto p-6">
             <CertificateList 
-            certificates={certificate} 
-            setCertificates={setCertificates} 
+                certificates={certificates} 
+                setCertificates={setCertificates} 
             />
         </div>
     );

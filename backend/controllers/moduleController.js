@@ -34,6 +34,10 @@ const updateModule = async (req, res) => {
     const module = await Module.findById(req.params.id);
     if (!module) return res.status(404).json({ message: 'Module not found' });
 
+    if (module.userId.toString() !== req.user.id) {
+      return res.status(403).json({ message: 'Not authorized to update this module' });
+    }
+
     const previousCompletedLessons = module.completedLessons;
 
     module.title = title || module.title;
@@ -42,14 +46,23 @@ const updateModule = async (req, res) => {
     module.deadline = deadline || module.deadline;
     
     if (totalLessons !== undefined) {
-      module.totalLessons = totalLessons;
-      if (module.completedLessons > totalLessons) {
-        module.completedLessons = totalLessons;
+      const parsedTotalLessons = parseInt(totalLessons, 10);
+      if (isNaN(parsedTotalLessons) || parsedTotalLessons < 0) {
+        return res.status(400).json({ message: 'Total lessons must be a valid positive number' });
+      }
+      module.totalLessons = parsedTotalLessons;
+      
+      if (module.completedLessons > parsedTotalLessons) {
+        module.completedLessons = parsedTotalLessons;
       }
     }
     
     if (completedLessons !== undefined) {
-      module.completedLessons = completedLessons;
+      const parsedCompletedLessons = parseInt(completedLessons, 10);
+      if (isNaN(parsedCompletedLessons) || parsedCompletedLessons < 0) {
+        return res.status(400).json({ message: 'Completed lessons must be a valid positive number' });
+      }
+      module.completedLessons = parsedCompletedLessons;
     }
     
     const updatedModule = await module.save();
@@ -71,15 +84,23 @@ const updateModule = async (req, res) => {
   }
 };
 
-
 const updateLessons = async (req, res) => {
   const { increment } = req.body;
   try {
     const module = await Module.findById(req.params.id);
     if (!module) return res.status(404).json({ message: 'Module not found' });
 
+    if (module.userId.toString() !== req.user.id) {
+      return res.status(403).json({ message: 'Not authorized to update this module' });
+    }
+
+    const parsedIncrement = parseInt(increment, 10);
+    if (isNaN(parsedIncrement)) {
+      return res.status(400).json({ message: 'Increment must be a valid number' });
+    }
+
     const previousCompletedLessons = module.completedLessons;
-    const newCompletedLessons = module.completedLessons + increment;
+    const newCompletedLessons = module.completedLessons + parsedIncrement;
     
     if (newCompletedLessons < 0) {
       return res.status(400).json({ message: 'Cannot have negative completed lessons' });
@@ -115,35 +136,47 @@ const updateLessons = async (req, res) => {
 const handleCertificateCreation = async (module, userId, previousCompletedLessons, newCompletedLessons) => {
   let certificateEarned = false;
 
-  try{
+  try {
     const { totalLessons } = module;
+    
     if (previousCompletedLessons < totalLessons && newCompletedLessons === totalLessons && totalLessons > 0) {
       const user = await User.findById(userId);
       if (user) {
-        await Certificate.create({
+        const existingCertificate = await Certificate.findOne({
           userId: user._id,
-          moduleId: module._id,
-          moduleName: module.title,
-          userName: user.name,
-          totalLessons: module.totalLessons
+          moduleId: module._id
         });
-        certificateEarned = true;
-        console.log(`Certificate created for user ${user.name} for module ${module.title}`);
+
+        if (!existingCertificate) {
+          await Certificate.create({
+            userId: user._id,
+            moduleId: module._id,
+            moduleName: module.title,
+            userName: user.name,
+            totalLessons: module.totalLessons
+          });
+          certificateEarned = true;
+          console.log(`Certificate created for user ${user.name} for module ${module.title}`);
+        }
       }
     }
-
-
   } catch (error) {
     console.error('Error creating certificate:', error);  
   }
+  
   return { certificateEarned };
 };
-
 
 const deleteModule = async (req, res) => {
   try {
     const module = await Module.findById(req.params.id);
     if (!module) return res.status(404).json({ message: 'Module not found' });
+    
+    if (module.userId.toString() !== req.user.id) {
+      return res.status(403).json({ message: 'Not authorized to delete this module' });
+    }
+    
+    await Certificate.deleteMany({ moduleId: req.params.id });
     
     await Module.findByIdAndDelete(req.params.id);
     res.json({ message: 'Module deleted' });
