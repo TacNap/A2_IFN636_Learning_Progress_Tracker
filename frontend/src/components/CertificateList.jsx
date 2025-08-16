@@ -1,6 +1,5 @@
 import { useAuth } from '../context/AuthContext';
 import axiosInstance from '../axiosConfig';
-import { DownloadIcon, DeleteIcon } from '@heroicons/react/solid'; // adjust import if needed
 
 const CertificateList = ({ certificates, setCertificates }) => {
     const { user } = useAuth();
@@ -96,18 +95,13 @@ const CertificateList = ({ certificates, setCertificates }) => {
 
                     <div className="flex space-x-2">
                         <button
-                            className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 flex items-center"
-                            title="Download Certificate"
-                        >
-                            <span className="mr-1"><DownloadIcon className="h-4 w-4" /></span>
+                            className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 flex items-center">
                             Download
                         </button>
 
                         <button
                             onClick={() => handleDelete(certificate._id)}
-                            className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 flex items-center"
-                        >
-                            <span className="mr-1"><DeleteIcon className="h-4 w-4" /></span>
+                            className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 flex items-center">
                             Delete
                         </button>
                     </div>
