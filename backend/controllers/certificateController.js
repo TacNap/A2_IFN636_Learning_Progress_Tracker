@@ -1,6 +1,6 @@
 const Certificate = require('../models/Certificate');
 const Module = require('../models/Module');
-const user = require('../models/User');
+const User = require('../models/User');
 
 const getCertificates = async (req, res) => {
   try {
