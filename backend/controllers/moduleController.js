@@ -1,4 +1,5 @@
 const Module = require('../models/Module');
+const Certificate = require('../models/Certificate');
 
 const getModules = async (req, res) => {
   try {
@@ -31,17 +32,16 @@ const updateModule = async (req, res) => {
   try {
     const module = await Module.findById(req.params.id);
     if (!module) return res.status(404).json({ message: 'Module not found' });
-    
-    // Update fields
+
+    const previousCompletedLessons = module.completedLessons;
+
     module.title = title || module.title;
     module.description = description || module.description;
     module.completed = completed ?? module.completed;
     module.deadline = deadline || module.deadline;
     
-    // Handle lesson updates
     if (totalLessons !== undefined) {
       module.totalLessons = totalLessons;
-      // If totalLessons is reduced below completedLessons, adjust completedLessons
       if (module.completedLessons > totalLessons) {
         module.completedLessons = totalLessons;
       }
@@ -52,6 +52,14 @@ const updateModule = async (req, res) => {
     }
     
     const updatedModule = await module.save();
+
+    await handleCertificateCreation(
+      updatedModule,
+      req.user.id,
+      previousCompletedLessons,
+      updatedModule.completedLessons
+    );
+
     res.json(updatedModule);
   } catch (error) {
     if (error.name === 'ValidationError') {
@@ -62,16 +70,15 @@ const updateModule = async (req, res) => {
   }
 };
 
-// New function to increment/decrement lessons
+
 const updateLessons = async (req, res) => {
-  const { increment } = req.body; // +1 or -1
+  const { increment } = req.body;
   try {
     const module = await Module.findById(req.params.id);
     if (!module) return res.status(404).json({ message: 'Module not found' });
     
     const newCompletedLessons = module.completedLessons + increment;
     
-    // Validation
     if (newCompletedLessons < 0) {
       return res.status(400).json({ message: 'Cannot have negative completed lessons' });
     }
@@ -84,11 +91,52 @@ const updateLessons = async (req, res) => {
     
     module.completedLessons = newCompletedLessons;
     const updatedModule = await module.save();
-    res.json(updatedModule);
+
+    const certificateResult = await handleCertificateCreation(
+      updatedModule,
+      req.user.id,
+      module.completedLessons,
+      newCompletedLessons
+    );
+
+    const response = {
+      module: updatedModule,
+      certificateEarned: certificateResult.certificateEarned
+    };
+
+    res.json(response);
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
 };
+
+const handleCertificateCreation = async (module, userId, previousCompletedLessons, newCompletedLessons) => {
+  let certificateEarned = false;
+
+  try{
+    const { totalLessons } = module;
+    if (previousCompletedLessons < totalLessons && newCompletedLessons === totalLessons && totalLessons > 0) {
+      const user = await User.findById(userId);
+      if (user) {
+        await Certificate.create({
+          userId,
+          moduleId: module._id,
+          moduleName: module.title,
+          userName: user.name,
+          totalLessons: module.totalLessons
+        });
+        certificateEarned = true;
+        console.log(`Certificate created for user ${user.name} for module ${module.title}`);
+      }
+    }
+
+
+  } catch (error) {
+    console.error('Error creating certificate', error);  
+  }
+  return { certificateEarned };
+};
+
 
 const deleteModule = async (req, res) => {
   try {
