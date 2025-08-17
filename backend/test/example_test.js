@@ -1,4 +1,3 @@
-
 const chai = require('chai');
 const chaiHttp = require('chai-http');
 const http = require('http');
@@ -6,29 +5,43 @@ const app = require('../server');
 const connectDB = require('../config/db');
 const mongoose = require('mongoose');
 const sinon = require('sinon');
-const Task = require('../models/Task');
-const { updateTask,getTasks,addTask,deleteTask } = require('../controllers/taskController');
+const Module = require('../models/Module');
+const Certificate = require('../models/Certificate');
+const User = require('../models/User');
+const { getModules, addModule, updateModule, deleteModule, updateLessons } = require('../controllers/moduleController');
 const { expect } = chai;
 
 chai.use(chaiHttp);
 let server;
 let port;
 
+describe('AddModule Function Test', () => {
 
-describe('AddTask Function Test', () => {
-
-  it('should create a new task successfully', async () => {
+  it('should create a new module successfully', async () => {
     // Mock request data
     const req = {
       user: { id: new mongoose.Types.ObjectId() },
-      body: { title: "New Task", description: "Task description", deadline: "2025-12-31" }
+      body: { 
+        title: "JavaScript Basics", 
+        description: "Learn JavaScript fundamentals", 
+        deadline: "2025-12-31",
+        totalLessons: 10
+      }
     };
 
-    // Mock task that would be created
-    const createdTask = { _id: new mongoose.Types.ObjectId(), ...req.body, userId: req.user.id };
+    // Mock module that would be created
+    const createdModule = { 
+      _id: new mongoose.Types.ObjectId(), 
+      userId: req.user.id,
+      title: req.body.title,
+      description: req.body.description,
+      deadline: req.body.deadline,
+      totalLessons: req.body.totalLessons,
+      completedLessons: 0
+    };
 
-    // Stub Task.create to return the createdTask
-    const createStub = sinon.stub(Task, 'create').resolves(createdTask);
+    // Stub Module.create to return the createdModule
+    const createStub = sinon.stub(Module, 'create').resolves(createdModule);
 
     // Mock response object
     const res = {
@@ -37,264 +50,542 @@ describe('AddTask Function Test', () => {
     };
 
     // Call function
-    await addTask(req, res);
+    await addModule(req, res);
 
     // Assertions
-    expect(createStub.calledOnceWith({ userId: req.user.id, ...req.body })).to.be.true;
+    expect(createStub.calledOnceWith({ 
+      userId: req.user.id, 
+      title: req.body.title,
+      description: req.body.description,
+      deadline: req.body.deadline,
+      totalLessons: req.body.totalLessons,
+      completedLessons: 0
+    })).to.be.true;
     expect(res.status.calledWith(201)).to.be.true;
-    expect(res.json.calledWith(createdTask)).to.be.true;
+    expect(res.json.calledWith(createdModule)).to.be.true;
 
     // Restore stubbed methods
+    createStub.restore();
+  });
+
+  it('should create module with default totalLessons if not provided', async () => {
+    const req = {
+      user: { id: new mongoose.Types.ObjectId() },
+      body: { 
+        title: "React Basics", 
+        description: "Learn React fundamentals", 
+        deadline: "2025-12-31"
+      }
+    };
+
+    const createdModule = { 
+      _id: new mongoose.Types.ObjectId(), 
+      userId: req.user.id,
+      totalLessons: 0,
+      completedLessons: 0,
+      ...req.body
+    };
+
+    const createStub = sinon.stub(Module, 'create').resolves(createdModule);
+    const res = {
+      status: sinon.stub().returnsThis(),
+      json: sinon.spy()
+    };
+
+    await addModule(req, res);
+
+    expect(createStub.calledOnceWith({ 
+      userId: req.user.id, 
+      title: req.body.title,
+      description: req.body.description,
+      deadline: req.body.deadline,
+      totalLessons: 0,
+      completedLessons: 0
+    })).to.be.true;
+
     createStub.restore();
   });
 
   it('should return 500 if an error occurs', async () => {
-    // Stub Task.create to throw an error
-    const createStub = sinon.stub(Task, 'create').throws(new Error('DB Error'));
+    const createStub = sinon.stub(Module, 'create').throws(new Error('DB Error'));
 
-    // Mock request data
     const req = {
       user: { id: new mongoose.Types.ObjectId() },
-      body: { title: "New Task", description: "Task description", deadline: "2025-12-31" }
+      body: { title: "New Module", description: "Module description", deadline: "2025-12-31" }
     };
 
-    // Mock response object
     const res = {
       status: sinon.stub().returnsThis(),
       json: sinon.spy()
     };
 
-    // Call function
-    await addTask(req, res);
+    await addModule(req, res);
 
-    // Assertions
     expect(res.status.calledWith(500)).to.be.true;
     expect(res.json.calledWithMatch({ message: 'DB Error' })).to.be.true;
 
-    // Restore stubbed methods
     createStub.restore();
   });
 
 });
 
+describe('GetModules Function Test', () => {
 
-describe('Update Function Test', () => {
-
-  it('should update task successfully', async () => {
-    // Mock task data
-    const taskId = new mongoose.Types.ObjectId();
-    const existingTask = {
-      _id: taskId,
-      title: "Old Task",
-      description: "Old Description",
-      completed: false,
-      deadline: new Date(),
-      save: sinon.stub().resolvesThis(), // Mock save method
-    };
-    // Stub Task.findById to return mock task
-    const findByIdStub = sinon.stub(Task, 'findById').resolves(existingTask);
-
-    // Mock request & response
-    const req = {
-      params: { id: taskId },
-      body: { title: "New Task", completed: true }
-    };
-    const res = {
-      json: sinon.spy(), 
-      status: sinon.stub().returnsThis()
-    };
-
-    // Call function
-    await updateTask(req, res);
-
-    // Assertions
-    expect(existingTask.title).to.equal("New Task");
-    expect(existingTask.completed).to.equal(true);
-    expect(res.status.called).to.be.false; // No error status should be set
-    expect(res.json.calledOnce).to.be.true;
-
-    // Restore stubbed methods
-    findByIdStub.restore();
-  });
-
-
-
-  it('should return 404 if task is not found', async () => {
-    const findByIdStub = sinon.stub(Task, 'findById').resolves(null);
-
-    const req = { params: { id: new mongoose.Types.ObjectId() }, body: {} };
-    const res = {
-      status: sinon.stub().returnsThis(),
-      json: sinon.spy()
-    };
-
-    await updateTask(req, res);
-
-    expect(res.status.calledWith(404)).to.be.true;
-    expect(res.json.calledWith({ message: 'Task not found' })).to.be.true;
-
-    findByIdStub.restore();
-  });
-
-  it('should return 500 on error', async () => {
-    const findByIdStub = sinon.stub(Task, 'findById').throws(new Error('DB Error'));
-
-    const req = { params: { id: new mongoose.Types.ObjectId() }, body: {} };
-    const res = {
-      status: sinon.stub().returnsThis(),
-      json: sinon.spy()
-    };
-
-    await updateTask(req, res);
-
-    expect(res.status.calledWith(500)).to.be.true;
-    expect(res.json.called).to.be.true;
-
-    findByIdStub.restore();
-  });
-
-
-
-});
-
-
-
-describe('GetTask Function Test', () => {
-
-  it('should return tasks for the given user', async () => {
-    // Mock user ID
+  it('should return modules for the given user', async () => {
     const userId = new mongoose.Types.ObjectId();
 
-    // Mock task data
-    const tasks = [
-      { _id: new mongoose.Types.ObjectId(), title: "Task 1", userId },
-      { _id: new mongoose.Types.ObjectId(), title: "Task 2", userId }
+    const modules = [
+      { _id: new mongoose.Types.ObjectId(), title: "Module 1", userId, totalLessons: 5, completedLessons: 2 },
+      { _id: new mongoose.Types.ObjectId(), title: "Module 2", userId, totalLessons: 8, completedLessons: 8 }
     ];
 
-    // Stub Task.find to return mock tasks
-    const findStub = sinon.stub(Task, 'find').resolves(tasks);
+    const findStub = sinon.stub(Module, 'find').resolves(modules);
 
-    // Mock request & response
     const req = { user: { id: userId } };
     const res = {
       json: sinon.spy(),
       status: sinon.stub().returnsThis()
     };
 
-    // Call function
-    await getTasks(req, res);
+    await getModules(req, res);
 
-    // Assertions
     expect(findStub.calledOnceWith({ userId })).to.be.true;
-    expect(res.json.calledWith(tasks)).to.be.true;
-    expect(res.status.called).to.be.false; // No error status should be set
+    expect(res.json.calledWith(modules)).to.be.true;
+    expect(res.status.called).to.be.false;
 
-    // Restore stubbed methods
     findStub.restore();
   });
 
   it('should return 500 on error', async () => {
-    // Stub Task.find to throw an error
-    const findStub = sinon.stub(Task, 'find').throws(new Error('DB Error'));
+    const findStub = sinon.stub(Module, 'find').throws(new Error('DB Error'));
 
-    // Mock request & response
     const req = { user: { id: new mongoose.Types.ObjectId() } };
     const res = {
       json: sinon.spy(),
       status: sinon.stub().returnsThis()
     };
 
-    // Call function
-    await getTasks(req, res);
+    await getModules(req, res);
 
-    // Assertions
     expect(res.status.calledWith(500)).to.be.true;
     expect(res.json.calledWithMatch({ message: 'DB Error' })).to.be.true;
 
-    // Restore stubbed methods
     findStub.restore();
   });
 
 });
 
+describe('UpdateModule Function Test', () => {
 
-
-describe('DeleteTask Function Test', () => {
-
-  it('should delete a task successfully', async () => {
-    // Mock request data
-    const req = { params: { id: new mongoose.Types.ObjectId().toString() } };
-
-    // Mock task found in the database
-    const task = { remove: sinon.stub().resolves() };
-
-    // Stub Task.findById to return the mock task
-    const findByIdStub = sinon.stub(Task, 'findById').resolves(task);
-
-    // Mock response object
-    const res = {
-      status: sinon.stub().returnsThis(),
-      json: sinon.spy()
+  it('should update module successfully', async () => {
+    const moduleId = new mongoose.Types.ObjectId();
+    const userId = new mongoose.Types.ObjectId();
+    const existingModule = {
+      _id: moduleId,
+      userId: userId,
+      title: "Old Module",
+      description: "Old Description",
+      completed: false,
+      deadline: new Date(),
+      totalLessons: 5,
+      completedLessons: 2,
+      save: sinon.stub().resolvesThis(),
     };
 
-    // Call function
-    await deleteTask(req, res);
+    const findByIdStub = sinon.stub(Module, 'findById').resolves(existingModule);
 
-    // Assertions
-    expect(findByIdStub.calledOnceWith(req.params.id)).to.be.true;
-    expect(task.remove.calledOnce).to.be.true;
-    expect(res.json.calledWith({ message: 'Task deleted' })).to.be.true;
+    const req = {
+      params: { id: moduleId },
+      user: { id: userId.toString() },
+      body: { title: "Updated Module", description: "Updated Description", totalLessons: 8 }
+    };
+    const res = {
+      json: sinon.spy(), 
+      status: sinon.stub().returnsThis()
+    };
 
-    // Restore stubbed methods
+    await updateModule(req, res);
+
+    expect(existingModule.title).to.equal("Updated Module");
+    expect(existingModule.description).to.equal("Updated Description");
+    expect(existingModule.totalLessons).to.equal(8);
+    expect(res.status.called).to.be.false;
+    expect(res.json.calledOnce).to.be.true;
+
     findByIdStub.restore();
   });
 
-  it('should return 404 if task is not found', async () => {
-    // Stub Task.findById to return null
-    const findByIdStub = sinon.stub(Task, 'findById').resolves(null);
+  it('should return 404 if module is not found', async () => {
+    const findByIdStub = sinon.stub(Module, 'findById').resolves(null);
 
-    // Mock request data
-    const req = { params: { id: new mongoose.Types.ObjectId().toString() } };
-
-    // Mock response object
+    const req = { 
+      params: { id: new mongoose.Types.ObjectId() }, 
+      user: { id: new mongoose.Types.ObjectId().toString() },
+      body: {} 
+    };
     const res = {
       status: sinon.stub().returnsThis(),
       json: sinon.spy()
     };
 
-    // Call function
-    await deleteTask(req, res);
+    await updateModule(req, res);
 
-    // Assertions
+    expect(res.status.calledWith(404)).to.be.true;
+    expect(res.json.calledWith({ message: 'Module not found' })).to.be.true;
+
+    findByIdStub.restore();
+  });
+
+  it('should return 403 if user is not authorized', async () => {
+    const moduleId = new mongoose.Types.ObjectId();
+    const userId = new mongoose.Types.ObjectId();
+    const differentUserId = new mongoose.Types.ObjectId();
+    
+    const existingModule = {
+      _id: moduleId,
+      userId: userId,
+      title: "Module",
+    };
+
+    const findByIdStub = sinon.stub(Module, 'findById').resolves(existingModule);
+
+    const req = {
+      params: { id: moduleId },
+      user: { id: differentUserId.toString() },
+      body: { title: "Updated Module" }
+    };
+    const res = {
+      status: sinon.stub().returnsThis(),
+      json: sinon.spy()
+    };
+
+    await updateModule(req, res);
+
+    expect(res.status.calledWith(403)).to.be.true;
+    expect(res.json.calledWith({ message: 'Not authorized to update this module' })).to.be.true;
+
+    findByIdStub.restore();
+  });
+
+  it('should return 400 for invalid totalLessons', async () => {
+    const moduleId = new mongoose.Types.ObjectId();
+    const userId = new mongoose.Types.ObjectId();
+    const existingModule = {
+      _id: moduleId,
+      userId: userId,
+      totalLessons: 5,
+      completedLessons: 2,
+    };
+
+    const findByIdStub = sinon.stub(Module, 'findById').resolves(existingModule);
+
+    const req = {
+      params: { id: moduleId },
+      user: { id: userId.toString() },
+      body: { totalLessons: "invalid" }
+    };
+    const res = {
+      status: sinon.stub().returnsThis(),
+      json: sinon.spy()
+    };
+
+    await updateModule(req, res);
+
+    expect(res.status.calledWith(400)).to.be.true;
+    expect(res.json.calledWithMatch({ message: 'Total lessons must be a valid positive number' })).to.be.true;
+
+    findByIdStub.restore();
+  });
+
+});
+
+describe('UpdateLessons Function Test', () => {
+
+  it('should increment lessons successfully', async () => {
+    const moduleId = new mongoose.Types.ObjectId();
+    const userId = new mongoose.Types.ObjectId();
+    const existingModule = {
+      _id: moduleId,
+      userId: userId,
+      title: "Test Module",
+      totalLessons: 10,
+      completedLessons: 5,
+      save: sinon.stub().resolvesThis(),
+    };
+
+    const findByIdStub = sinon.stub(Module, 'findById').resolves(existingModule);
+    const userFindByIdStub = sinon.stub(User, 'findById').resolves(null);
+    const certificateFindOneStub = sinon.stub(Certificate, 'findOne').resolves(null);
+    const certificateCreateStub = sinon.stub(Certificate, 'create').resolves({});
+
+    const req = {
+      params: { id: moduleId },
+      user: { id: userId.toString() },
+      body: { increment: 1 }
+    };
+    const res = {
+      json: sinon.spy(),
+      status: sinon.stub().returnsThis()
+    };
+
+    await updateLessons(req, res);
+
+    expect(existingModule.completedLessons).to.equal(6);
+    expect(res.json.calledOnce).to.be.true;
+    
+    const responseData = res.json.getCall(0).args[0];
+    expect(responseData).to.have.property('module');
+    expect(responseData).to.have.property('certificateEarned');
+
+    findByIdStub.restore();
+    userFindByIdStub.restore();
+    certificateFindOneStub.restore();
+    certificateCreateStub.restore();
+  });
+
+  it('should create certificate when module is completed', async () => {
+    const moduleId = new mongoose.Types.ObjectId();
+    const userId = new mongoose.Types.ObjectId();
+    const existingModule = {
+      _id: moduleId,
+      userId: userId,
+      title: "Test Module",
+      totalLessons: 10,
+      completedLessons: 9,
+      save: sinon.stub().resolvesThis(),
+    };
+
+    const user = {
+      _id: userId,
+      name: "Test User"
+    };
+
+    const findByIdStub = sinon.stub(Module, 'findById').resolves(existingModule);
+    const userFindByIdStub = sinon.stub(User, 'findById').resolves(user);
+    const certificateFindOneStub = sinon.stub(Certificate, 'findOne').resolves(null);
+    const certificateCreateStub = sinon.stub(Certificate, 'create').resolves({});
+
+    const req = {
+      params: { id: moduleId },
+      user: { id: userId.toString() },
+      body: { increment: 1 }
+    };
+    const res = {
+      json: sinon.spy(),
+      status: sinon.stub().returnsThis()
+    };
+
+    await updateLessons(req, res);
+
+    expect(existingModule.completedLessons).to.equal(10);
+    expect(certificateCreateStub.calledOnce).to.be.true;
+    
+    const responseData = res.json.getCall(0).args[0];
+    expect(responseData.certificateEarned).to.be.true;
+
+    findByIdStub.restore();
+    userFindByIdStub.restore();
+    certificateFindOneStub.restore();
+    certificateCreateStub.restore();
+  });
+
+  it('should return 400 for negative completed lessons', async () => {
+    const moduleId = new mongoose.Types.ObjectId();
+    const userId = new mongoose.Types.ObjectId();
+    const existingModule = {
+      _id: moduleId,
+      userId: userId,
+      totalLessons: 10,
+      completedLessons: 0,
+    };
+
+    const findByIdStub = sinon.stub(Module, 'findById').resolves(existingModule);
+
+    const req = {
+      params: { id: moduleId },
+      user: { id: userId.toString() },
+      body: { increment: -1 }
+    };
+    const res = {
+      json: sinon.spy(),
+      status: sinon.stub().returnsThis()
+    };
+
+    await updateLessons(req, res);
+
+    expect(res.status.calledWith(400)).to.be.true;
+    expect(res.json.calledWithMatch({ message: 'Cannot have negative completed lessons' })).to.be.true;
+
+    findByIdStub.restore();
+  });
+
+  it('should return 400 when exceeding total lessons', async () => {
+    const moduleId = new mongoose.Types.ObjectId();
+    const userId = new mongoose.Types.ObjectId();
+    const existingModule = {
+      _id: moduleId,
+      userId: userId,
+      totalLessons: 10,
+      completedLessons: 10,
+    };
+
+    const findByIdStub = sinon.stub(Module, 'findById').resolves(existingModule);
+
+    const req = {
+      params: { id: moduleId },
+      user: { id: userId.toString() },
+      body: { increment: 1 }
+    };
+    const res = {
+      json: sinon.spy(),
+      status: sinon.stub().returnsThis()
+    };
+
+    await updateLessons(req, res);
+
+    expect(res.status.calledWith(400)).to.be.true;
+    expect(res.json.calledWithMatch({ message: 'Only 10 lessons in this module' })).to.be.true;
+
+    findByIdStub.restore();
+  });
+
+  it('should return 400 for invalid increment', async () => {
+    const moduleId = new mongoose.Types.ObjectId();
+    const userId = new mongoose.Types.ObjectId();
+    const existingModule = {
+      _id: moduleId,
+      userId: userId,
+      totalLessons: 10,
+      completedLessons: 5,
+    };
+
+    const findByIdStub = sinon.stub(Module, 'findById').resolves(existingModule);
+
+    const req = {
+      params: { id: moduleId },
+      user: { id: userId.toString() },
+      body: { increment: "invalid" }
+    };
+    const res = {
+      json: sinon.spy(),
+      status: sinon.stub().returnsThis()
+    };
+
+    await updateLessons(req, res);
+
+    expect(res.status.calledWith(400)).to.be.true;
+    expect(res.json.calledWithMatch({ message: 'Increment must be a valid number' })).to.be.true;
+
+    findByIdStub.restore();
+  });
+
+});
+
+describe('DeleteModule Function Test', () => {
+
+  it('should delete a module successfully', async () => {
+    const moduleId = new mongoose.Types.ObjectId();
+    const userId = new mongoose.Types.ObjectId();
+    
+    const existingModule = {
+      _id: moduleId,
+      userId: userId,
+      title: "Module to Delete"
+    };
+
+    const findByIdStub = sinon.stub(Module, 'findById').resolves(existingModule);
+    const certificateDeleteManyStub = sinon.stub(Certificate, 'deleteMany').resolves();
+    const moduleDeleteStub = sinon.stub(Module, 'findByIdAndDelete').resolves();
+
+    const req = {
+      params: { id: moduleId.toString() },
+      user: { id: userId.toString() }
+    };
+    const res = {
+      status: sinon.stub().returnsThis(),
+      json: sinon.spy()
+    };
+
+    await deleteModule(req, res);
+
+    expect(findByIdStub.calledOnceWith(moduleId.toString())).to.be.true;
+    expect(certificateDeleteManyStub.calledOnceWith({ moduleId: moduleId.toString() })).to.be.true;
+    expect(moduleDeleteStub.calledOnceWith(moduleId.toString())).to.be.true;
+    expect(res.json.calledWith({ message: 'Module deleted' })).to.be.true;
+
+    findByIdStub.restore();
+    certificateDeleteManyStub.restore();
+    moduleDeleteStub.restore();
+  });
+
+  it('should return 404 if module is not found', async () => {
+    const findByIdStub = sinon.stub(Module, 'findById').resolves(null);
+
+    const req = { 
+      params: { id: new mongoose.Types.ObjectId().toString() },
+      user: { id: new mongoose.Types.ObjectId().toString() }
+    };
+    const res = {
+      status: sinon.stub().returnsThis(),
+      json: sinon.spy()
+    };
+
+    await deleteModule(req, res);
+
     expect(findByIdStub.calledOnceWith(req.params.id)).to.be.true;
     expect(res.status.calledWith(404)).to.be.true;
-    expect(res.json.calledWith({ message: 'Task not found' })).to.be.true;
+    expect(res.json.calledWith({ message: 'Module not found' })).to.be.true;
 
-    // Restore stubbed methods
+    findByIdStub.restore();
+  });
+
+  it('should return 403 if user is not authorized', async () => {
+    const moduleId = new mongoose.Types.ObjectId();
+    const userId = new mongoose.Types.ObjectId();
+    const differentUserId = new mongoose.Types.ObjectId();
+    
+    const existingModule = {
+      _id: moduleId,
+      userId: userId,
+      title: "Module"
+    };
+
+    const findByIdStub = sinon.stub(Module, 'findById').resolves(existingModule);
+
+    const req = {
+      params: { id: moduleId.toString() },
+      user: { id: differentUserId.toString() }
+    };
+    const res = {
+      status: sinon.stub().returnsThis(),
+      json: sinon.spy()
+    };
+
+    await deleteModule(req, res);
+
+    expect(res.status.calledWith(403)).to.be.true;
+    expect(res.json.calledWith({ message: 'Not authorized to delete this module' })).to.be.true;
+
     findByIdStub.restore();
   });
 
   it('should return 500 if an error occurs', async () => {
-    // Stub Task.findById to throw an error
-    const findByIdStub = sinon.stub(Task, 'findById').throws(new Error('DB Error'));
+    const findByIdStub = sinon.stub(Module, 'findById').throws(new Error('DB Error'));
 
-    // Mock request data
-    const req = { params: { id: new mongoose.Types.ObjectId().toString() } };
-
-    // Mock response object
+    const req = { 
+      params: { id: new mongoose.Types.ObjectId().toString() },
+      user: { id: new mongoose.Types.ObjectId().toString() }
+    };
     const res = {
       status: sinon.stub().returnsThis(),
       json: sinon.spy()
     };
 
-    // Call function
-    await deleteTask(req, res);
+    await deleteModule(req, res);
 
-    // Assertions
     expect(res.status.calledWith(500)).to.be.true;
     expect(res.json.calledWithMatch({ message: 'DB Error' })).to.be.true;
 
-    // Restore stubbed methods
     findByIdStub.restore();
   });
 

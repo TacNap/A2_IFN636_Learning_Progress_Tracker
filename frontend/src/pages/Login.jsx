@@ -20,28 +20,30 @@ const Login = () => {
   };
 
   return (
-    <div className="max-w-md mx-auto mt-20">
-      <form onSubmit={handleSubmit} className="bg-white p-6 shadow-md rounded">
-        <h1 className="text-2xl font-semibold mb-4 text-center">Welcome back! Let's get studying</h1>
-        <h2 className="text-lg mb-4 text-center">Login to your account</h2>
-        <input
-          type="email"
-          placeholder="Email"
-          value={formData.email}
-          onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-          className="w-full mb-4 p-2 border rounded"
-        />
-        <input
-          type="password"
-          placeholder="Password"
-          value={formData.password}
-          onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-          className="w-full mb-4 p-2 border rounded"
-        />
-        <button type="submit" className="w-full bg-[#005691] text-white p-2 rounded">
-          Login
-        </button>
-      </form>
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-white flex items-center justify-center">
+      <div className="max-w-md w-full">
+        <form onSubmit={handleSubmit} className="bg-white p-6 shadow-md rounded">
+          <h1 className="text-2xl font-semibold mb-4 text-center">Welcome back! Let's get studying</h1>
+          <h2 className="text-lg mb-4 text-center">Login to your account</h2>
+          <input
+            type="email"
+            placeholder="Email"
+            value={formData.email}
+            onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+            className="w-full mb-4 p-2 border rounded"
+          />
+          <input
+            type="password"
+            placeholder="Password"
+            value={formData.password}
+            onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+            className="w-full mb-4 p-2 border rounded"
+          />
+          <button type="submit" className="w-full bg-[#005691] text-white p-2 rounded">
+            Login
+          </button>
+        </form>
+      </div>
     </div>
   );
 };
