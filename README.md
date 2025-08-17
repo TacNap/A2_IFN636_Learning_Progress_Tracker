@@ -41,7 +41,5 @@
 **Usage Example**
 
 * Students can mark modules as completed by finishing all lessons.
-
-* Quiz scores are logged and stored for review.
-
+* Quiz scores are logged and stored for review
 * Once all lessons are completed, a certificate is generated automatically.
