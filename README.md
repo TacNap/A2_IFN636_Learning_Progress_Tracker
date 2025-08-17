@@ -1,4 +1,4 @@
-**Task Manager Application Overview:The task manager application is designed to help users efficiently manage their tasks and responsibilities by providing a user-friendly interface for creating, viewing, updating, and deleting tasks. It includes essential features such as secure user authentication, allowing individuals to sign up and log in to their accounts, as well as profile management to update personal information. With built-in validation such as input field validation and email validation, the application ensures a seamless user experience while enhancing productivity and organization in both personal and professional settings. **
+**Online Learning Progress Tracker Application Overview:The online learning progress tracker application is designed to help users efficiently manage their modules,lessons, and quizz scores by providing a user-friendly interface for creating, viewing, updating, and deleting modules and quizzes. And a feature that generates a certificate for you to download so you can keep record of the modules you've done even if you deletet the module later. It also includes essential features such as secure user authentication, allowing individuals to sign up and log in to their accounts, as well as profile management to update personal information. With built-in validation such as input field validation and email validation, the application ensures a seamless user experience while enhancing productivity and organization in both personal and professional settings. **
 
 **This apps **contain** the following features:**
 
@@ -6,12 +6,16 @@
 * Login
 * Logout
 * Update profile
-* Add tasks
-* View tasks
-* Update tasks
-* Delete tasks
-
-**This **app**lication** is**almost **a** precompiled** app**. However, students will develop some features,**such as adding tasks, viewing tasks, updating tasks, and **deleting** tasks**. **Students** will interact with GitHub when they develop the features.**
+* Add module
+* View module
+* Update module
+* Delete module
+* Add quiz
+* View quiz
+* Update quiz
+* Delete quiz
+* Download certitifcate
+* Delete certificate
 
 ---
 
@@ -24,3 +28,20 @@
 * **GitHub Account** [[https://github.com/signup?source=login](https://github.com/signup?source=login)]** **
 
 ---
+
+**Tech Stack**
+
+
+* Frontend: React.js + JavaScript
+* Backend: Node.js + Express 
+* Database: MongoDB
+* Other Tools: Axios, Context API (for auth)
+
+
+**Usage Example**
+
+* Students can mark modules as completed by finishing all lessons.
+
+* Quiz scores are logged and stored for review.
+
+* Once all lessons are completed, a certificate is generated automatically.
