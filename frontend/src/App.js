@@ -4,7 +4,7 @@ import Login from './pages/Login';
 import Register from './pages/Register';
 import Profile from './pages/Profile';
 import Module from './pages/Module';
-import Quiz from './pages/Quiz';
+import Assignment from './pages/Assignment';
 import Certificates from './pages/Certificates';
 
 function App() {
@@ -16,7 +16,7 @@ function App() {
         <Route path="/register" element={<Register />} />
         <Route path="/profile" element={<Profile />} />
         <Route path="/modules" element={<Module />} />
-        <Route path="/quizzes" element={<Quiz />} />
+        <Route path="/assignments" element={<Assignment />} />
         <Route path="/certificates" element={<Certificates />} />
       </Routes>
     </Router>

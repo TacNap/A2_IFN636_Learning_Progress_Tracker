@@ -13,7 +13,7 @@ app.use(cors());
 app.use(express.json());
 app.use('/api/auth', require('./routes/authRoutes'));
 app.use('/api/modules', require('./routes/moduleRoutes'));
-app.use('/api/quizzes', require('./routes/quizRoutes'));
+app.use('/api/assignments', require('./routes/assignmentRoutes'));
 app.use('/api/certificates', require('./routes/certificatesRoutes'));
 
 if (require.main === module) {
