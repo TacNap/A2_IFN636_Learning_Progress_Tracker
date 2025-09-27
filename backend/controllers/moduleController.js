@@ -1,10 +1,11 @@
 const Module = require('../models/Module');
 const Certificate = require('../models/Certificate');
 const User = require('../models/User');
+const moduleOperation = require('../operations/moduleOperation');
 
 const getModules = async (req, res) => {
   try {
-    const modules = await Module.find({ userId: req.user.id });
+    const modules = await moduleOperation.getModules({ userId: req.user.id });
     res.json(modules);
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -14,67 +15,40 @@ const getModules = async (req, res) => {
 const addModule = async (req, res) => {
   const { title, description, deadline, totalLessons } = req.body;
   try {
-    const module = await Module.create({ 
-      userId: req.user.id, 
-      title, 
-      description, 
+    const module = await moduleOperation.createModule({
+      userId: req.user.id,
+      title,
+      description,
       deadline,
-      totalLessons: totalLessons || 0,
-      completedLessons: 0
+      totalLessons,
     });
     res.status(201).json(module);
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    const status = error.name === 'ValidationError' ? 400 : 500;
+    res.status(status).json({ message: error.message });
   }
 };
 
 const updateModule = async (req, res) => {
   const { title, description, completed, deadline, totalLessons, completedLessons } = req.body;
   try {
-    const module = await Module.findById(req.params.id);
-    if (!module) return res.status(404).json({ message: 'Module not found' });
+    const found = await Module.findById(req.params.id);
+    if (!found) return res.status(404).json({ message: 'Module not found' });
 
-    if (module.userId.toString() !== req.user.id) {
-      return res.status(403).json({ message: 'Not authorized to update this module' });
+    if (found.userId.toString() !== req.user.id) {
+      return res.status(403).json({ message: 'Not authorised to update this module' });
     }
 
-    const previousCompletedLessons = module.completedLessons;
+    const result = await moduleOperation.UpdateModule(req.params.id, {
+      title,
+      description,
+      completed,
+      deadline,
+      totalLessons,
+      completedLessons,
+    });
 
-    module.title = title || module.title;
-    module.description = description || module.description;
-    module.completed = completed ?? module.completed;
-    module.deadline = deadline || module.deadline;
-    
-    if (totalLessons !== undefined) {
-      const parsedTotalLessons = parseInt(totalLessons, 10);
-      if (isNaN(parsedTotalLessons) || parsedTotalLessons < 0) {
-        return res.status(400).json({ message: 'Total lessons must be a valid positive number' });
-      }
-      module.totalLessons = parsedTotalLessons;
-      
-      if (module.completedLessons > parsedTotalLessons) {
-        module.completedLessons = parsedTotalLessons;
-      }
-    }
-    
-    if (completedLessons !== undefined) {
-      const parsedCompletedLessons = parseInt(completedLessons, 10);
-      if (isNaN(parsedCompletedLessons) || parsedCompletedLessons < 0) {
-        return res.status(400).json({ message: 'Completed lessons must be a valid positive number' });
-      }
-      module.completedLessons = parsedCompletedLessons;
-    }
-    
-    const updatedModule = await module.save();
-
-    await handleCertificateCreation(
-      updatedModule,
-      req.user.id,
-      previousCompletedLessons,
-      updatedModule.completedLessons
-    );
-
-    res.json(updatedModule);
+    res.json(result.module);
   } catch (error) {
     if (error.name === 'ValidationError') {
       res.status(400).json({ message: error.message });
@@ -91,7 +65,7 @@ const updateLessons = async (req, res) => {
     if (!module) return res.status(404).json({ message: 'Module not found' });
 
     if (module.userId.toString() !== req.user.id) {
-      return res.status(403).json({ message: 'Not authorized to update this module' });
+      return res.status(403).json({ message: 'Not authorised to update this module' });
     }
 
     const parsedIncrement = parseInt(increment, 10);
@@ -111,25 +85,21 @@ const updateLessons = async (req, res) => {
         message: `Only ${module.totalLessons} lessons in this module` 
       });
     }
-    
-    module.completedLessons = newCompletedLessons;
-    const updatedModule = await module.save();
 
-    const certificateResult = await handleCertificateCreation(
-      updatedModule,
-      req.user.id,
-      previousCompletedLessons,
-      newCompletedLessons
-    );
+    const result = await moduleOperation.UpdateModule(req.params.id, { completedLessons: newCompletedLessons });
 
     const response = {
-      module: updatedModule,
-      certificateEarned: certificateResult.certificateEarned
+      module: result.module,
+      certificateEarned: result.certificateEarned,
     };
 
     res.json(response);
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    if (error.name === 'ValidationError') {
+      res.status(400).json({ message: error.message });
+    } else {
+      res.status(500).json({ message: error.message });
+    }
   }
 };
 
@@ -173,7 +143,7 @@ const deleteModule = async (req, res) => {
     if (!module) return res.status(404).json({ message: 'Module not found' });
     
     if (module.userId.toString() !== req.user.id) {
-      return res.status(403).json({ message: 'Not authorized to delete this module' });
+      return res.status(403).json({ message: 'Not authorised to delete this module' });
     }
     
     await Certificate.deleteMany({ moduleId: req.params.id });
