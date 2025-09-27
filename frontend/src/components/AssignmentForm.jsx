@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { useAuth } from '../context/AuthContext';
 import axiosInstance from '../axiosConfig';
 
-const QuizForm = ({quizzes, setQuizzes, editingQuiz, setEditingQuiz}) => {
+const AssignmentForm = ({assignments, setAssignments, editingAssignment, setEditingAssignment}) => {
     const { user } = useAuth();
     const [formData, setFormData] = useState({
         title: '',
@@ -12,11 +12,11 @@ const QuizForm = ({quizzes, setQuizzes, editingQuiz, setEditingQuiz}) => {
     const [error, setError] = useState('');
 
     useEffect(() => {
-        if (editingQuiz) {
+        if (editingAssignment) {
             setFormData({
-                title: editingQuiz.title || '',
-                description: editingQuiz.description || '',
-                score: editingQuiz.score || '0'
+                title: editingAssignment.title || '',
+                description: editingAssignment.description || '',
+                score: editingAssignment.score || '0'
             });
         } else {
             setFormData({
@@ -26,7 +26,7 @@ const QuizForm = ({quizzes, setQuizzes, editingQuiz, setEditingQuiz}) => {
             });
         }
         setError('');
-    }, [editingQuiz]);
+    }, [editingAssignment]);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -41,18 +41,18 @@ const QuizForm = ({quizzes, setQuizzes, editingQuiz, setEditingQuiz}) => {
 
         try {
             const submitData = { ...formData, score };
-            if (editingQuiz) {
-                const response = await axiosInstance.put(`/api/quizzes/${editingQuiz._id}`, submitData, {
+            if (editingAssignment) {
+                const response = await axiosInstance.put(`/api/assignments/${editingAssignment._id}`, submitData, {
                     headers: { Authorization: `Bearer ${user.token}` },
                 });
-                setQuizzes(quizzes.map((quiz) => (quiz._id === response.data._id ? response.data : quiz)));
+                setAssignments(assignments.map((assignment) => (assignment._id === response.data._id ? response.data : assignment)));
             } else {
-                const response = await axiosInstance.post('/api/quizzes', submitData, {
+                const response = await axiosInstance.post('/api/assignments', submitData, {
                     headers: { Authorization: `Bearer ${user.token}` },
                 });
-                setQuizzes([...quizzes, response.data]);
+                setAssignments([...assignments, response.data]);
             }
-            setEditingQuiz(null);
+            setEditingAssignment(null);
             setFormData({
                 title: '',
                 description: '',
@@ -62,14 +62,14 @@ const QuizForm = ({quizzes, setQuizzes, editingQuiz, setEditingQuiz}) => {
             if (error.response?.data?.message) {
                 setError(error.response.data.message);
             } else {
-                setError('Failed to save quiz.');
+                setError('Failed to save assignment.');
             }
         }
     };
 
     return (
     <form onSubmit={handleSubmit} className="bg-white p-6 shadow-md rounded mb-6">
-      <h1 className="text-2xl font-bold mb-4">{editingQuiz ? 'Edit Quiz' : 'Add Quiz'}</h1>
+      <h1 className="text-2xl font-bold mb-4">{editingAssignment ? 'Edit Assignment' : 'Add Assignment'}</h1>
       
       {error && (
         <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
@@ -79,7 +79,7 @@ const QuizForm = ({quizzes, setQuizzes, editingQuiz, setEditingQuiz}) => {
 
       <input
         type="text"
-        placeholder="Quiz Title"
+        placeholder="Assignment Title"
         value={formData.title}
         onChange={(e) => setFormData({ ...formData, title: e.target.value })}
         className="w-full mb-4 p-2 border rounded"
@@ -109,10 +109,10 @@ const QuizForm = ({quizzes, setQuizzes, editingQuiz, setEditingQuiz}) => {
       </div>
 
       <button type="submit" className="w-full bg-[#005691] text-white p-2 rounded hover:bg-[#004080]">
-        {editingQuiz ? 'Update Quiz' : 'Add Quiz'}
+        {editingAssignment ? 'Update Assignment' : 'Add Assignment'}
       </button>
     </form>
   );
 };
 
-export default QuizForm;
+export default AssignmentForm;

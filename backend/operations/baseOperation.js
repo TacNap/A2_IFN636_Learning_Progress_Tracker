@@ -1,3 +1,4 @@
+// operations layer for modules, assignments, certs and semesters. keeps the controllers nice and boring
 class BaseOperation {
   constructor() {
     if (new.target === BaseOperation) {
