@@ -1,132 +1,116 @@
+const BaseOperation = require('./baseOperation');
 const Module = require('../models/Module');
 const Certificate = require('../models/Certificate');
 const User = require('../models/User');
 
-class ModuleOperation {
-	async createModule(data) {
-		const { userId, title, description, deadline, totalLessons } = data || {};
+class ModuleOperation extends BaseOperation {
+  get model() {
+    return Module;
+  }
 
-		if (!userId) {
-			const err = new Error('userId is required');
-			err.name = 'ValidationError';
-			throw err;
-		}
-		if (!title) {
-			const err = new Error('title is required');
-			err.name = 'ValidationError';
-			throw err;
-		}
+  async createModule(data) {
+    return super.create(data);
+  }
 
-		let tl = 0;
-		if (totalLessons !== undefined) {
-			const parsed = parseInt(totalLessons, 10);
-			if (isNaN(parsed) || parsed < 0) {
-				const err = new Error('Total lessons must be a valid positive number');
-				err.name = 'ValidationError';
-				throw err;
-			}
-			tl = parsed;
-		}
+  async getModules(filter = {}) {
+    return super.list(filter);
+  }
 
-		const module = await Module.create({
-			userId,
-			title,
-			description,
-			deadline,
-			totalLessons: tl,
-			completedLessons: 0,
-		});
+  async GetModuleById(id) {
+    return super.getById(id);
+  }
 
-		return module;
-	}
-	
-	async getModules(filter = {}) {
-		return Module.find(filter);
-	}
-	
-	async GetModuleById(id) {
-		return Module.findById(id);
-	}
-	
-	async UpdateModule(id, data) {
-		const module = await Module.findById(id);
-		if (!module) return null;
+  async UpdateModule(id, data) {
+    const { doc, meta } = await super.updateById(id, data);
+    if (!doc) return null;
+    return { module: doc, certificateEarned: !!meta.certificateEarned };
+  }
 
-		const previousCompletedLessons = module.completedLessons;
+  // Hooks
+  async beforeCreate(data) {
+    const { userId, title, description, deadline, totalLessons } = data || {};
 
-		const { title, description, completed, deadline, totalLessons, completedLessons } = data || {};
+    this.ensureProvided('userId', userId);
+    this.ensureProvided('title', title);
 
-		module.title = title || module.title;
-		module.description = description || module.description;
-		module.completed = (completed ?? module.completed);
-		module.deadline = deadline || module.deadline;
+    let tl = 0;
+    if (totalLessons !== undefined) {
+      tl = this.parseNonNegativeInt('Total lessons', totalLessons);
+    }
 
-		if (totalLessons !== undefined) {
-			const parsedTotal = parseInt(totalLessons, 10);
-			if (isNaN(parsedTotal) || parsedTotal < 0) {
-				const err = new Error('Total lessons must be a valid positive number');
-				err.name = 'ValidationError';
-				throw err;
-			}
-			module.totalLessons = parsedTotal;
-			if (module.completedLessons > parsedTotal) {
-				module.completedLessons = parsedTotal;
-			}
-		}
+    return {
+      userId,
+      title,
+      description,
+      deadline,
+      totalLessons: tl,
+      completedLessons: 0,
+    };
+  }
 
-		if (completedLessons !== undefined) {
-			const parsedCompleted = parseInt(completedLessons, 10);
-			if (isNaN(parsedCompleted) || parsedCompleted < 0) {
-				const err = new Error('Completed lessons must be a valid positive number');
-				err.name = 'ValidationError';
-				throw err;
-			}
-			module.completedLessons = parsedCompleted;
-		}
+  async beforeUpdate(module, data) {
+    const { title, description, completed, deadline, totalLessons, completedLessons } = data || {};
 
-		const updatedModule = await module.save();
+    module.title = title || module.title;
+    module.description = description || module.description;
+    module.completed = completed ?? module.completed;
+    module.deadline = deadline || module.deadline;
 
-		const { certificateEarned } = await this.handleCertificateCreation(
-			updatedModule,
-			previousCompletedLessons,
-			updatedModule.completedLessons
-		);
+    if (totalLessons !== undefined) {
+      const parsedTotal = this.parseNonNegativeInt('Total lessons', totalLessons);
+      module.totalLessons = parsedTotal;
+      if (module.completedLessons > parsedTotal) {
+        module.completedLessons = parsedTotal;
+      }
+    }
 
-		return { module: updatedModule, certificateEarned };
-	}
+    if (completedLessons !== undefined) {
+      const parsedCompleted = this.parseNonNegativeInt('Completed lessons', completedLessons);
+      module.completedLessons = parsedCompleted;
+    }
+  }
 
-	async handleCertificateCreation(module, previousCompletedLessons, newCompletedLessons) {
-		let certificateEarned = false;
-		try {
-			const { totalLessons } = module;
-			if (
-				previousCompletedLessons < totalLessons &&
-				newCompletedLessons === totalLessons &&
-				totalLessons > 0
-			) {
-				const user = await User.findById(module.userId);
-				if (user) {
-					const existingCertificate = await Certificate.findOne({
-						userId: user._id,
-						moduleId: module._id,
-					});
-					if (!existingCertificate) {
-						await Certificate.create({
-							userId: user._id,
-							moduleId: module._id,
-							moduleName: module.title,
-							userName: user.name,
-							totalLessons: module.totalLessons,
-						});
-						certificateEarned = true;
-					}
-				}
-			}
-		} catch (error) {
-			console.error('Error creating certificate:', error);
-		}
-		return { certificateEarned };
-	}
+  async afterUpdate(updatedModule, prev) {
+    const res = await this.handleCertificateCreation(
+      updatedModule,
+      prev.completedLessons,
+      updatedModule.completedLessons
+    );
+    return { certificateEarned: res.certificateEarned };
+  }
+
+  async handleCertificateCreation(module, previousCompletedLessons, newCompletedLessons) {
+    let certificateEarned = false;
+    try {
+      const { totalLessons } = module;
+      if (
+        previousCompletedLessons < totalLessons &&
+        newCompletedLessons === totalLessons &&
+        totalLessons > 0
+      ) {
+        const user = await User.findById(module.userId);
+        if (user) {
+          const existingCertificate = await Certificate.findOne({
+            userId: user._id,
+            moduleId: module._id,
+          });
+          if (!existingCertificate) {
+            await Certificate.create({
+              userId: user._id,
+              moduleId: module._id,
+              moduleName: module.title,
+              userName: user.name,
+              totalLessons: module.totalLessons,
+            });
+            certificateEarned = true;
+          }
+        }
+      }
+    } catch (error) {
+      console.error('Error creating certificate:', error);
+    }
+    return { certificateEarned };
+  } 
 }
 
 module.exports = new ModuleOperation();
