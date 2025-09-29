@@ -1,4 +1,4 @@
-import { Link, useNavigate } from 'react-router-dom';
+﻿import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 
 const Navbar = () => {
@@ -19,6 +19,7 @@ const Navbar = () => {
             <Link to="/modules" className="mr-4">Modules</Link>
             <Link to="/assignments" className="mr-4">Assignments</Link>
             <Link to="/certificates" className="mr-4">Certificates</Link>
+            <Link to="/semesters/new" className="mr-4">Create Semester</Link>
             <Link to="/profile" className="mr-4">Profile</Link>
             
             <button
