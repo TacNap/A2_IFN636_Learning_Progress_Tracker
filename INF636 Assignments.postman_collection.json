@@ -1,14 +1,14 @@
 {
 	"info": {
 		"_postman_id": "a44687f0-5fae-41f8-8c32-2314ce031c76",
-		"name": "INF636 Quizzes",
-		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json",
+		"name": "INF636 Assignments",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
 		"_exporter_id": "48093386",
 		"_collection_link": "https://n12192945-739176.postman.co/workspace/Sanjika-Perera's-Workspace~b16c0daf-53a9-4fad-8c9d-5674165b4145/collection/48093386-a44687f0-5fae-41f8-8c32-2314ce031c76?action=share&source=collection_link&creator=48093386"
 	},
 	"item": [
 		{
-			"name": "Get all quizzes",
+			"name": "Get all Assignments",
 			"event": [
 				{
 					"listen": "test",
@@ -37,12 +37,21 @@
 						"type": "text"
 					}
 				],
-				"url": "{{baseURL}}/api/quizzes"
+				"url": {
+					"raw": "{{baseURL}}/api/assignments",
+					"host": [
+						"{{baseURL}}"
+					],
+					"path": [
+						"api",
+						"assignments"
+					]
+				}
 			},
 			"response": []
 		},
 		{
-			"name": "Create Quizzes",
+			"name": "Create Assignments",
 			"event": [
 				{
 					"listen": "test",
@@ -54,15 +63,14 @@
 							"\r",
 							"const response = pm.response.json();\r",
 							"\r",
-							"pm.test(\"Quiz created successfully\", function () {\r",
-							"    pm.expect(response.title).to.equal(\"Test Quiz\");\r",
+							"pm.test(\"Assignment created successfully\", function () {\r",
+							"    pm.expect(response.title).to.equal(\"Test Assignment\");\r",
 							"    \r",
 							"});\r",
 							"\r",
-							"// Save quiz ID for other requests\r",
 							"if (response._id) {\r",
-							"    pm.environment.set(\"quiz_id\", response._id);\r",
-							"    console.log(\"Quiz ID saved:\", response._id);\r",
+							"    pm.environment.set(\"assignment_id\", response._id);\r",
+							"    console.log(\"Assignment ID saved:\", response._id);\r",
 							"}"
 						],
 						"type": "text/javascript",
@@ -82,19 +90,28 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"title\": \"Test Quiz1\",\r\n    \"description\": \"Test Quiz description\",\r\n    \"score\": 100\r\n}",
+					"raw": "{\r\n    \"title\": \"Test Assignment\",\r\n    \"description\": \"Test Assignment description\",\r\n    \"score\": 80\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
 						}
 					}
 				},
-				"url": "{{baseURL}}/api/quizzes"
+				"url": {
+					"raw": "{{baseURL}}/api/assignments",
+					"host": [
+						"{{baseURL}}"
+					],
+					"path": [
+						"api",
+						"assignments"
+					]
+				}
 			},
 			"response": []
 		},
 		{
-			"name": "Update Quiz",
+			"name": "Update Assignment",
 			"event": [
 				{
 					"listen": "test",
@@ -131,19 +148,29 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"title\": \"Test Quiz Changed1\",\r\n    \"score\": 85\r\n}",
+					"raw": "{\r\n    \"score\": 85\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
 						}
 					}
 				},
-				"url": "{{baseURL}}/api/quizzes/{{quiz_id}}"
+				"url": {
+					"raw": "{{baseURL}}/api/assignments/{{assignment_id}}",
+					"host": [
+						"{{baseURL}}"
+					],
+					"path": [
+						"api",
+						"assignments",
+						"{{assignment_id}}"
+					]
+				}
 			},
 			"response": []
 		},
 		{
-			"name": "Delete Quiz",
+			"name": "Delete Assignment",
 			"event": [
 				{
 					"listen": "test",
@@ -153,9 +180,9 @@
 							"    pm.response.to.have.status(200);\r",
 							"});\r",
 							"\r",
-							"pm.test(\"Quiz deleted successfully\", function () {\r",
+							"pm.test(\"Assignment deleted successfully\", function () {\r",
 							"    let response = pm.response.json();\r",
-							"    pm.expect(response.message).to.equal(\"Quiz deleted successfully\");\r",
+							"    pm.expect(response.message).to.equal(\"Assignment deleted successfully\");\r",
 							"});\r",
 							"\r",
 							"pm.test(\"Response time is acceptable\", function () {\r",
@@ -177,7 +204,17 @@
 						"type": "text"
 					}
 				],
-				"url": "{{baseURL}}/api/quizzes/{{quiz_id}}"
+				"url": {
+					"raw": "{{baseURL}}/api/assignments/{{assignment_id}}",
+					"host": [
+						"{{baseURL}}"
+					],
+					"path": [
+						"api",
+						"assignments",
+						"{{assignment_id}}"
+					]
+				}
 			},
 			"response": []
 		}

@@ -18,7 +18,6 @@ let port;
 describe('AddModule Function Test', () => {
 
   it('should create a new module successfully', async () => {
-    // Mock request data
     const req = {
       user: { id: new mongoose.Types.ObjectId() },
       body: { 
@@ -29,7 +28,6 @@ describe('AddModule Function Test', () => {
       }
     };
 
-    // Mock module that would be created
     const createdModule = { 
       _id: new mongoose.Types.ObjectId(), 
       userId: req.user.id,
@@ -40,19 +38,15 @@ describe('AddModule Function Test', () => {
       completedLessons: 0
     };
 
-    // Stub Module.create to return the createdModule
     const createStub = sinon.stub(Module, 'create').resolves(createdModule);
 
-    // Mock response object
     const res = {
       status: sinon.stub().returnsThis(),
       json: sinon.spy()
     };
 
-    // Call function
     await addModule(req, res);
 
-    // Assertions
     expect(createStub.calledOnceWith({ 
       userId: req.user.id, 
       title: req.body.title,
@@ -64,7 +58,6 @@ describe('AddModule Function Test', () => {
     expect(res.status.calledWith(201)).to.be.true;
     expect(res.json.calledWith(createdModule)).to.be.true;
 
-    // Restore stubbed methods
     createStub.restore();
   });
 

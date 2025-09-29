@@ -2,7 +2,7 @@
 	"info": {
 		"_postman_id": "b112352f-6b96-42f8-b150-cd83d98702cf",
 		"name": "INF636 Certificates",
-		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
 		"_exporter_id": "48093386",
 		"_collection_link": "https://n12192945-739176.postman.co/workspace/Sanjika-Perera's-Workspace~b16c0daf-53a9-4fad-8c9d-5674165b4145/collection/48093386-b112352f-6b96-42f8-b150-cd83d98702cf?action=share&source=collection_link&creator=48093386"
 	},
@@ -37,7 +37,16 @@
 						"type": "text"
 					}
 				],
-				"url": "{{baseURL}}/api/certificates"
+				"url": {
+					"raw": "{{baseURL}}/api/certificates",
+					"host": [
+						"{{baseURL}}"
+					],
+					"path": [
+						"api",
+						"certificates"
+					]
+				}
 			},
 			"response": []
 		},
@@ -53,6 +62,10 @@
 							"});\r",
 							"\r",
 							"const response = pm.response.json();\r",
+							"\r",
+							"pm.test(\"Certificate created successfully\", function () {\r",
+							"    pm.expect(response).to.have.property(\"_id\");\r",
+							"});\r",
 							"\r",
 							"if (response._id) {\r",
 							"        pm.environment.set(\"certificate_id\", response._id);\r",
@@ -83,7 +96,16 @@
 						}
 					}
 				},
-				"url": "{{baseURL}}/api/certificates"
+				"url": {
+					"raw": "{{baseURL}}/api/certificates",
+					"host": [
+						"{{baseURL}}"
+					],
+					"path": [
+						"api",
+						"certificates"
+					]
+				}
 			},
 			"response": []
 		},
@@ -122,7 +144,17 @@
 						"type": "text"
 					}
 				],
-				"url": "{{baseURL}}/api/certificates/{{certificate_id}}"
+				"url": {
+					"raw": "{{baseURL}}/api/certificates/{{certificate_id}}",
+					"host": [
+						"{{baseURL}}"
+					],
+					"path": [
+						"api",
+						"certificates",
+						"{{certificate_id}}"
+					]
+				}
 			},
 			"response": []
 		}

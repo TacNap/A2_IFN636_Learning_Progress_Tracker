@@ -2,7 +2,7 @@
 	"info": {
 		"_postman_id": "d087acc8-494c-458f-8761-4e7e55f4b89b",
 		"name": "INF636 Auth",
-		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
 		"_exporter_id": "48093386",
 		"_collection_link": "https://n12192945-739176.postman.co/workspace/Sanjika-Perera's-Workspace~b16c0daf-53a9-4fad-8c9d-5674165b4145/collection/48093386-d087acc8-494c-458f-8761-4e7e55f4b89b?action=share&source=collection_link&creator=48093386"
 	},
@@ -45,7 +45,17 @@
 						}
 					}
 				},
-				"url": "{{baseURL}}/api/auth/register"
+				"url": {
+					"raw": "{{baseURL}}/api/auth/register",
+					"host": [
+						"{{baseURL}}"
+					],
+					"path": [
+						"api",
+						"auth",
+						"register"
+					]
+				}
 			},
 			"response": []
 		},
@@ -95,7 +105,17 @@
 						}
 					}
 				},
-				"url": "{{baseURL}}/api/auth/login"
+				"url": {
+					"raw": "{{baseURL}}/api/auth/login",
+					"host": [
+						"{{baseURL}}"
+					],
+					"path": [
+						"api",
+						"auth",
+						"login"
+					]
+				}
 			},
 			"response": []
 		},
@@ -143,7 +163,17 @@
 						}
 					}
 				},
-				"url": "{{baseURL}}/api/auth/profile"
+				"url": {
+					"raw": "{{baseURL}}/api/auth/profile",
+					"host": [
+						"{{baseURL}}"
+					],
+					"path": [
+						"api",
+						"auth",
+						"profile"
+					]
+				}
 			},
 			"response": []
 		},
@@ -158,8 +188,10 @@
 							"    pm.expect(pm.response.code).to.equal(200);\r",
 							"});\r",
 							"\r",
-							"pm.test(\"Body matches string\", function () {\r",
-							"    pm.expect(pm.response.text()).to.include(\"QUT\");\r",
+							"let response = pm.response.json();\r",
+							"\r",
+							"pm.test(\"Profile updated\", function () {\r",
+							"    pm.expect(pm.response.university).to.equal(\"QUT\");\r",
 							"});\r",
 							""
 						],
@@ -185,14 +217,24 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n  \"name\": \"TestUser\",\r\n  \"email\": \"TestUser@gmail.com\",\r\n  \"university\": \"QUT\",\r\n  \"address\": \"\"\r\n}",
+					"raw": "{\r\n  \"name\": \"TestUser\",\r\n  \"email\": \"TestUser@gmail.com\",\r\n  \"university\": \"QUT\",\r\n  \"address\": \"QUT\"\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
 						}
 					}
 				},
-				"url": "{{baseURL}}/api/auth/profile"
+				"url": {
+					"raw": "{{baseURL}}/api/auth/profile",
+					"host": [
+						"{{baseURL}}"
+					],
+					"path": [
+						"api",
+						"auth",
+						"profile"
+					]
+				}
 			},
 			"response": []
 		}
