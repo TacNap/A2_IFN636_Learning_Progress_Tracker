@@ -1,5 +1,4 @@
-
-const express = require('express');
+﻿const express = require('express');
 const dotenv = require('dotenv');
 const cors = require('cors');
 const connectDB = require('./config/db');
@@ -15,6 +14,7 @@ app.use('/api/auth', require('./routes/authRoutes'));
 app.use('/api/modules', require('./routes/moduleRoutes'));
 app.use('/api/assignments', require('./routes/assignmentRoutes'));
 app.use('/api/certificates', require('./routes/certificatesRoutes'));
+app.use('/api/semesters', require('./routes/semesterRoutes'));
 
 if (require.main === module) {
     connectDB();

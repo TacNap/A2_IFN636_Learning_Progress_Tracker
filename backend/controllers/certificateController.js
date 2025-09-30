@@ -1,76 +1,63 @@
-const Certificate = require('../models/Certificate');
-const Module = require('../models/Module');
-const User = require('../models/User');
+﻿const certificateOperation = require('../operations/certificateOperation');
+
+const mapValidationStatus = (message) => {
+  if (/not found/i.test(message)) return 404;
+  if (/already issued/i.test(message)) return 409;
+  return 400;
+};
 
 const getCertificates = async (req, res) => {
   try {
-    const certificates = await Certificate.find( {userId: req.user.id })
-        .populate('moduleId', 'title description')
-        .sort({ completionDate: -1 });
+    const certificates = await certificateOperation.getCertificatesForUser(req.user.id);
     res.json(certificates);
+  } catch (error) {
+    const status = error.name === 'ValidationError' ? mapValidationStatus(error.message) : 500;
+    res.status(status).json({ message: error.message });
+  }
+};
+
+const createCertificate = async (req, res) => {
+  const { moduleId } = req.body;
+  try {
+    const certificate = await certificateOperation.createCertificateForModule(req.user.id, moduleId);
+    res.status(201).json(certificate);
+  } catch (error) {
+    if (error.name === 'ValidationError') {
+      const status = mapValidationStatus(error.message);
+      return res.status(status).json({ message: error.message });
+    }
+    res.status(500).json({ message: error.message });
+  }
+};
+
+const deleteCertificate = async (req, res) => {
+  try {
+    const result = await certificateOperation.deleteCertificateById(req.params.id, req.user.id);
+    if (!result.deleted) {
+      if (result.reason === 'not_found') {
+        return res.status(404).json({ message: 'Certificate not found.' });
+      }
+      if (result.reason === 'forbidden') {
+        return res.status(403).json({ message: 'Not authorised to delete this certificate.' });
+      }
+    }
+    res.json({ message: 'Certificate deleted successfully.' });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
 };
 
-const createCertificate = async (req, res) => {
-    const { moduleId } = req.body;
-    try {
-
-        const module = await Module.findById(moduleId);
-        const user = await User.findById(req.user.id);
-
-        if (!module || !user) {
-            return res.status(404).json({ message: 'Module or User not found.' });
-        }
-
-        if (module.completedLessons < module.totalLessons) {
-            return res.status(400).json({ message: 'Module is not completed.' });
-        }
-
-        const certificate = await Certificate.create({
-            userId: user._id,
-            moduleId: module._id,
-            moduleName: module.title,
-            userName: user.name,
-            totalLessons: module.totalLessons
-        });
-        res.status(201).json(certificate);
-    } catch (error) {
-        res.status(500).json({ message: error.message });
-    }
-};
-
-const deleteCertificate = async (req, res) => {
-    try{
-        const certificate = await Certificate.findById(req.params.id);
-
-        if(!certificate) {
-            return res.status(404).json({ message: 'Certificate not found.' });
-        }
-
-        if(certificate.userId.toString() !== req.user.id) {
-            return res.status(403).json({ message: 'Not authorized to delete this certificate.' });
-        }
-
-        await Certificate.findByIdAndDelete(req.params.id);
-        res.json({ message: 'Certificate deleted successfully.' });
-    } catch (error) {
-        res.status(500).json({ message: error.message });
-    }
-};
-
 const deleteCertificatesByModule = async (moduleId) => {
-    try {
-        await Certificate.deleteMany({ moduleId });
-    } catch (error) {
-        console.error('Error deleting certificates for module:', error);
-    }
+  try {
+    await certificateOperation.deleteCertificatesByModule(moduleId);
+  } catch (error) {
+    console.error('Error deleting certificates for module:', error);
+  }
 };
 
 module.exports = {
-    getCertificates,
-    createCertificate,
-    deleteCertificate,
-    deleteCertificatesByModule
+  getCertificates,
+  createCertificate,
+  deleteCertificate,
+  deleteCertificatesByModule,
 };
