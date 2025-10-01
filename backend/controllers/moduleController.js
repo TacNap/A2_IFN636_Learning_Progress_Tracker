@@ -1,6 +1,5 @@
 const Module = require('../models/Module');
 const Certificate = require('../models/Certificate');
-const User = require('../models/User');
 const moduleOperation = require('../operations/moduleOperation');
 
 const getModules = async (req, res) => {
@@ -82,7 +81,7 @@ const updateLessons = async (req, res) => {
     
     if (newCompletedLessons > module.totalLessons) {
       return res.status(400).json({ 
-        message: `Only ${module.totalLessons} lessons in this module` 
+        message: 'Only lessons in this module'
       });
     }
 
@@ -101,40 +100,6 @@ const updateLessons = async (req, res) => {
       res.status(500).json({ message: error.message });
     }
   }
-};
-
-const handleCertificateCreation = async (module, userId, previousCompletedLessons, newCompletedLessons) => {
-  let certificateEarned = false;
-
-  try {
-    const { totalLessons } = module;
-    
-    if (previousCompletedLessons < totalLessons && newCompletedLessons === totalLessons && totalLessons > 0) {
-      const user = await User.findById(userId);
-      if (user) {
-        const existingCertificate = await Certificate.findOne({
-          userId: user._id,
-          moduleId: module._id
-        });
-
-        if (!existingCertificate) {
-          await Certificate.create({
-            userId: user._id,
-            moduleId: module._id,
-            moduleName: module.title,
-            userName: user.name,
-            totalLessons: module.totalLessons
-          });
-          certificateEarned = true;
-          console.log(`Certificate created for user ${user.name} for module ${module.title}`);
-        }
-      }
-    }
-  } catch (error) {
-    console.error('Error creating certificate:', error);  
-  }
-  
-  return { certificateEarned };
 };
 
 const deleteModule = async (req, res) => {
@@ -156,3 +121,4 @@ const deleteModule = async (req, res) => {
 };
 
 module.exports = { getModules, addModule, updateModule, deleteModule, updateLessons };
+
