@@ -11,6 +11,7 @@ import Certificates from './pages/Certificates';
 import DashboardEducator from './pages/DashboardEducator';
 import DashboardStudent from './pages/DashboardStudent';
 
+// I think i did this one wrong.. 
 const EducatorRoute = ({ children }) => {
   const { user } = useAuth();
 
@@ -39,11 +40,36 @@ const StudentRoute = ({ children }) => {
   return children;
 };
 
+// Defines home route based on user / profile type
+const HomeRoute = () => {
+  const { user } = useAuth();
+
+  // if not logged in, send to login 
+  if (!user) {
+    return <Login />;
+  }
+
+  const profileType = (user.profileType || '').toLowerCase();
+
+  // if student, send to student dashboard
+  if (profileType === 'student') {
+    return <Navigate to="/student" replace />;
+  }
+
+  // if educator, send to educator dashboard
+  if (profileType === 'educator') {
+    return <Navigate to="/educator" replace />;
+  }
+
+  return <Login />;
+};
+
 function App() {
   return (
     <Router>
       <Navbar />
       <Routes>
+        <Route path="/" element={<HomeRoute />} />
         <Route path="/testing" element={<Testing />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
