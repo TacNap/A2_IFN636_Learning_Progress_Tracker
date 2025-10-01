@@ -1,7 +1,7 @@
 const BaseOperation = require('./baseOperation');
 const Certificate = require('../models/Certificate');
 const Module = require('../models/Module');
-const User = require('../models/User');
+const userRepository = require('../repositories/UserRepository');
 
 class CertificateOperation extends BaseOperation {
   get model() {
@@ -36,7 +36,7 @@ class CertificateOperation extends BaseOperation {
 
     const [module, user, existingCertificate] = await Promise.all([
       Module.findById(moduleId),
-      User.findById(userId),
+      userRepository.findById(userId),
       Certificate.findOne({ userId, moduleId }),
     ]);
 
@@ -57,7 +57,7 @@ class CertificateOperation extends BaseOperation {
     }
 
     return {
-      userId: user._id,
+      userId: user.id,
       moduleId: module._id,
       moduleName: module.title,
       userName: user.name,
@@ -85,3 +85,4 @@ class CertificateOperation extends BaseOperation {
 }
 
 module.exports = new CertificateOperation();
+

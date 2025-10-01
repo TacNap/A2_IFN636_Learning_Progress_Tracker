@@ -1,7 +1,7 @@
 const BaseOperation = require('./baseOperation');
 const Module = require('../models/Module');
 const Certificate = require('../models/Certificate');
-const User = require('../models/User');
+const userRepository = require('../repositories/UserRepository');
 
 class ModuleOperation extends BaseOperation {
   get model() {
@@ -88,15 +88,15 @@ class ModuleOperation extends BaseOperation {
         newCompletedLessons === totalLessons &&
         totalLessons > 0
       ) {
-        const user = await User.findById(module.userId);
+        const user = await userRepository.findById(module.userId);
         if (user) {
           const existingCertificate = await Certificate.findOne({
-            userId: user._id,
+            userId: user.id,
             moduleId: module._id,
           });
           if (!existingCertificate) {
             await Certificate.create({
-              userId: user._id,
+              userId: user.id,
               moduleId: module._id,
               moduleName: module.title,
               userName: user.name,
@@ -110,7 +110,8 @@ class ModuleOperation extends BaseOperation {
       console.error('Error creating certificate:', error);
     }
     return { certificateEarned };
-  } 
+  }
 }
 
 module.exports = new ModuleOperation();
+

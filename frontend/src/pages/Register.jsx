@@ -3,18 +3,35 @@ import { useNavigate } from 'react-router-dom';
 import axiosInstance from '../axiosConfig';
 
 const Register = () => {
-  const [formData, setFormData] = useState({ name: '', email: '', password: '' });
+  const [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    password: '',
+    isEducator: false,
+  });
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await axiosInstance.post('/api/auth/register', formData);
+      const payload = {
+        name: formData.name,
+        email: formData.email,
+        password: formData.password,
+        profileType: formData.isEducator ? 'educator' : 'student',
+      };
+
+      await axiosInstance.post('/api/auth/register', payload);
       alert('Registration successful. Please log in.');
       navigate('/login');
     } catch (error) {
       alert('Registration failed. Please try again.');
     }
+  };
+
+  const handleChange = (key) => (event) => {
+    const value = key === 'isEducator' ? event.target.checked : event.target.value;
+    setFormData((prev) => ({ ...prev, [key]: value }));
   };
 
   return (
@@ -25,23 +42,32 @@ const Register = () => {
           type="text"
           placeholder="Name"
           value={formData.name}
-          onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+          onChange={handleChange('name')}
           className="w-full mb-4 p-2 border rounded"
         />
         <input
           type="email"
           placeholder="Email"
           value={formData.email}
-          onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+          onChange={handleChange('email')}
           className="w-full mb-4 p-2 border rounded"
         />
         <input
           type="password"
           placeholder="Password"
           value={formData.password}
-          onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+          onChange={handleChange('password')}
           className="w-full mb-4 p-2 border rounded"
         />
+        <label className="flex items-center mb-4 text-sm">
+          <input
+            type="checkbox"
+            checked={formData.isEducator}
+            onChange={handleChange('isEducator')}
+            className="mr-2"
+          />
+          Educator?
+        </label>
         <button type="submit" className="w-full bg-green-600 text-white p-2 rounded">
           Register
         </button>
