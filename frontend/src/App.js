@@ -42,7 +42,7 @@ const StudentRoute = ({ children }) => {
 function App() {
   return (
     <Router>
-      {/* <Navbar /> */}
+      <Navbar />
       <Routes>
         <Route path="/testing" element={<Testing />} />
         <Route path="/login" element={<Login />} />
