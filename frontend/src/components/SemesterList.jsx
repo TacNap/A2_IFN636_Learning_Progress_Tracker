@@ -300,15 +300,6 @@ const SemesterList = ({ semesters, setSemesters, setEditingSemester }) => {
             </div>
 
             <footer className="semester-list__footer">
-              <button type="button" className="semester-list__pagination-button" disabled>
-                <span aria-hidden="true">&lt;</span>
-                Previous
-              </button>
-              <span className="semester-list__pagination-info">Page 1 of 1</span>
-              <button type="button" className="semester-list__pagination-button" disabled>
-                Next
-                <span aria-hidden="true">&gt;</span>
-              </button>
             </footer>
           </section>
         );

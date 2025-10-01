@@ -18,7 +18,7 @@
   align-items: center;
   justify-content: space-between;
   gap: 16px;
-  padding: 24px;
+  padding: 12px;
   border-bottom: 1px solid #e9eaeb;
   background-color: #ffffff;
 }
@@ -136,7 +136,7 @@
   grid-template-columns: 2.6fr 2fr 1.2fr 1.2fr;
   gap: 18px;
   align-items: center;
-  padding: 18px 24px;
+  padding: 8px 12px;
 }
 
 .semester-list__table-header {
@@ -235,7 +235,7 @@
   justify-content: center;
   align-items: center;
   gap: 20px;
-  padding: 20px 24px;
+  padding: 30px 12px;
   background-color: #ffffff;
 }
 
