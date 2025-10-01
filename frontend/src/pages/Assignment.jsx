@@ -3,6 +3,7 @@ import axiosInstance from '../axiosConfig';
 import AssignmentForm from '../components/AssignmentForm';
 import AssignmentList from '../components/AssignmentList';
 import { useAuth } from '../context/AuthContext';
+import Navbar from '../components/Navbar';
 
 const Assignments = () => {
     const { user } = useAuth();
@@ -25,6 +26,8 @@ const Assignments = () => {
     }, [user]);
 
     return (
+        <div>
+            {/* <Navbar /> */}
         <div className="container mx-auto p-6">
             <AssignmentForm
                 assignments={assignments}
@@ -37,6 +40,7 @@ const Assignments = () => {
                 setAssignments={setAssignments}
                 setEditingAssignment={setEditingAssignment}
             />
+        </div>
         </div>
     );
 };

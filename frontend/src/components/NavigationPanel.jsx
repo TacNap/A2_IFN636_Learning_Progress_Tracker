@@ -1,4 +1,4 @@
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 
 const NavigationPanel = ({
   title = 'Navigation',
@@ -11,6 +11,7 @@ const NavigationPanel = ({
   className = '',
 }) => {
   const location = useLocation();
+  const navigate = useNavigate();
   const baseClass = 'student-dashboard__sidebar';
   const combinedClassName = className ? `${baseClass} ${className}` : baseClass;
   const resolvedWelcome = welcomeMessage ?? (userName ? `Welcome back, ${userName}` : 'Welcome back!');
@@ -76,7 +77,11 @@ const NavigationPanel = ({
         })}
       </nav>
 
-      <div className="sidebar-footer">
+      <button
+        type="button"
+        className="sidebar-footer"
+        onClick={() => navigate('/profile')} // i probably should have been using this more 
+      >
         <div className="sidebar-footer__avatar" aria-hidden="true">
           {initials}
         </div>
@@ -84,7 +89,7 @@ const NavigationPanel = ({
           <p className="sidebar-footer__name">{userName}</p>
           <p className="sidebar-footer__role">{userRole}</p>
         </div>
-      </div>
+      </button>
     </aside>
   );
 };
