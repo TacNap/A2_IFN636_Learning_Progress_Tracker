@@ -23,6 +23,7 @@ const DashboardStudent = () => {
   const [moduleError, setModuleError] = useState('');
   const [searchTerms, setSearchTerms] = useState({});
 
+  // don't think we need this.
   const initials = useMemo(() => {
     if (user?.name) {
       return user.name
@@ -35,6 +36,7 @@ const DashboardStudent = () => {
     return 'KK';
   }, [user]);
 
+  // get semesters
   useEffect(() => {
     let isActive = true;
 
@@ -70,6 +72,7 @@ const DashboardStudent = () => {
     };
   }, [user]);
 
+  // get modules
   useEffect(() => {
     if (!user?.token) {
       setModulesById({});
@@ -116,6 +119,7 @@ const DashboardStudent = () => {
     setSelectedSemester(null);
   }, [user]);
 
+  // sorting semesters
   const sortedSemesters = useMemo(() => {
     if (!Array.isArray(semesters)) return [];
     return [...semesters].sort((a, b) => {
@@ -154,15 +158,18 @@ const DashboardStudent = () => {
     }
   };
 
+  // placeholder
   const handleModuleEdit = (semester) => {
     setSelectedSemester(semester);
     window.alert('Module editing from this dashboard is coming soon.');
   };
 
+  // placeholder
   const handleModuleDelete = () => {
     window.alert('Module removal from a semester is coming soon.');
   };
 
+  // placeholder
   const handleSearchChange = (semesterId, value) => {
     setSearchTerms((prev) => ({ ...prev, [semesterId]: value }));
   };

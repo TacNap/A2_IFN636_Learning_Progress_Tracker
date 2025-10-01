@@ -1,12 +1,14 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useAuth } from '../context/AuthContext';
 import axiosInstance from '../axiosConfig';
+import './SemesterList.css';
 
 const SemesterList = ({ semesters, setSemesters, setEditingSemester }) => {
   const { user } = useAuth();
   const [modulesById, setModulesById] = useState({});
   const [modulesLoading, setModulesLoading] = useState(true);
   const [moduleError, setModuleError] = useState('');
+  const [searchTerms, setSearchTerms] = useState({});
 
   useEffect(() => {
     if (!user?.token) {
@@ -23,13 +25,16 @@ const SemesterList = ({ semesters, setSemesters, setEditingSemester }) => {
         const response = await axiosInstance.get('/api/modules', {
           headers: { Authorization: `Bearer ${user.token}` },
         });
+
         if (!isActive) return;
+
         const map = (response.data || []).reduce((acc, module) => {
           if (module?._id) {
             acc[module._id] = module;
           }
           return acc;
         }, {});
+
         setModulesById(map);
         setModuleError('');
       } catch (error) {
@@ -73,105 +78,239 @@ const SemesterList = ({ semesters, setSemesters, setEditingSemester }) => {
     return modulesById[moduleRef] || null;
   };
 
-  const handleDelete = async (semesterId) => {
+  const handleDeleteSemester = async (semesterId) => {
     if (!semesterId) return;
 
     try {
       await axiosInstance.delete(`/api/semesters/${semesterId}`, {
         headers: { Authorization: `Bearer ${user.token}` },
       });
-      setSemesters(semesters.filter((semester) => semester._id !== semesterId));
+      setSemesters((prev) => prev.filter((semester) => semester._id !== semesterId));
     } catch (error) {
       console.error('Failed to delete semester:', error);
-      alert('Failed to delete semester. Please try again.');
+      window.alert('Failed to delete semester. Please try again.');
     }
   };
 
-  const canEdit = typeof setEditingSemester === 'function';
+  const handleSearchChange = (semesterId, value) => {
+    setSearchTerms((prev) => ({ ...prev, [semesterId]: value }));
+  };
 
-  if (!semesters || semesters.length === 0) {
+  const matchesSearch = (module, rawTerm) => {
+    if (!rawTerm) return true;
+
+    const term = rawTerm.trim().toLowerCase();
+    if (!term) return true;
+
+    const searchTarget = [
+      module?.title,
+      module?.description,
+      module?.code,
+      module?.courseCode,
+      module?.courseId,
+      Array.isArray(module?.tags) ? module.tags.join(' ') : '',
+    ]
+      .filter(Boolean)
+      .join(' ')
+      .toLowerCase();
+
+    return searchTarget.includes(term);
+  };
+
+  const handleModuleEdit = () => {
+    window.alert('Module editing from this list is coming soon.');
+  };
+
+  const handleModuleDelete = () => {
+    window.alert('Module removal from a semester is coming soon.');
+  };
+
+  const canEditSemester = typeof setEditingSemester === 'function';
+
+  if (!sortedSemesters.length) {
     return (
-      <div className="bg-white p-6 rounded shadow text-center text-gray-500">
-        <p>No semesters created yet. Use the form above to add your first semester.</p>
+      <div className="semester-list__empty">
+        No semesters created yet. Use the form above to add your first semester.
       </div>
     );
   }
 
   return (
-    <div className="space-y-4">
+    <div className="semester-list">
       {moduleError && (
-        <div className="bg-yellow-100 border border-yellow-300 text-yellow-800 px-4 py-3 rounded">
+        <div className="semester-list__alert semester-list__alert--warning" role="alert">
           {moduleError}
         </div>
       )}
 
       {sortedSemesters.map((semester) => {
-        const moduleEntries = (semester.modules || []).map((moduleRef) =>
-          normaliseModuleEntry(moduleRef)
-        );
+        const semesterId = semester._id;
+        const searchTerm = searchTerms[semesterId] || '';
+        const moduleEntries = (semester.modules || []).map((moduleRef) => normaliseModuleEntry(moduleRef));
+        const filteredModules = moduleEntries.filter((module) => matchesSearch(module, searchTerm));
+        const hasModules = moduleEntries.length > 0;
+        const hasSearchResults = filteredModules.length > 0;
 
         return (
-          <div key={semester._id} className="bg-white p-6 rounded shadow">
-            <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-4">
-              <div>
-                <h2 className="text-xl font-semibold text-gray-800">
-                  Semester {semester.number || 'N/A'}
-                </h2>
-                <p className="text-sm text-gray-500">
+          <section key={semesterId} className="semester-list__card">
+            <div className="semester-list__header">
+              <div className="semester-list__title">
+                <h2>Semester {semester.number || 'N/A'}</h2>
+                <p className="semester-list__subtitle">
                   {formatDate(semester.startDate)} - {formatDate(semester.endDate)}
                 </p>
               </div>
 
-              <div className="flex gap-2">
-                {canEdit && (
+              <div className="semester-list__controls">
+                <label className="semester-list__search" htmlFor={`semester-search-${semesterId}`}>
+                  <svg
+                    aria-hidden="true"
+                    focusable="false"
+                    viewBox="0 0 16 16"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="M11.3333 6.66667C11.3333 9.244 9.244 11.3333 6.66667 11.3333C4.08934 11.3333 2 9.244 2 6.66667C2 4.08934 4.08934 2 6.66667 2C9.244 2 11.3333 4.08934 11.3333 6.66667Z"
+                      stroke="currentColor"
+                      strokeWidth="1.2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                    <path
+                      d="M14 14L10.5 10.5"
+                      stroke="currentColor"
+                      strokeWidth="1.2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                  </svg>
+
+                  <input
+                    id={`semester-search-${semesterId}`}
+                    type="search"
+                    value={searchTerm}
+                    placeholder="Search..."
+                    onChange={(event) => handleSearchChange(semesterId, event.target.value)}
+                    aria-label={`Search modules in Semester ${semester.number || ''}`}
+                  />
+                </label>
+
+                <div className="semester-list__actions">
+                  {canEditSemester && (
+                    <button
+                      type="button"
+                      className="semester-list__edit-button"
+                      onClick={() => setEditingSemester(semester)}
+                    >
+                      Edit Semester
+                    </button>
+                  )}
                   <button
                     type="button"
-                    onClick={() => setEditingSemester(semester)}
-                    className="bg-yellow-500 text-white px-4 py-2 rounded hover:bg-yellow-600"
+                    className="semester-list__delete-button"
+                    onClick={() => handleDeleteSemester(semesterId)}
                   >
-                    Edit
+                    Delete Semester
                   </button>
-                )}
-                <button
-                  type="button"
-                  onClick={() => handleDelete(semester._id)}
-                  className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600"
-                >
-                  Delete
-                </button>
+                </div>
               </div>
             </div>
 
-            <div className="border-t border-gray-200 pt-4">
-              <h3 className="text-sm font-semibold text-gray-700 mb-2">Modules</h3>
+            <div
+              className="semester-list__table"
+              role="table"
+              aria-label={`Modules for Semester ${semester.number || ''}`}
+            >
+              <div className="semester-list__table-header" role="row">
+                <span role="columnheader">Module Name</span>
+                <span role="columnheader">Description</span>
+                <span role="columnheader">Lessons Completed</span>
+                <span role="columnheader">Actions</span>
+              </div>
+
               {modulesLoading ? (
-                <p className="text-sm text-gray-500">Loading modules...</p>
-              ) : moduleEntries.length === 0 ? (
-                <p className="text-sm text-gray-500">No modules linked to this semester yet.</p>
-              ) : (
-                <div className="flex flex-wrap gap-3">
-                  {moduleEntries.map((module, index) => (
-                    <div
-                      key={module?._id || index}
-                      className="px-4 py-3 bg-blue-50 border border-blue-100 rounded-lg min-w-[180px]"
-                    >
-                      <p className="text-sm font-semibold text-blue-900">
-                        {module?.title || 'Module unavailable'}
-                      </p>
-                      <p className="text-xs text-blue-700 mt-1">
-                        Lessons: {(module?.completedLessons ?? 0)} / {(module?.totalLessons ?? 0)}
-                      </p>
-                      {module?.deadline && (
-                        <p className="text-xs text-blue-500 mt-1">
-                          Deadline: {formatDate(module.deadline)}
-                        </p>
-                      )}
-                    </div>
-                  ))}
+                <div className="semester-list__row semester-list__row--empty" role="row">
+                  <span className="semester-list__message" role="cell">
+                    Loading modules...
+                  </span>
                 </div>
+              ) : !hasModules ? (
+                <div className="semester-list__row semester-list__row--empty" role="row">
+                  <span className="semester-list__message" role="cell">
+                    No modules linked to this semester yet.
+                  </span>
+                </div>
+              ) : !hasSearchResults ? (
+                <div className="semester-list__row semester-list__row--empty" role="row">
+                  <span className="semester-list__message" role="cell">
+                    No modules match your search.
+                  </span>
+                </div>
+              ) : (
+                filteredModules.map((module, index) => {
+                  const key = module?._id || `${semesterId}-module-${index}`;
+                  const title = module?.title || 'Module unavailable';
+                  const secondary =
+                    module?.code ||
+                    module?.courseCode ||
+                    module?.courseId ||
+                    module?.shortCode ||
+                    '';
+                  const description = module?.description || 'No description provided.';
+                  const totalLessonsRaw = Number(module?.totalLessons);
+                  const totalLessons = Number.isNaN(totalLessonsRaw) ? 0 : totalLessonsRaw;
+                  const completedLessonsRaw = Number(module?.completedLessons);
+                  const completedLessons = Number.isNaN(completedLessonsRaw) ? 0 : completedLessonsRaw;
+                  const lessonsLabel = `${completedLessons} of ${totalLessons}`;
+
+                  return (
+                    <div key={key} className="semester-list__row" role="row">
+                      <div className="semester-list__module" role="cell">
+                        <span className="semester-list__module-title">{title}</span>
+                        {secondary && (
+                          <span className="semester-list__module-subtitle">{secondary}</span>
+                        )}
+                      </div>
+                      <span className="semester-list__description" role="cell">
+                        {description}
+                      </span>
+                      <span className="semester-list__lessons" role="cell">
+                        {lessonsLabel}
+                      </span>
+                      <div className="semester-list__actions-cell" role="cell">
+                        <button
+                          type="button"
+                          className="semester-list__row-button"
+                          onClick={handleModuleEdit}
+                        >
+                          Edit
+                        </button>
+                        <button
+                          type="button"
+                          className="semester-list__row-button semester-list__row-button--danger"
+                          onClick={handleModuleDelete}
+                        >
+                          Delete
+                        </button>
+                      </div>
+                    </div>
+                  );
+                })
               )}
             </div>
-          </div>
+
+            <footer className="semester-list__footer">
+              <button type="button" className="semester-list__pagination-button" disabled>
+                <span aria-hidden="true">&lt;</span>
+                Previous
+              </button>
+              <span className="semester-list__pagination-info">Page 1 of 1</span>
+              <button type="button" className="semester-list__pagination-button" disabled>
+                Next
+                <span aria-hidden="true">&gt;</span>
+              </button>
+            </footer>
+          </section>
         );
       })}
     </div>
