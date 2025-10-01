@@ -4,7 +4,8 @@ const mongoose = require('mongoose');
 
 const Module = require('../models/Module');
 const Certificate = require('../models/Certificate');
-const User = require('../models/User');
+const userRepository = require('../repositories/UserRepository');
+const Student = require('../domain/Student');
 const moduleOperation = require('../operations/moduleOperation');
 
 describe('ModuleOperation', () => {
@@ -171,7 +172,9 @@ describe('ModuleOperation', () => {
       existing.save.resolves(saved);
 
       sinon.stub(Module, 'findById').resolves(existing);
-      sinon.stub(User, 'findById').resolves({ _id: userId, name: 'Alice' });
+      sinon.stub(userRepository, 'findById').resolves(
+        new Student({ id: userId.toString(), name: 'Alice', email: 'alice@example.com' })
+      );
       sinon.stub(Certificate, 'findOne').resolves(null);
       const certCreate = sinon.stub(Certificate, 'create').resolves({});
 
@@ -180,7 +183,13 @@ describe('ModuleOperation', () => {
       expect(result.certificateEarned).to.equal(true);
       expect(certCreate.calledOnce).to.be.true;
       const args = certCreate.getCall(0).args[0];
-      expect(args).to.include({ userId, moduleId: id, moduleName: 'Module A', userName: 'Alice', totalLessons: 3 });
+      expect(args).to.include({
+        userId: userId.toString(),
+        moduleId: id,
+        moduleName: 'Module A',
+        userName: 'Alice',
+        totalLessons: 3,
+      });
     });
 
     it('does not create duplicate certificate', async () => {
@@ -198,7 +207,9 @@ describe('ModuleOperation', () => {
       existing.save.resolves(saved);
 
       sinon.stub(Module, 'findById').resolves(existing);
-      sinon.stub(User, 'findById').resolves({ _id: userId, name: 'Alice' });
+      sinon.stub(userRepository, 'findById').resolves(
+        new Student({ id: userId.toString(), name: 'Alice', email: 'alice@example.com' })
+      );
       sinon.stub(Certificate, 'findOne').resolves({ _id: new mongoose.Types.ObjectId() });
       const certCreate = sinon.stub(Certificate, 'create').resolves({});
 
@@ -208,3 +219,4 @@ describe('ModuleOperation', () => {
     });
   });
 });
+
