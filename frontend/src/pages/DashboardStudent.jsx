@@ -3,14 +3,14 @@ import { Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import axiosInstance from '../axiosConfig';
 import SemesterList from '../components/SemesterList';
+import NavigationPanel from '../components/NavigationPanel';
 import './DashboardStudent.css';
 
 const navItems = [
-  { id: 'dashboard', label: 'Dashboard', icon: 'DB' },
-  { id: 'module', label: 'Module', icon: 'MD', active: true },
-  { id: 'assignment', label: 'Assignment', icon: 'AS' },
-  { id: 'certificate', label: 'Certificate', icon: 'CF' },
-  { id: 'student-learning', label: 'Student Learning', icon: 'SL' },
+  { id: 'dashboard', label: 'Dashboard', icon: 'DB', to: '/student', active: true },
+  { id: 'module', label: 'Module', icon: 'MD', to: '/modules' },
+  { id: 'assignment', label: 'Assignment', icon: 'AS', to: '/assignments' },
+  { id: 'certificate', label: 'Certificate', icon: 'CF', to: '/certificates' },
 ];
 
 const DashboardStudent = () => {
@@ -32,6 +32,10 @@ const DashboardStudent = () => {
     }
     return 'KK';
   }, [user]);
+
+  const displayName = user?.name || 'Ka Ki Yeung';
+  const roleLabel = user?.profileType === 'student' ? 'Student' : 'Educator';
+  const welcomeMessage = user?.name ? `Welcome back, ${user.name}` : 'Welcome back!';
 
   // get semesters
   useEffect(() => {
@@ -89,44 +93,21 @@ const DashboardStudent = () => {
 
   return (
     <div className="student-dashboard">
-      <aside className="student-dashboard__sidebar" aria-label="Student navigation">
-        <div className="sidebar-header">
-          <h2>Navigation</h2>
-          <p>Welcome back!</p>
-        </div>
-
-        <nav className="sidebar-nav">
-          {navItems.map((item) => (
-            <button
-              key={item.id}
-              type="button"
-              className={`sidebar-nav__item${item.active ? ' sidebar-nav__item--active' : ''}`}
-            >
-              <span className="sidebar-nav__icon" aria-hidden="true">
-                {item.icon}
-              </span>
-              <span>{item.label}</span>
-            </button>
-          ))}
-        </nav>
-
-        <div className="sidebar-footer">
-          <div className="sidebar-footer__avatar" aria-hidden="true">
-            {initials}
-          </div>
-          <div className="sidebar-footer__details">
-            <p className="sidebar-footer__name">{user?.name || 'Ka Ki Yeung'}</p>
-            <p className="sidebar-footer__role">{user?.profileType === 'student' ? 'Student' : 'Educator'}</p>
-          </div>
-        </div>
-      </aside>
+      <NavigationPanel
+        title="Navigation"
+        welcomeMessage={welcomeMessage}
+        initials={initials}
+        userName={displayName}
+        userRole={roleLabel}
+        items={navItems}
+      />
 
       <main className="student-dashboard__content">
         <header className="content-header">
           <div className="breadcrumb" aria-label="Breadcrumb">
             <span>Home</span>
             <span aria-hidden="true">></span>
-            <span className="breadcrumb-current">Semesters</span>
+            <span className="breadcrumb-current">Module</span>
           </div>
         </header>
 

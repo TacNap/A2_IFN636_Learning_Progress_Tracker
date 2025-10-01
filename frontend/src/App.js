@@ -67,6 +67,7 @@ function App() {
             </StudentRoute>
           )}
         />
+        
       </Routes>
     </Router>
   );
