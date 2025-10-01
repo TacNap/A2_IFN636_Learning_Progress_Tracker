@@ -155,7 +155,7 @@ const SemesterList = ({ semesters, setSemesters, setEditingSemester }) => {
           <section key={semesterId} className="semester-list__card">
             <div className="semester-list__header">
               <div className="semester-list__title">
-                <h2>Semester {semester.number || 'N/A'}</h2>
+                <h3>Semester {semester.number || 'N/A'}</h3>
                 <p className="semester-list__subtitle">
                   {formatDate(semester.startDate)} - {formatDate(semester.endDate)}
                 </p>

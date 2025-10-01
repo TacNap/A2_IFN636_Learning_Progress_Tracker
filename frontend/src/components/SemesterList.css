@@ -143,9 +143,8 @@
   background-color: #f9fafb;
   border-bottom: 1px solid #e9eaeb;
   font-size: 12px;
-  font-weight: 600;
+  font-weight: 300;
   letter-spacing: 0.05em;
-  text-transform: uppercase;
   color: #6f7485;
 }
 
@@ -167,7 +166,7 @@
 }
 
 .semester-list__module-title {
-  font-weight: 600;
+  font-weight: 300;
   color: #181d27;
 }
 
