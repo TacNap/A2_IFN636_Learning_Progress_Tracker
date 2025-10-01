@@ -13,7 +13,7 @@ const createInitialState = () => ({
 
 const Profile = () => {
   const { user } = useAuth();
-  const [formData, setFormData] = useState(() => createInitialState());
+  const [formData, setFormData] = useState(createInitialState);
   const [isFetching, setIsFetching] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
 
@@ -37,6 +37,7 @@ const Profile = () => {
       { id: 'module', label: 'Module', icon: 'MD', to: '/modules' },
       { id: 'assignment', label: 'Assignment', icon: 'AS', to: '/assignments' },
       { id: 'certificate', label: 'Certificate', icon: 'CF', to: '/certificates' },
+      { id: 'student-learning', label: 'Student Learning', icon: 'SL', to: '/student-learning' },
       { id: 'profile', label: 'Profile', icon: 'PR', to: '/profile', active: true },
     ],
     [user?.profileType]
@@ -111,7 +112,7 @@ const Profile = () => {
         title="Navigation"
         welcomeMessage="Welcome back!"
         initials={initials}
-        userName={user?.name}
+        userName={user?.name || 'Ka Ki Yeung'}
         userRole={roleLabel}
         items={navItems}
       />
