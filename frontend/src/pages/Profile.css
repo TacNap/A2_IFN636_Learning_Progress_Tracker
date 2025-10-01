@@ -5,54 +5,6 @@
   font-family: 'Inter', 'Segoe UI', Arial, sans-serif;
 }
 
-.profile-navigation.student-dashboard__sidebar {
-  background: linear-gradient(180deg, #e6775f 0%, #e0654d 100%);
-  border-radius: 0;
-  width: 264px;
-}
-
-.profile-navigation .sidebar-header h2 {
-  color: #ffffff;
-}
-
-.profile-navigation .sidebar-header p {
-  color: rgba(255, 255, 255, 0.85);
-}
-
-.profile-navigation .sidebar-nav {
-  gap: 12px;
-}
-
-.profile-navigation .sidebar-nav__item {
-  background-color: rgba(255, 255, 255, 0.7);
-  color: #1f2933;
-  border-radius: 16px;
-  font-weight: 600;
-}
-
-.profile-navigation .sidebar-nav__item:hover,
-.profile-navigation .sidebar-nav__item--active {
-  background-color: rgba(255, 255, 255, 0.9);
-}
-
-.profile-navigation .sidebar-nav__icon {
-  background-color: rgba(255, 255, 255, 0.5);
-  color: #cc5c44;
-}
-
-.profile-navigation .sidebar-footer {
-  background-color: rgba(255, 255, 255, 0.2);
-  color: #ffffff;
-}
-
-.profile-navigation .sidebar-footer__name {
-  color: #ffffff;
-}
-
-.profile-navigation .sidebar-footer__role {
-  color: rgba(255, 255, 255, 0.9);
-}
-
 .profile-main {
   flex: 1;
   padding: 48px 64px;
@@ -157,11 +109,6 @@
 @media (max-width: 960px) {
   .profile-page {
     flex-direction: column;
-  }
-
-  .profile-navigation.student-dashboard__sidebar {
-    width: 100%;
-    border-radius: 0 0 24px 24px;
   }
 
   .profile-main {

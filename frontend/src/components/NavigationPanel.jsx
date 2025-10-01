@@ -1,4 +1,5 @@
 import { Link, useLocation, useNavigate } from 'react-router-dom';
+import './NavigationPanel.css';
 
 const NavigationPanel = ({
   title = 'Navigation',

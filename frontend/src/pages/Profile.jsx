@@ -37,7 +37,6 @@ const Profile = () => {
       { id: 'module', label: 'Module', icon: 'MD', to: '/modules' },
       { id: 'assignment', label: 'Assignment', icon: 'AS', to: '/assignments' },
       { id: 'certificate', label: 'Certificate', icon: 'CF', to: '/certificates' },
-      { id: 'profile', label: 'Profile', icon: 'PR', to: '/profile', active: true },
     ],
     [user?.profileType]
   );
