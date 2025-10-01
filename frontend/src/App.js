@@ -5,6 +5,7 @@ import Login from './pages/Login';
 import Register from './pages/Register';
 import Profile from './pages/Profile';
 import Module from './pages/Module';
+import Testing from './pages/Testing';
 import Assignment from './pages/Assignment';
 import Certificates from './pages/Certificates';
 import DashboardEducator from './pages/DashboardEducator';
@@ -41,8 +42,9 @@ const StudentRoute = ({ children }) => {
 function App() {
   return (
     <Router>
-      <Navbar />
+      {/* <Navbar /> */}
       <Routes>
+        <Route path="/testing" element={<Testing />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/profile" element={<Profile />} />

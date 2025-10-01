@@ -18,6 +18,7 @@ const Navbar = () => {
       <div>
         {user ? (
           <>
+            <Link to="/testing" className="mr-4">Testing</Link>
             <Link to="/modules" className="mr-4">Modules</Link>
             <Link to="/assignments" className="mr-4">Assignments</Link>
             <Link to="/certificates" className="mr-4">Certificates</Link>
