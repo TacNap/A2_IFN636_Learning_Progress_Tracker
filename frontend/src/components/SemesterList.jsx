@@ -60,9 +60,9 @@ const SemesterList = ({ semesters, setSemesters, setEditingSemester }) => {
   }, [semesters]);
 
   const formatDate = (value) => {
-    if (!value) return '—';
+    if (!value) return 'N/A';
     const date = new Date(value);
-    if (Number.isNaN(date.getTime())) return '—';
+    if (Number.isNaN(date.getTime())) return 'N/A';
     return date.toLocaleDateString();
   };
 
@@ -86,6 +86,8 @@ const SemesterList = ({ semesters, setSemesters, setEditingSemester }) => {
       alert('Failed to delete semester. Please try again.');
     }
   };
+
+  const canEdit = typeof setEditingSemester === 'function';
 
   if (!semesters || semesters.length === 0) {
     return (
@@ -113,21 +115,23 @@ const SemesterList = ({ semesters, setSemesters, setEditingSemester }) => {
             <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-4">
               <div>
                 <h2 className="text-xl font-semibold text-gray-800">
-                  Semester {semester.number || '—'}
+                  Semester {semester.number || 'N/A'}
                 </h2>
                 <p className="text-sm text-gray-500">
-                  {formatDate(semester.startDate)} – {formatDate(semester.endDate)}
+                  {formatDate(semester.startDate)} - {formatDate(semester.endDate)}
                 </p>
               </div>
 
               <div className="flex gap-2">
-                <button
-                  type="button"
-                  onClick={() => setEditingSemester(semester)}
-                  className="bg-yellow-500 text-white px-4 py-2 rounded hover:bg-yellow-600"
-                >
-                  Edit
-                </button>
+                {canEdit && (
+                  <button
+                    type="button"
+                    onClick={() => setEditingSemester(semester)}
+                    className="bg-yellow-500 text-white px-4 py-2 rounded hover:bg-yellow-600"
+                  >
+                    Edit
+                  </button>
+                )}
                 <button
                   type="button"
                   onClick={() => handleDelete(semester._id)}

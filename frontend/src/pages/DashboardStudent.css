@@ -155,6 +155,12 @@
   gap: 16px;
 }
 
+.semester-card__title {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
 .semester-card__header h2 {
   margin: 0;
   font-size: 20px;
@@ -162,11 +168,23 @@
   color: #2b2b35;
 }
 
+.semester-card__meta {
+  margin: 0;
+  font-size: 14px;
+  color: #7b7c8d;
+}
+
 .semester-card__actions {
   display: flex;
-  gap: 16px;
   flex-wrap: wrap;
+  gap: 16px;
   align-items: center;
+  justify-content: space-between;
+}
+
+.semester-card__actions-buttons {
+  display: flex;
+  gap: 12px;
 }
 
 .search-field {
@@ -190,12 +208,16 @@
   color: #2f2f38;
 }
 
-.search-icon {
-  margin-right: 8px;
-  font-size: 16px;
+.search-field input::placeholder {
+  color: #a1a1b5;
 }
 
-.add-module-button {
+.search-icon {
+  margin-right: 8px;
+  display: block;
+}
+
+.edit-semester-button {
   border: none;
   background-color: #19a974;
   color: #ffffff;
@@ -206,8 +228,24 @@
   transition: background-color 0.2s ease;
 }
 
-.add-module-button:hover {
+.edit-semester-button:hover {
   background-color: #149061;
+}
+
+.delete-semester-button {
+  border: 1px solid #e2e3ee;
+  background-color: #ffffff;
+  color: #5b5c6c;
+  padding: 12px 18px;
+  border-radius: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.delete-semester-button:hover {
+  background-color: #f6f7fb;
+  color: #e04f5f;
 }
 
 .module-table {
@@ -221,7 +259,7 @@
 .module-table__header,
 .module-table__row {
   display: grid;
-  grid-template-columns: 2.5fr 1fr 1fr 1fr 1fr;
+  grid-template-columns: 2fr 1.6fr 1fr 1fr;
   align-items: center;
   padding: 16px 18px;
   gap: 12px;
@@ -241,47 +279,94 @@
   background-color: #fcfdff;
 }
 
-.module-name {
+.module-table__row--empty {
+  grid-template-columns: 1fr;
+  justify-items: center;
+  color: #83839a;
+  font-style: italic;
+}
+
+.module-table__empty-message {
   display: block;
+}
+
+.module-name-cell {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.module-name {
   font-weight: 600;
-  margin-bottom: 4px;
+  color: #2c2c34;
 }
 
-.module-code {
-  font-size: 12px;
-  color: #8f90a6;
+.module-description {
+  color: #64647a;
+  line-height: 1.4;
 }
 
-.column-actions {
+.module-lessons {
+  color: #2f7a5e;
+  font-weight: 600;
+}
+
+.module-row-actions {
   display: inline-flex;
-  align-items: center;
   gap: 10px;
   justify-content: flex-end;
 }
 
-.icon-button {
-  border: none;
-  background: #f0f1f7;
-  width: 36px;
-  height: 36px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 16px;
+.row-action-button {
+  border: 1px solid #e2e3ee;
+  background-color: #f6f7fb;
+  color: #4c4c5d;
+  padding: 8px 14px;
+  border-radius: 10px;
+  font-size: 13px;
+  font-weight: 600;
   cursor: pointer;
-  transition: background-color 0.2s ease;
+  transition: background-color 0.2s ease, color 0.2s ease;
 }
 
-.icon-button:hover {
-  background-color: #e4e6f2;
+.row-action-button:hover {
+  background-color: #e9eaf4;
+}
+
+.row-action-button--danger {
+  border-color: #f2c8ce;
+  background-color: #fff2f4;
+  color: #ce4b5a;
+}
+
+.row-action-button--danger:hover {
+  background-color: #ffe6ea;
+  color: #b33b49;
 }
 
 .semester-card__footer {
   display: flex;
-  justify-content: flex-end;
+  justify-content: center;
+  align-items: center;
+  gap: 18px;
+  padding-top: 18px;
+  border-top: 1px solid #f0f1f7;
   font-size: 13px;
   color: #8a8a94;
+}
+
+.pagination-button {
+  border: 1px solid #e2e3ee;
+  background-color: #ffffff;
+  color: #5b5c6c;
+  padding: 8px 18px;
+  border-radius: 10px;
+  font-weight: 600;
+  cursor: not-allowed;
+}
+
+.pagination-info {
+  font-weight: 500;
 }
 
 @media (max-width: 1024px) {
@@ -311,15 +396,26 @@
 }
 
 @media (max-width: 768px) {
-  .module-table__header,
-  .module-table__row {
-    grid-template-columns: 2fr 1fr 1fr;
+  .student-dashboard__content {
+    padding: 24px;
   }
 
-  .module-table__header span:nth-child(3),
-  .module-table__row span:nth-child(3),
-  .module-table__header span:nth-child(4),
-  .module-table__row span:nth-child(4) {
+  .module-table__header,
+  .module-table__row {
+    grid-template-columns: 1.8fr 1fr;
+  }
+
+  .module-table__header span:nth-child(2),
+  .module-table__header span:nth-child(3) {
     display: none;
+  }
+
+  .module-table__row .module-description,
+  .module-table__row .module-lessons {
+    display: none;
+  }
+
+  .module-row-actions {
+    justify-content: flex-start;
   }
 }
