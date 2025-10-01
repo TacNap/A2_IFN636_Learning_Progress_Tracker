@@ -1,0 +1,1152 @@
+{
+	"info": {
+		"_postman_id": "689a3377-0f04-4d6a-aeae-852de1c045b2",
+		"name": "INF636 Assignment 2",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "48093386",
+		"_collection_link": "https://n12192945-739176.postman.co/workspace/Sanjika-Perera's-Workspace~b16c0daf-53a9-4fad-8c9d-5674165b4145/collection/48093386-689a3377-0f04-4d6a-aeae-852de1c045b2?action=share&source=collection_link&creator=48093386"
+	},
+	"item": [
+		{
+			"name": "Register educator account",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"let response = pm.response.json();\r",
+							"\r",
+							"pm.test(\"Status code is 201 (Created)\", function () {\r",
+							"pm.response.to.have.status(201);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Content-Type is present\", function () {\r",
+							"pm.response.to.have.header(\"Content-Type\");\r",
+							"});\r",
+							"\r",
+							"pm.test(\"User registered as educator\", function () {\r",
+							"    pm.expect(response).to.have.property('token');\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"name\": \"Test Educator\",\r\n    \"email\": \"educator@test.com\",\r\n    \"password\": \"TestUser01#\",\r\n    \"profileType\": \"educator\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseURL}}/api/auth/register",
+					"host": [
+						"{{baseURL}}"
+					],
+					"path": [
+						"api",
+						"auth",
+						"register"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Register student account",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"let response = pm.response.json();\r",
+							"\r",
+							"pm.test(\"Status code is 201 (Created)\", function () {\r",
+							"pm.response.to.have.status(201);\r",
+							"});\r",
+							"pm.test(\"Content-Type is present\", function () {\r",
+							"pm.response.to.have.header(\"Content-Type\");\r",
+							"});\r",
+							"\r",
+							"pm.test(\"User registered as student\", function () {\r",
+							"    pm.expect(response).to.have.property('token');\r",
+							"});\r",
+							"\r",
+							"\r",
+							"if (response.token) {\r",
+							"pm.environment.set(\"jwt_token\", response.token);\r",
+							"console.log(\"JWT Token saved from registration response\");\r",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"name\": \"Test Student\",\r\n    \"email\": \"student@test.com\",\r\n    \"password\": \"TestUser01#\",\r\n    \"profileType\": \"student\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseURL}}/api/auth/register",
+					"host": [
+						"{{baseURL}}"
+					],
+					"path": [
+						"api",
+						"auth",
+						"register"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Login account",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"// Parse the response body\r",
+							"let response = pm.response.json();\r",
+							"// Basic test: status code should be 200\r",
+							"pm.test(\"Status code is 200\", function () {\r",
+							" pm.response.to.have.status(200);\r",
+							"});\r",
+							"pm.test(\"Content-Type is present\", function () {\r",
+							" pm.response.to.have.header(\"Content-Type\");\r",
+							"});\r",
+							"pm.test(\"Response time is less than 200ms\", function\r",
+							"() {\r",
+							"\r",
+							"pm.expect(pm.response.responseTime).to.be.below(200);\r",
+							"});\r",
+							"// Save JWT token to environment variable (adjust key as needed)\r",
+							"if (response.token) {\r",
+							" pm.environment.set(\"jwt_token\", response.token);\r",
+							" console.log(\"JWT Token saved to environment\");\r",
+							"} else {\r",
+							" console.warn(\"No token found in response!\");\r",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n\"email\": \"student@test.com\",\r\n\"password\": \"TestUser01#\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseURL}}/api/auth/login",
+					"host": [
+						"{{baseURL}}"
+					],
+					"path": [
+						"api",
+						"auth",
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Profile Info",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.expect(pm.response.code).to.equal(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response time is less than 200ms\", function () {\r",
+							"    pm.expect(pm.response.responseTime).to.be.below(200);\r",
+							"});\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {}
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{jwt_token}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseURL}}/api/auth/profile",
+					"host": [
+						"{{baseURL}}"
+					],
+					"path": [
+						"api",
+						"auth",
+						"profile"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update Profile Info",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.expect(pm.response.code).to.equal(200);\r",
+							"});\r",
+							"\r",
+							"let response = pm.response.json();\r",
+							"\r",
+							"pm.test(\"Profile updated\", function () {\r",
+							"    pm.expect(response.university).to.equal(\"QUT\");\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {}
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "Authorization",
+						"value": "Bearer {{jwt_token}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"name\": \"Test Student\",\r\n  \"email\": \"student@test.com\",\r\n  \"university\": \"QUT\",\r\n  \"address\": \"QUT\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseURL}}/api/auth/profile",
+					"host": [
+						"{{baseURL}}"
+					],
+					"path": [
+						"api",
+						"auth",
+						"profile"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get all modules",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.expect(pm.response.code).to.equal(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response time is less than 200ms\", function () {\r",
+							"    pm.expect(pm.response.responseTime).to.be.below(200);\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {}
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "Authorization",
+						"value": "Bearer {{jwt_token}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "{{baseURL}}/api/modules",
+					"host": [
+						"{{baseURL}}"
+					],
+					"path": [
+						"api",
+						"modules"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create modules",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 201\", function () {\r",
+							"    pm.expect(pm.response.code).to.equal(201);\r",
+							"});\r",
+							"\r",
+							"const response = pm.response.json();\r",
+							"\r",
+							"pm.test(\"Module created successfully\", function () {\r",
+							"    pm.expect(response.title).to.equal(\"PMTest Module\")\r",
+							"});\r",
+							"\r",
+							"if (response._id) {\r",
+							"    pm.environment.set(\"module_id\", response._id);\r",
+							"    console.log(\"Module ID saved:\", response._id);\r",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "Authorization",
+						"value": "Bearer {{jwt_token}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"title\": \"PMTest Module\",\r\n    \"description\": \"Test Module description\",\r\n    \"deadline\": \"2025-09-19\",\r\n    \"totalLessons\": 15\r\n}"
+				},
+				"url": {
+					"raw": "{{baseURL}}/api/modules",
+					"host": [
+						"{{baseURL}}"
+					],
+					"path": [
+						"api",
+						"modules"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update module",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"let response = pm.response.json();\r",
+							"\r",
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response time is acceptable\", function () {\r",
+							"    pm.expect(pm.response.responseTime).to.be.below(1000);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Title matches 'Test Module Changed'\", function () {\r",
+							"    pm.expect(response.title).to.equal(\"PMTest Module Changed\");\r",
+							"});\r",
+							"\r",
+							"if (response._id) {\r",
+							"    pm.environment.set(\"module_id\", response._id);\r",
+							"    console.log(\"Module ID saved:\", response._id);\r",
+							"}\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {}
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "Authorization",
+						"value": "Bearer {{jwt_token}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"title\": \"PMTest Module Changed\",\r\n    \"description\": \"Test Module description\",\r\n    \"deadline\": \"2025-09-19\",\r\n    \"totalLessons\": 15\r\n}"
+				},
+				"url": {
+					"raw": "{{baseURL}}/api/modules/{{module_id}}",
+					"host": [
+						"{{baseURL}}"
+					],
+					"path": [
+						"api",
+						"modules",
+						"{{module_id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Complete Module",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"let response = pm.response.json();\r",
+							"\r",
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response time is acceptable\", function () {\r",
+							"    pm.expect(pm.response.responseTime).to.be.below(1000);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Module Completed'\", function () {\r",
+							"    pm.expect(response.completedLessons).to.equal(15);\r",
+							"});\r",
+							"\r",
+							"if (response._id) {\r",
+							"    pm.environment.set(\"module_id\", response._id);\r",
+							"    console.log(\"Module ID saved:\", response._id);\r",
+							"}\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {}
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "Authorization",
+						"value": "Bearer {{jwt_token}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"completedLessons\": 15\r\n}"
+				},
+				"url": {
+					"raw": "{{baseURL}}/api/modules/{{module_id}}",
+					"host": [
+						"{{baseURL}}"
+					],
+					"path": [
+						"api",
+						"modules",
+						"{{module_id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get all certificates",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"const response = pm.response.json();\r",
+							"\r",
+							"pm.test(\"Response time is acceptable\", function () {\r",
+							"    pm.expect(pm.response.responseTime).to.be.below(1000);\r",
+							"});\r",
+							"\r",
+							"let id = response[0]._id;\r",
+							"pm.environment.set(\"certificate_id\", id);"
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{jwt_token}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{baseURL}}/api/certificates",
+					"host": [
+						"{{baseURL}}"
+					],
+					"path": [
+						"api",
+						"certificates"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete Certificates",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Certificate deleted successfully\", function () {\r",
+							"    let response = pm.response.json();\r",
+							"    pm.expect(response.message).to.equal(\"Certificate deleted successfully.\");\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response time is acceptable\", function () {\r",
+							"    pm.expect(pm.response.responseTime).to.be.below(1000);\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {}
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{jwt_token}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{baseURL}}/api/certificates/{{certificate_id}}",
+					"host": [
+						"{{baseURL}}"
+					],
+					"path": [
+						"api",
+						"certificates",
+						"{{certificate_id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete module",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Module deleted successfully\", function () {\r",
+							"    let response = pm.response.json();\r",
+							"    pm.expect(response.message).to.equal(\"Module deleted\");\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response time is acceptable\", function () {\r",
+							"    pm.expect(pm.response.responseTime).to.be.below(1000);\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {}
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{jwt_token}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{baseURL}}/api/modules/{{module_id}}",
+					"host": [
+						"{{baseURL}}"
+					],
+					"path": [
+						"api",
+						"modules",
+						"{{module_id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get all Semester",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response time is less than 200ms\", function () {  \r",
+							"    pm.expect(pm.response.responseTime).to.be.below(200);\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {}
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{jwt_token}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "{{baseURL}}/api/semesters",
+					"host": [
+						"{{baseURL}}"
+					],
+					"path": [
+						"api",
+						"semesters"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create Semester",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 201\", function () {\r",
+							"    pm.response.to.have.status(201);\r",
+							"});\r",
+							"\r",
+							"const response = pm.response.json();\r",
+							"\r",
+							"pm.test(\"Semester created successfully\", function () {\r",
+							"    pm.expect(response).to.have.property('_id');\r",
+							"});\r",
+							"\r",
+							"if (response._id) {\r",
+							"    pm.environment.set(\"semester_id\", response._id);\r",
+							"    console.log(\"Semester ID saved:\", response._id);\r",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{jwt_token}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"number\": \"04\",\r\n    \"startDate\": \"2024-02-01\",\r\n    \"endDate\": \"2024-06-30\",\r\n    \"modules\": []\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseURL}}/api/semesters",
+					"host": [
+						"{{baseURL}}"
+					],
+					"path": [
+						"api",
+						"semesters"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update Semester",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"const response = pm.response.json();\r",
+							"\r",
+							"pm.test(\"Updated modules have module_id\", function () {\r",
+							"    pm.expect(pm.response.json().modules).to.be.an('array').that.is.not.empty;\r",
+							"    pm.response.json().modules.forEach(module => {\r",
+							"        pm.expect(module).to.have.property('module_id');\r",
+							"    });\r",
+							"});\r",
+							"\r",
+							"if (response._id) {\r",
+							"    pm.environment.set(\"semester_id\", response._id);\r",
+							"    console.log(\"Semester ID saved:\", response._id);\r",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {}
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{jwt_token}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"number\": \"04\",\r\n    \"startDate\": \"2024-02-01\",\r\n    \"endDate\": \"2024-06-30\",\r\n    \"modules\": [\"{{module_id}}\"]\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseURL}}/api/semesters/{{semester_id}}",
+					"host": [
+						"{{baseURL}}"
+					],
+					"path": [
+						"api",
+						"semesters",
+						"{{semester_id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete Semester",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Semester deleted successfully\", function () {\r",
+							"    let response = pm.response.json();\r",
+							"    pm.expect(response.message).to.equal(\"Semester deleted\");\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {}
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{jwt_token}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{baseURL}}/api/semesters/{{semester_id}}",
+					"host": [
+						"{{baseURL}}"
+					],
+					"path": [
+						"api",
+						"semesters",
+						"{{semester_id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get all Assignments",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response time is acceptable\", function () {\r",
+							"    pm.expect(pm.response.responseTime).to.be.below(1000);\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{jwt_token}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{baseURL}}/api/assignments",
+					"host": [
+						"{{baseURL}}"
+					],
+					"path": [
+						"api",
+						"assignments"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create Assignments",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 201\", function () {\r",
+							"    pm.response.to.have.status(201);\r",
+							"});\r",
+							"\r",
+							"const response = pm.response.json();\r",
+							"\r",
+							"pm.test(\"Assignment created successfully\", function () {\r",
+							"    pm.expect(response.title).to.equal(\"Test Assignment\");\r",
+							"    \r",
+							"});\r",
+							"\r",
+							"if (response._id) {\r",
+							"    pm.environment.set(\"assignment_id\", response._id);\r",
+							"    console.log(\"Assignment ID saved:\", response._id);\r",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{jwt_token}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"title\": \"Test Assignment\",\r\n    \"description\": \"Test Assignment description\",\r\n    \"score\": 80\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseURL}}/api/assignments",
+					"host": [
+						"{{baseURL}}"
+					],
+					"path": [
+						"api",
+						"assignments"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update Assignment",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"let response = pm.response.json();\r",
+							"\r",
+							"pm.test(\"Assignment updated successfully\", function () {\r",
+							"    pm.expect(response.score).to.equal(85);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response time is acceptable\", function () {\r",
+							"    pm.expect(pm.response.responseTime).to.be.below(1000);\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {}
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{jwt_token}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"score\": 85\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseURL}}/api/assignments/{{assignment_id}}",
+					"host": [
+						"{{baseURL}}"
+					],
+					"path": [
+						"api",
+						"assignments",
+						"{{assignment_id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete Assignment",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Assignment deleted successfully\", function () {\r",
+							"    let response = pm.response.json();\r",
+							"    pm.expect(response.message).to.equal(\"Assignment deleted successfully\");\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response time is acceptable\", function () {\r",
+							"    pm.expect(pm.response.responseTime).to.be.below(1000);\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {}
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{jwt_token}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{baseURL}}/api/assignments/{{assignment_id}}",
+					"host": [
+						"{{baseURL}}"
+					],
+					"path": [
+						"api",
+						"assignments",
+						"{{assignment_id}}"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"requests": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"requests": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "baseURL",
+			"value": ""
+		}
+	]
+}
