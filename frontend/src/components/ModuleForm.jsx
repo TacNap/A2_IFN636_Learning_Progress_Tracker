@@ -1,16 +1,18 @@
-import { useState, useEffect } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useAuth } from '../context/AuthContext';
 import axiosInstance from '../axiosConfig';
+import './ModuleForm.css';
+
+const initialFormState = {
+  title: '',
+  description: '',
+  deadline: '',
+  totalLessons: '',
+};
 
 const ModuleForm = ({ modules, setModules, editingModule, setEditingModule }) => {
   const { user } = useAuth();
-  const [formData, setFormData] = useState({ 
-    title: '', 
-    description: '', 
-    deadline: '', 
-    totalLessons: '',
-    completedLessons: ''
-  });
+  const [formData, setFormData] = useState(initialFormState);
   const [error, setError] = useState('');
 
   useEffect(() => {
@@ -19,136 +21,179 @@ const ModuleForm = ({ modules, setModules, editingModule, setEditingModule }) =>
         title: editingModule.title || '',
         description: editingModule.description || '',
         deadline: editingModule.deadline ? editingModule.deadline.split('T')[0] : '',
-        totalLessons: editingModule.totalLessons?.toString() || '0',
-        completedLessons: editingModule.completedLessons?.toString() || '0'
+        totalLessons:
+          typeof editingModule.totalLessons === 'number'
+            ? String(editingModule.totalLessons)
+            : editingModule.totalLessons || '',
       });
     } else {
-      setFormData({ 
-        title: '', 
-        description: '', 
-        deadline: '', 
-        totalLessons: '',
-        completedLessons: '0'
-      });
+      setFormData(initialFormState);
     }
     setError('');
   }, [editingModule]);
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  const handleChange = (event) => {
+    const { name, value } = event.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const validateTotalLessons = (rawValue) => {
+    if (rawValue === '') {
+      return 0;
+    }
+    const numeric = Number(rawValue);
+    if (Number.isNaN(numeric) || numeric < 0) {
+      return null;
+    }
+    return Math.floor(numeric);
+  };
+
+  const handleSubmit = async (event) => {
+    event.preventDefault();
     setError('');
-    
-    const totalLessons = parseInt(formData.totalLessons) || 0;
-    const completedLessons = parseInt(formData.completedLessons) || 0;
-    
-    if (completedLessons > totalLessons) {
-      setError(`Only ${totalLessons} lessons in this module`);
+
+    const totalLessons = validateTotalLessons(formData.totalLessons);
+    if (totalLessons === null) {
+      setError('Total lessons must be a non-negative number.');
       return;
     }
 
-    try {
-      const submitData = {
-        ...formData,
-        totalLessons,
-        completedLessons
-      };
+    const completedLessons = editingModule?.completedLessons ?? 0;
+    if (completedLessons > totalLessons) {
+      setError('Total lessons cannot be less than completed lessons.');
+      return;
+    }
 
+    const payload = {
+      title: formData.title.trim(),
+      description: formData.description.trim(),
+      deadline: formData.deadline || null,
+      totalLessons,
+      completedLessons,
+    };
+
+    try {
       if (editingModule) {
-        const response = await axiosInstance.put(`/api/modules/${editingModule._id}`, submitData, {
-          headers: { Authorization: `Bearer ${user.token}` },
-        });
-        setModules(modules.map((module) => (module._id === response.data._id ? response.data : module)));
+        const response = await axiosInstance.put(
+          `/api/modules/${editingModule._id}`,
+          payload,
+          {
+            headers: { Authorization: `Bearer ${user.token}` },
+          }
+        );
+
+        setModules((prev) =>
+          (Array.isArray(prev) ? prev : []).map((module) =>
+            module?._id === response.data._id ? response.data : module
+          )
+        );
       } else {
-        const response = await axiosInstance.post('/api/modules', submitData, {
+        const response = await axiosInstance.post('/api/modules', payload, {
           headers: { Authorization: `Bearer ${user.token}` },
         });
-        setModules([...modules, response.data]);
+        setModules((prev) => [ ...(Array.isArray(prev) ? prev : []), response.data]);
       }
+
       setEditingModule(null);
-      setFormData({ 
-        title: '', 
-        description: '', 
-        deadline: '', 
-        totalLessons: '',
-        completedLessons: '0'
-      });
-    } catch (error) {
-      if (error.response?.data?.message) {
-        setError(error.response.data.message);
-      } else {
-        setError('Failed to save module.');
-      }
+      setFormData(initialFormState);
+    } catch (submitError) {
+      const message = submitError.response?.data?.message || 'Failed to save module.';
+      setError(message);
     }
   };
 
-  return (
-    <form onSubmit={handleSubmit} className="bg-white p-6 shadow-md rounded mb-6">
-      <h1 className="text-2xl font-bold mb-4">{editingModule ? 'Edit Module' : 'Add Module'}</h1>
-      
-      {error && (
-        <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
-          {error}
-        </div>
-      )}
+  const isEditing = useMemo(() => Boolean(editingModule), [editingModule]);
 
-      <input
-        type="text"
-        placeholder="Title"
-        value={formData.title}
-        onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-        className="w-full mb-4 p-2 border rounded"
-        required
-      />
-      
-      <textarea
-        placeholder="Description"
-        value={formData.description}
-        onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-        className="w-full mb-4 p-2 border rounded h-20 resize-none"
-      />
-      
-      <input
-        type="date"
-        value={formData.deadline}
-        onChange={(e) => setFormData({ ...formData, deadline: e.target.value })}
-        className="w-full mb-4 p-2 border rounded"
-      />
-      
-      <div className="grid grid-cols-2 gap-4 mb-4">
+  return (
+    <form className="module-form" onSubmit={handleSubmit}>
+      <header className="module-form__header">
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
+          <h2 className="module-form__title">{isEditing ? 'Edit Module' : 'Add Module'}</h2>
+          <p className="module-form__subtitle">
+            Provide the essential details for this module so students know what to expect.
+          </p>
+        </div>
+        {isEditing && (
+          <button
+            type="button"
+            className="module-form__link"
+            onClick={() => setEditingModule(null)}
+          >
+            Cancel edit
+          </button>
+        )}
+      </header>
+
+      {error && <div className="module-form__error">{error}</div>}
+
+      <div className="module-form__grid">
+        <div className="module-form__field">
+          <label className="module-form__label" htmlFor="module-title">
+            Title
+          </label>
+          <input
+            id="module-title"
+            name="title"
+            type="text"
+            value={formData.title}
+            onChange={handleChange}
+            className="module-form__input"
+            placeholder="Enter module title"
+            required
+          />
+        </div>
+
+        <div className="module-form__field">
+          <label className="module-form__label" htmlFor="module-deadline">
+            Deadline
+          </label>
+          <input
+            id="module-deadline"
+            name="deadline"
+            type="date"
+            value={formData.deadline}
+            onChange={handleChange}
+            className="module-form__input"
+          />
+        </div>
+
+        <div className="module-form__field module-form__field--half">
+          <label className="module-form__label" htmlFor="module-total-lessons">
             Total Lessons
           </label>
           <input
+            id="module-total-lessons"
+            name="totalLessons"
             type="number"
-            placeholder="Total Lessons"
-            value={formData.totalLessons}
-            onChange={(e) => setFormData({ ...formData, totalLessons: e.target.value })}
-            className="w-full p-2 border rounded"
             min="0"
+            value={formData.totalLessons}
+            onChange={handleChange}
+            className="module-form__input"
+            placeholder="0"
           />
         </div>
-        
-        {editingModule && (
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Completed Lessons
-            </label>
-            <input
-              type="number"
-              placeholder="Completed Lessons"
-              value={formData.completedLessons}
-              onChange={(e) => setFormData({ ...formData, completedLessons: e.target.value })}
-              className="w-full p-2 border rounded"
-              min="0"
-            />
-          </div>
-        )}
+
+        <div className="module-form__field module-form__field--full">
+          <label className="module-form__label" htmlFor="module-description">
+            Description
+          </label>
+          <textarea
+            id="module-description"
+            name="description"
+            rows={4}
+            value={formData.description}
+            onChange={handleChange}
+            className="module-form__textarea"
+            placeholder="Enter overview of the module"
+          />
+        </div>
       </div>
 
-      <button type="submit" className="w-full bg-[#005691] text-white p-2 rounded hover:bg-[#004080]">
-        {editingModule ? 'Update Module' : 'Add Module'}
-      </button>
+      <footer className="module-form__actions">
+        <button type="submit" className="module-form__submit">
+          {isEditing ? 'Update Module' : 'Add Module'}
+        </button>
+      </footer>
     </form>
   );
 };

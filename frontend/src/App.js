@@ -5,11 +5,14 @@ import Login from './pages/Login';
 import Register from './pages/Register';
 import Profile from './pages/Profile';
 import Module from './pages/Module';
+import Testing from './pages/Testing';
 import Assignment from './pages/Assignment';
 import Certificates from './pages/Certificates';
 import DashboardEducator from './pages/DashboardEducator';
 import DashboardStudent from './pages/DashboardStudent';
+import ModuleTest from './pages/ModuleTest';
 
+// I think i did this one wrong.. 
 const EducatorRoute = ({ children }) => {
   const { user } = useAuth();
 
@@ -38,11 +41,38 @@ const StudentRoute = ({ children }) => {
   return children;
 };
 
+// Defines home route based on user / profile type
+const HomeRoute = () => {
+  const { user } = useAuth();
+
+  // if not logged in, send to login 
+  if (!user) {
+    return <Login />;
+  }
+
+  const profileType = (user.profileType || '').toLowerCase();
+
+  // if student, send to student dashboard
+  if (profileType === 'student') {
+    return <Navigate to="/student" replace />;
+  }
+
+  // if educator, send to educator dashboard
+  if (profileType === 'educator') {
+    return <Navigate to="/educator" replace />;
+  }
+
+  return <Login />;
+};
+
 function App() {
   return (
     <Router>
       <Navbar />
       <Routes>
+        <Route path="/" element={<HomeRoute />} />
+        <Route path="/moduletesting" element={<ModuleTest />} /> {/* Temporary */}
+        <Route path="/testing" element={<Testing />} /> {/* Temporary */}
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/profile" element={<Profile />} />
@@ -65,6 +95,7 @@ function App() {
             </StudentRoute>
           )}
         />
+        
       </Routes>
     </Router>
   );

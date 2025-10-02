@@ -1,0 +1,72 @@
+:root {
+    --base-white: rgba(255, 255, 255, 1);
+    --colorsgraylight-mode100: rgba(245, 245, 245, 1);
+    --foundations-general-white: rgba(255, 255, 255, 1);
+    --foundations-grayscale-800: rgba(29, 34, 32, 1);
+    --foundations-green-500: rgba(0, 159, 109, 1);
+    --global-padding-xs: 8px;
+    --gray-200: rgba(233, 234, 235, 1);
+    --gray-300: rgba(213, 215, 218, 1);
+    --gray-500: rgba(113, 118, 128, 1);
+    --gray-600: rgba(83, 88, 98, 1);
+    --gray-700: rgba(52, 64, 84, 1);
+    --gray-900: rgba(24, 29, 39, 1);
+    --mynaui-com-width-1280: 1280px;
+    --shadow-xs: 0px 1px 2px 0px rgba(16, 24, 40, 0.05);
+    --tailwindcss-color-slate-500: rgba(98, 116, 142, 1);
+    --tailwindcss-color-slate-950: rgba(2, 6, 24, 1);
+    --tailwindcss-color-transparent: rgba(255, 255, 255, 0);
+    --tailwindcss-spacing-2: 8px;
+    --tailwindcss-spacing-3: 12px;
+    --tailwindcss-spacing-5: 20px;
+    --tailwindcss-spacing-6: 24px;
+    --tailwindcss-theme-foreground: var(--tailwindcss-color-slate-950);
+    --tailwindcss-theme-muted-foreground: var(--tailwindcss-color-slate-500);
+    --text-lg-bold-font-family: "Inter", Helvetica;
+    --text-lg-bold-font-size: 18px;
+    --text-lg-bold-font-style: normal;
+    --text-lg-bold-font-weight: 700;
+    --text-lg-bold-letter-spacing: 0px;
+    --text-lg-bold-line-height: 28px;
+    --text-sm-medium-font-family: "Inter", Helvetica;
+    --text-sm-medium-font-size: 14px;
+    --text-sm-medium-font-style: normal;
+    --text-sm-medium-font-weight: 500;
+    --text-sm-medium-letter-spacing: 0px;
+    --text-sm-medium-line-height: 20px;
+    --text-sm-normal-font-family: "Inter", Helvetica;
+    --text-sm-normal-font-size: 14px;
+    --text-sm-normal-font-style: normal;
+    --text-sm-normal-font-weight: 400;
+    --text-sm-normal-letter-spacing: 0px;
+    --text-sm-normal-line-height: 20px;
+    --text-sm-regular-font-family: "Inter", Helvetica;
+    --text-sm-regular-font-size: 14px;
+    --text-sm-regular-font-style: normal;
+    --text-sm-regular-font-weight: 400;
+    --text-sm-regular-letter-spacing: 0px;
+    --text-sm-regular-line-height: 20px;
+    --tokens-background-bg-secondary: var(--foundations-general-white);
+    --tokens-button-primary: var(--foundations-green-500);
+    --white: rgba(255, 255, 255, 1);
+}
+
+/*
+
+To enable a theme in your HTML, simply add one of the following data attributes to an HTML element, like so:
+
+<body data-tokens-mode="light-mode">
+        <!-- the rest of your content -->
+</body>
+
+You can apply the theme on any DOM node, not just the `body`
+
+*/
+
+[data-tokens-mode="light-mode"] {
+    --tokens-background-bg-secondary: var(--foundations-general-white);
+}
+
+[data-tokens-mode="dark-mode"] {
+    --tokens-background-bg-secondary: var(--foundations-grayscale-800);
+}

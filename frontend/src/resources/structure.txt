@@ -1,0 +1,217 @@
+ <div className="frame">
+                <div className="frame-wrapper">
+                    <div className="frame-2">
+                        <div className="frame-3">
+                            <div className="text-wrapper-2">Semester 1</div>
+                        </div>
+
+                        <div className="frame-4">
+                            <div className="input">
+                                <div className="div-2">
+                                    <div className="search">
+                                        <img className="icon" alt="Icon" src={icon} />
+                                    </div>
+
+                                    <input
+                                        className="text-2"
+                                        placeholder="Search..."
+                                        type="text"
+                                    />
+                                </div>
+                            </div>
+
+                            <button className="button">
+                                <div className="plus">
+                                    <div className="group" />
+                                </div>
+
+                                <div className="add-module">Add&nbsp;&nbsp;Module</div>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div className="frame-5">
+                    <div className="frame-6">
+                        <div className="table-header-cell">
+                            <div className="table-header">
+                                <div className="text-3">Module Name</div>
+                            </div>
+                        </div>
+
+                        <div className="table-cell">
+                            <div className="text-and-supporting">
+                                <div className="text-4">Software Lifecycle Management</div>
+
+                                <div className="supporting-text">IN20</div>
+                            </div>
+                        </div>
+
+                        <div className="text-and-supporting-wrapper">
+                            <div className="text-and-supporting">
+                                <div className="text-4">Software Lifecycle Management</div>
+
+                                <div className="supporting-text">IN20</div>
+                            </div>
+                        </div>
+
+                        <div className="table-cell">
+                            <div className="text-and-supporting">
+                                <div className="text-4">Software Lifecycle Management</div>
+
+                                <div className="supporting-text">IN20</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div className="frame-7">
+                        <div className="table-header-wrapper">
+                            <div className="table-header-2">
+                                <div className="text-3">Course ID</div>
+                            </div>
+                        </div>
+
+                        <div className="table-cell">
+                            <div className="text-and-supporting">
+                                <div className="supporting-text-2">IFN657</div>
+                            </div>
+                        </div>
+
+                        <div className="text-and-supporting-wrapper">
+                            <div className="text-and-supporting">
+                                <div className="supporting-text-2">IFN657</div>
+                            </div>
+                        </div>
+
+                        <div className="table-cell">
+                            <div className="text-and-supporting">
+                                <div className="supporting-text-2">IFN657</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div className="frame-8">
+                        <div className="table-header-wrapper">
+                            <div className="table-header-2">
+                                <div className="text-3">Content</div>
+                            </div>
+                        </div>
+
+                        <div className="table-cell">
+                            <div className="text-and-supporting">
+                                <div className="supporting-text-2">CI/CD</div>
+                            </div>
+                        </div>
+
+                        <div className="text-and-supporting-wrapper">
+                            <div className="text-and-supporting">
+                                <div className="supporting-text-2">Testing</div>
+                            </div>
+                        </div>
+
+                        <div className="table-cell">
+                            <div className="text-and-supporting">
+                                <div className="supporting-text-2">UI/UX</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div className="frame-9">
+                        <div className="table-header-cell-2">
+                            <div className="table-header">
+                                <div className="text-3">Tutor</div>
+                            </div>
+                        </div>
+
+                        <div className="table-cell">
+                            <div className="text-and-supporting">
+                                <div className="supporting-text-3">Neha</div>
+                            </div>
+                        </div>
+
+                        <div className="text-and-supporting-wrapper">
+                            <div className="text-and-supporting">
+                                <div className="supporting-text-2">Neha</div>
+                            </div>
+                        </div>
+
+                        <div className="table-cell">
+                            <div className="text-and-supporting">
+                                <div className="supporting-text-2">Neha</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div className="frame-10">
+                        <div className="table-header-cell-3">
+                            <div className="table-header">
+                                <div className="text-3">View / Edit</div>
+                            </div>
+                        </div>
+
+                        <div className="table-cell-2">
+                            <div className="button-2">
+                                <img className="img" alt="Iconly broken show" src={show2} />
+                            </div>
+
+                            <div className="button-2">
+                                <img className="img" alt="Iconly broken edit" src={edit} />
+                            </div>
+                        </div>
+
+                        <div className="table-cell-3">
+                            <div className="button-2">
+                                <img className="img" alt="Iconly broken show" src={show3} />
+                            </div>
+
+                            <div className="button-2">
+                                <img className="img" alt="Iconly broken edit" src={edit2} />
+                            </div>
+                        </div>
+
+                        <div className="table-cell-2">
+                            <div className="button-2">
+                                <img className="img" alt="Iconly broken show" src={show4} />
+                            </div>
+
+                            <div className="button-2">
+                                <img className="img" alt="Iconly broken edit" src={edit3} />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div className="pagination">
+                    <div className="pagination-2">
+                        <button className="buttons-button">
+                            <div className="icon-wrapper">
+                                <img className="icon-2" alt="Icon" src={image} />
+                            </div>
+
+                            <div className="text-padding">
+                                <div className="text-5">Previous</div>
+                            </div>
+                        </button>
+
+                        <p className="details">
+                            <span className="span">Page </span>
+
+                            <span className="text-wrapper-3">1</span>
+
+                            <span className="span"> of </span>
+
+                            <span className="text-wrapper-3">1</span>
+                        </p>
+
+                        <button className="buttons-button">
+                            <div className="text-padding">
+                                <div className="text-5">Next</div>
+                            </div>
+
+                            <div className="icon-wrapper">
+                                <img className="icon-2" alt="Icon" src={icon2} />
+                            </div>
+                        </button>
+                    </div>
+                </div>
+            </div>

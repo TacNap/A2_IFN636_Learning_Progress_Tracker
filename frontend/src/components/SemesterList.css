@@ -1,0 +1,343 @@
+.semester-list {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.semester-list__card {
+  background-color: #ffffff;
+  border: 1px solid #e9eaeb;
+  border-radius: 16px;
+  box-shadow: 0 12px 32px rgba(15, 23, 42, 0.06);
+  overflow: hidden;
+}
+
+.semester-list__header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 12px;
+  border-bottom: 1px solid #e9eaeb;
+  background-color: #ffffff;
+}
+
+.semester-list__title {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 180px;
+}
+
+.semester-list__title h2 {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 700;
+  color: #181d27;
+}
+
+.semester-list__subtitle {
+  margin: 0;
+  font-size: 13px;
+  color: #6d7280;
+}
+
+.semester-list__controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-left: auto;
+}
+
+.semester-list__search {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0 16px;
+  height: 44px;
+  border: 1px solid #d9dce6;
+  border-radius: 12px;
+  background-color: #ffffff;
+  min-width: 220px;
+}
+
+.semester-list__search svg {
+  width: 16px;
+  height: 16px;
+  color: #828299;
+  flex-shrink: 0;
+}
+
+.semester-list__search input {
+  border: none;
+  outline: none;
+  background: transparent;
+  font-size: 14px;
+  color: #333542;
+  width: 100%;
+}
+
+.semester-list__search input::placeholder {
+  color: #a0a1b5;
+}
+
+.semester-list__actions {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.semester-list__edit-button {
+  border: none;
+  background-color: #19a974;
+  color: #ffffff;
+  padding: 10px 20px;
+  border-radius: 12px;
+  font-weight: 600;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  box-shadow: 0 10px 20px rgba(25, 169, 116, 0.24);
+}
+
+.semester-list__edit-button:hover {
+  background-color: #149061;
+}
+
+.semester-list__delete-button {
+  border: 1px solid #e2e3ee;
+  background-color: #ffffff;
+  color: #5b5c6c;
+  padding: 10px 18px;
+  border-radius: 12px;
+  font-weight: 600;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+}
+
+.semester-list__delete-button:hover {
+  background-color: #f6f7fb;
+  border-color: #f2c8ce;
+  color: #ce4b5a;
+}
+
+.semester-list__table {
+  display: flex;
+  flex-direction: column;
+}
+
+.semester-list__table-header,
+.semester-list__row {
+  display: grid;
+  grid-template-columns: 2.6fr 2fr 1.2fr 1.2fr;
+  gap: 18px;
+  align-items: center;
+  padding: 8px 12px;
+}
+
+.semester-list__table-header {
+  background-color: #f9fafb;
+  border-bottom: 1px solid #e9eaeb;
+  font-size: 12px;
+  font-weight: 300;
+  letter-spacing: 0.05em;
+  color: #6f7485;
+}
+
+.semester-list__row {
+  background-color: #ffffff;
+  border-bottom: 1px solid #eef0f5;
+  font-size: 14px;
+  color: #2c2f39;
+}
+
+.semester-list__row:nth-of-type(even) {
+  background-color: #fbfcff;
+}
+
+.semester-list__module {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.semester-list__module-title {
+  font-weight: 300;
+  color: #181d27;
+}
+
+.semester-list__module-subtitle {
+  font-size: 13px;
+  color: #73788b;
+}
+
+.semester-list__description {
+  color: #43475a;
+  line-height: 1.5;
+}
+
+.semester-list__lessons {
+  font-weight: 600;
+  color: #2f7a5e;
+}
+
+.semester-list__actions-cell {
+  display: inline-flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+.semester-list__row-button {
+  border: 1px solid #e2e3ee;
+  background-color: #f6f7fb;
+  color: #4c4c5d;
+  padding: 8px 14px;
+  border-radius: 10px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+}
+
+.semester-list__row-button:hover {
+  background-color: #e9eaf4;
+}
+
+.semester-list__row-button--danger {
+  border-color: #f2c8ce;
+  background-color: #fff2f4;
+  color: #ce4b5a;
+}
+
+.semester-list__row-button--danger:hover {
+  background-color: #ffe3e7;
+  color: #b33b49;
+}
+
+.semester-list__row--empty {
+  grid-template-columns: 1fr;
+  justify-items: center;
+  color: #8587a1;
+  font-style: italic;
+}
+
+.semester-list__message {
+  margin: 0;
+}
+
+.semester-list__footer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
+  padding: 30px 12px;
+  background-color: #ffffff;
+}
+
+.semester-list__pagination-button {
+  border: 1px solid #e2e3ee;
+  background-color: #ffffff;
+  color: #5b5c6c;
+  padding: 8px 18px;
+  border-radius: 10px;
+  font-weight: 600;
+  font-size: 13px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.semester-list__pagination-info {
+  font-weight: 500;
+  color: #81849a;
+}
+
+.semester-list__pagination-button:disabled {
+  color: #9ca3af;
+  border-color: #e4e6f0;
+  cursor: not-allowed;
+}
+
+.semester-list__alert {
+  padding: 16px 20px;
+  border-radius: 12px;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.semester-list__alert--warning {
+  background-color: #fef9c3;
+  border: 1px solid #fde68a;
+  color: #854d0e;
+}
+
+.semester-list__alert--error {
+  background-color: #fee2e2;
+  border: 1px solid #fecaca;
+  color: #991b1b;
+}
+
+.semester-list__empty {
+  background-color: #ffffff;
+  border: 1px dashed #d1d5db;
+  border-radius: 16px;
+  padding: 48px 24px;
+  text-align: center;
+  color: #6d7280;
+  font-size: 15px;
+}
+
+@media (max-width: 960px) {
+  .semester-list__table-header,
+  .semester-list__row {
+    grid-template-columns: 2fr 1.4fr 1fr;
+  }
+
+  .semester-list__table-header span:nth-child(2),
+  .semester-list__row > :nth-child(2) {
+    display: none;
+  }
+
+  .semester-list__actions-cell {
+    justify-content: flex-start;
+  }
+}
+
+@media (max-width: 640px) {
+  .semester-list__header {
+    padding: 20px;
+  }
+
+  .semester-list__table-header,
+  .semester-list__row {
+    padding: 16px 20px;
+  }
+
+  .semester-list__controls {
+    width: 100%;
+    justify-content: flex-start;
+  }
+
+  .semester-list__actions {
+    width: 100%;
+    justify-content: flex-start;
+  }
+
+  .semester-list__table-header,
+  .semester-list__row {
+    grid-template-columns: 1fr;
+  }
+
+  .semester-list__row {
+    gap: 12px;
+  }
+
+  .semester-list__actions-cell {
+    justify-content: flex-start;
+  }
+}

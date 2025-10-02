@@ -1,0 +1,302 @@
+.student-dashboard {
+  display: flex;
+  min-height: calc(100vh - 72px);
+  background-color: #f5f5f7;
+  font-family: "Inter", "Segoe UI", Arial, sans-serif;
+}
+
+.student-dashboard__content {
+  flex: 1;
+  padding: 32px 48px;
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+
+.content-header .breadcrumb {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 14px;
+  color: #8c8c95;
+}
+
+.breadcrumb-current {
+  color: #3d3d46;
+  font-weight: 600;
+}
+
+.content-header h1 {
+  margin: 12px 0 0;
+  font-size: 28px;
+  font-weight: 700;
+  color: #252529;
+}
+
+.modules-area {
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+}
+
+.semester-card {
+  background-color: #ffffff;
+  border-radius: 24px;
+  padding: 24px;
+  box-shadow: 0 16px 32px rgba(67, 58, 94, 0.08);
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.semester-card__header {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.semester-card__title {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.semester-card__header h2 {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 700;
+  color: #2b2b35;
+}
+
+.semester-card__meta {
+  margin: 0;
+  font-size: 14px;
+  color: #7b7c8d;
+}
+
+.semester-card__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.semester-card__actions-buttons {
+  display: flex;
+  gap: 12px;
+}
+
+.search-field {
+  display: flex;
+  align-items: center;
+  background-color: #f6f7fb;
+  border: 1px solid #e2e3ee;
+  border-radius: 14px;
+  padding: 0 12px;
+  height: 44px;
+  flex: 1 1 260px;
+  max-width: 420px;
+}
+
+.search-field input {
+  flex: 1;
+  border: none;
+  background: transparent;
+  outline: none;
+  font-size: 14px;
+  color: #2f2f38;
+}
+
+.search-field input::placeholder {
+  color: #a1a1b5;
+}
+
+.search-icon {
+  margin-right: 8px;
+  display: block;
+}
+
+.edit-semester-button {
+  border: none;
+  background-color: #19a974;
+  color: #ffffff;
+  padding: 12px 20px;
+  border-radius: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.edit-semester-button:hover {
+  background-color: #149061;
+}
+
+.delete-semester-button {
+  border: 1px solid #e2e3ee;
+  background-color: #ffffff;
+  color: #5b5c6c;
+  padding: 12px 18px;
+  border-radius: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.delete-semester-button:hover {
+  background-color: #f6f7fb;
+  color: #e04f5f;
+}
+
+.module-table {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid #e8e9f4;
+  border-radius: 18px;
+  overflow: hidden;
+}
+
+.module-table__header,
+.module-table__row {
+  display: grid;
+  grid-template-columns: 2fr 1.6fr 1fr 1fr;
+  align-items: center;
+  padding: 16px 18px;
+  gap: 12px;
+  font-size: 14px;
+  color: #34343c;
+}
+
+.module-table__header {
+  background-color: #f7f8fb;
+  font-weight: 600;
+  color: #6a6a73;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+}
+
+.module-table__row:nth-child(even) {
+  background-color: #fcfdff;
+}
+
+.module-table__row--empty {
+  grid-template-columns: 1fr;
+  justify-items: center;
+  color: #83839a;
+  font-style: italic;
+}
+
+.module-table__empty-message {
+  display: block;
+}
+
+.module-name-cell {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.module-name {
+  font-weight: 600;
+  color: #2c2c34;
+}
+
+.module-description {
+  color: #64647a;
+  line-height: 1.4;
+}
+
+.module-lessons {
+  color: #2f7a5e;
+  font-weight: 600;
+}
+
+.module-row-actions {
+  display: inline-flex;
+  gap: 10px;
+  justify-content: flex-end;
+}
+
+.row-action-button {
+  border: 1px solid #e2e3ee;
+  background-color: #f6f7fb;
+  color: #4c4c5d;
+  padding: 8px 14px;
+  border-radius: 10px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.row-action-button:hover {
+  background-color: #e9eaf4;
+}
+
+.row-action-button--danger {
+  border-color: #f2c8ce;
+  background-color: #fff2f4;
+  color: #ce4b5a;
+}
+
+.row-action-button--danger:hover {
+  background-color: #ffe6ea;
+  color: #b33b49;
+}
+
+.semester-card__footer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 18px;
+  padding-top: 18px;
+  border-top: 1px solid #f0f1f7;
+  font-size: 13px;
+  color: #8a8a94;
+}
+
+.pagination-button {
+  border: 1px solid #e2e3ee;
+  background-color: #ffffff;
+  color: #5b5c6c;
+  padding: 8px 18px;
+  border-radius: 10px;
+  font-weight: 600;
+  cursor: not-allowed;
+}
+
+.pagination-info {
+  font-weight: 500;
+}
+
+@media (max-width: 1024px) {
+  .student-dashboard {
+    flex-direction: column;
+  }
+
+}
+
+@media (max-width: 768px) {
+  .student-dashboard__content {
+    padding: 24px;
+  }
+
+  .module-table__header,
+  .module-table__row {
+    grid-template-columns: 1.8fr 1fr;
+  }
+
+  .module-table__header span:nth-child(2),
+  .module-table__header span:nth-child(3) {
+    display: none;
+  }
+
+  .module-table__row .module-description,
+  .module-table__row .module-lessons {
+    display: none;
+  }
+
+  .module-row-actions {
+    justify-content: flex-start;
+  }
+}

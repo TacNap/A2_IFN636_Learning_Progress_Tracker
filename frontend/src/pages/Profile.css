@@ -1,0 +1,117 @@
+.profile-page {
+  display: flex;
+  min-height: calc(100vh - 72px);
+  background-color: #f6f7fb;
+  font-family: 'Inter', 'Segoe UI', Arial, sans-serif;
+}
+
+.profile-main {
+  flex: 1;
+  padding: 48px 64px;
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+  color: #1f2933;
+}
+
+.profile-header h1 {
+  margin: 0;
+  font-size: 32px;
+  font-weight: 800;
+  color: #111827;
+}
+
+.profile-header p {
+  margin: 12px 0 0;
+  font-size: 18px;
+  color: #4b5563;
+}
+
+.profile-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  max-width: 560px;
+}
+
+.profile-field {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background-color: #ffffff;
+  border: 1px solid #1f2933;
+  border-radius: 18px;
+  padding: 14px 18px;
+  transition: box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+.profile-field:focus-within {
+  border-color: #7a4fd7;
+  box-shadow: 0 0 0 3px rgba(122, 79, 215, 0.15);
+}
+
+.profile-field__icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 999px;
+  background-color: #f1f5f9;
+  color: #6b7280;
+  font-size: 14px;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.profile-field input {
+  flex: 1;
+  border: none;
+  outline: none;
+  font-size: 15px;
+  color: #111827;
+  background: transparent;
+}
+
+.profile-actions {
+  margin-top: 12px;
+}
+
+.profile-submit {
+  width: 100%;
+  padding: 16px;
+  border: none;
+  border-radius: 16px;
+  background-color: #ebedef;
+  color: #1f2933;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.profile-submit:hover {
+  background-color: #dcdfe3;
+}
+
+.profile-submit:disabled {
+  cursor: not-allowed;
+  background-color: #edf0f5;
+  color: #9ca3af;
+}
+
+.profile-loading {
+  margin-top: 48px;
+  font-size: 16px;
+  color: #6b7280;
+}
+
+@media (max-width: 960px) {
+  .profile-page {
+    flex-direction: column;
+  }
+
+  .profile-main {
+    padding: 32px 24px;
+  }
+}
