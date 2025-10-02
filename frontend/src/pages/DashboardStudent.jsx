@@ -7,10 +7,10 @@ import NavigationPanel from '../components/NavigationPanel';
 import './DashboardStudent.css';
 
 const navItems = [
-  { id: 'dashboard', label: 'Dashboard', icon: 'DB', to: '/student', active: true },
-  { id: 'module', label: 'Module', icon: 'MD', to: '/modules' },
-  { id: 'assignment', label: 'Assignment', icon: 'AS', to: '/assignments' },
-  { id: 'certificate', label: 'Certificate', icon: 'CF', to: '/certificates' },
+  { id: 'dashboard', label: 'Dashboard', icon: <DashboardIcon />, to: '/student', active: true },
+  { id: 'module', label: 'Module', icon: <ModuleIcon />, to: '/modules' },
+  { id: 'assignment', label: 'Assignment', icon: <AssignmentIcon />, to: '/assignments' },
+  { id: 'certificate', label: 'Certificate', icon: <CertificateIcon />, to: '/certificates' },
 ];
 
 const DashboardStudent = () => {
@@ -106,7 +106,7 @@ const DashboardStudent = () => {
         <header className="content-header">
           <div className="breadcrumb" aria-label="Breadcrumb">
             <span>Home</span>
-            <span aria-hidden="true">></span>
+            <span aria-hidden="true"></span>
             <span className="breadcrumb-current">Dashboard</span>
           </div>
         </header>
