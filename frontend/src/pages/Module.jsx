@@ -63,6 +63,17 @@ const Modules = () => {
         items={navItems}
       />
       <main className="module-page__content">
+        <header className="module-create__header">
+          <div className="module-create__breadcrumb" aria-label="Breadcrumb">
+            <span>Home</span>
+            <span aria-hidden="true">&gt;</span>
+            <span className="module-create__breadcrumb-current">Modules</span>
+          </div>
+          <div className="module-create__heading">
+            <h1>Modules</h1>
+            <p>Track your modules and progress.</p>
+          </div>
+        </header>
         <div className="module-page__inner">
           <ModuleList modules={modules} setModules={setModules} />
         </div>
