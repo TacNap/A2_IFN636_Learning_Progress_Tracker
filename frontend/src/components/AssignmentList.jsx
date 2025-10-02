@@ -1,4 +1,5 @@
 ﻿import { useMemo, useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import axiosInstance from '../axiosConfig';
 import './AssignmentList.css';
@@ -37,6 +38,7 @@ const getScoreMeta = (score) => {
 
 const AssignmentList = ({ assignments, setAssignments, setEditingAssignment }) => {
   const { user } = useAuth();
+  const navigate = useNavigate();
   const token = user?.token;
   const [searchTerm, setSearchTerm] = useState('');
 
@@ -103,7 +105,16 @@ const AssignmentList = ({ assignments, setAssignments, setEditingAssignment }) =
   const handleEdit = (assignment) => {
     if (typeof setEditingAssignment === 'function') {
       setEditingAssignment(assignment);
+      return;
     }
+
+    const assignmentId = assignment?._id;
+    if (assignmentId) {
+      navigate('/assignments/new', { state: { assignmentId, assignment } });
+      return;
+    }
+
+    navigate('/assignments/new', { state: { assignment } });
   };
 
   const handleDelete = async (assignmentId) => {
@@ -137,7 +148,7 @@ const AssignmentList = ({ assignments, setAssignments, setEditingAssignment }) =
 
   const hasAssignments = summary.total > 0;
   const hasResults = filteredAssignments.length > 0;
-  const averageScoreLabel = summary.gradedCount > 0 ? `${summary.averageScore.toFixed(1)}%` : '—';
+  const averageScoreLabel = summary.gradedCount > 0 ? `${summary.averageScore.toFixed(1)}%` : '-';
 
   return (
     <div className="assignment-list">
@@ -174,6 +185,13 @@ const AssignmentList = ({ assignments, setAssignments, setEditingAssignment }) =
                 aria-label="Search assignments"
               />
             </label>
+            <Link
+              to="/assignments/new"
+              className="assignment-list__add-button"
+            >
+              <span aria-hidden="true">+</span>
+              Add Assignment
+            </Link>
           </div>
         </header>
 
@@ -285,3 +303,6 @@ const AssignmentList = ({ assignments, setAssignments, setEditingAssignment }) =
 };
 
 export default AssignmentList;
+
+
+
