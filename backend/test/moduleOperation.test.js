@@ -218,5 +218,49 @@ describe('ModuleOperation', () => {
       expect(certCreate.called).to.be.false;
     });
   });
+  
+  describe('deleteModule', () => {
+    it('deletes module successfully', async () => {
+      const id = new mongoose.Types.ObjectId();
+      const module = { 
+        _id: id, 
+        userId: new mongoose.Types.ObjectId(),
+        title: 'Test Module'
+      };
+
+      sinon.stub(Module, 'findById').resolves(module);
+      sinon.stub(Module, 'findByIdAndDelete').resolves();
+      sinon.stub(Certificate, 'deleteMany').resolves({ deletedCount: 2 });
+
+      const result = await moduleOperation.deleteModule(id);
+
+      expect(result).to.be.true;
+    });
+
+    it('returns false when module not found', async () => {
+      sinon.stub(Module, 'findById').resolves(null);
+
+      const result = await moduleOperation.deleteModule(new mongoose.Types.ObjectId());
+
+      expect(result).to.be.false;
+    });
+
+    it('deletes associated certificates after deletion', async () => {
+      const id = new mongoose.Types.ObjectId();
+      const module = { 
+        _id: id, 
+        userId: new mongoose.Types.ObjectId(),
+        title: 'Test Module'
+      };
+
+      sinon.stub(Module, 'findById').resolves(module);
+      sinon.stub(Module, 'findByIdAndDelete').resolves();
+      const deleteCertsStub = sinon.stub(Certificate, 'deleteMany').resolves({ deletedCount: 3 });
+
+      await moduleOperation.deleteModule(id);
+
+      expect(deleteCertsStub.calledOnceWith({ moduleId: id })).to.be.true;
+    });
+  });
 });
 
