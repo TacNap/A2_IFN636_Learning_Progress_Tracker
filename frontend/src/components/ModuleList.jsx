@@ -1,5 +1,5 @@
-﻿import { useMemo, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { useMemo, useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import axiosInstance from '../axiosConfig';
 import './ModuleList.css';
@@ -52,6 +52,7 @@ const formatDate = (value) => {
 
 const ModuleList = ({ modules, setModules, setEditingModule }) => {
   const { user } = useAuth();
+  const navigate = useNavigate();
   const token = user?.token;
   const [searchTerm, setSearchTerm] = useState('');
 
@@ -125,7 +126,16 @@ const ModuleList = ({ modules, setModules, setEditingModule }) => {
   const handleEdit = (module) => {
     if (typeof setEditingModule === 'function') {
       setEditingModule(module);
+      return;
     }
+
+    const moduleId = module?._id;
+    if (moduleId) {
+      navigate('/modules/new', { state: { moduleId, module } });
+      return;
+    }
+
+    navigate('/modules/new', { state: { module } });
   };
 
   const handleLessonUpdate = async (moduleId, increment) => {
@@ -363,7 +373,7 @@ const ModuleList = ({ modules, setModules, setEditingModule }) => {
                         disabled={!canDecrease}
                         aria-label="Decrease completed lessons"
                       >
-                        −
+                        -
                       </button>
                       <span className="module-list__lesson-count">
                         {completed}

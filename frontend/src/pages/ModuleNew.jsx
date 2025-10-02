@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import axiosInstance from '../axiosConfig';
 import ModuleForm from '../components/ModuleForm';
+import { useLocation } from 'react-router-dom';
 import NavigationPanel from '../components/NavigationPanel';
 import { useAuth } from '../context/AuthContext';
 import './ModuleNew.css';
@@ -14,8 +15,11 @@ const navItems = [
 
 const ModuleNew = () => {
   const { user } = useAuth();
+  const location = useLocation();
   const [modules, setModules] = useState([]);
   const [editingModule, setEditingModule] = useState(null);
+  const [requestedModuleId, setRequestedModuleId] = useState(location.state?.moduleId ?? null);
+  const [requestedModuleData, setRequestedModuleData] = useState(location.state?.module ?? null);
 
   const initials = useMemo(() => {
     if (user?.name) {
@@ -32,6 +36,16 @@ const ModuleNew = () => {
   const displayName = user?.name || 'Ka Ki Yeung';
   const roleLabel = user?.profileType === 'student' ? 'Student' : 'Educator';
   const welcomeMessage = user?.name ? 'Welcome back, ' + user.name : 'Welcome back!';
+
+  useEffect(() => {
+    if (location.state?.moduleId || location.state?.module) {
+      setRequestedModuleId(location.state?.moduleId ?? null);
+      setRequestedModuleData(location.state?.module ?? null);
+    } else {
+      setRequestedModuleId(null);
+      setRequestedModuleData(null);
+    }
+  }, [location.state]);
 
   useEffect(() => {
     const fetchModules = async () => {
@@ -53,6 +67,22 @@ const ModuleNew = () => {
     fetchModules();
   }, [user]);
 
+  useEffect(() => {
+    if (requestedModuleId) {
+      const found = (Array.isArray(modules) ? modules : []).find((module) => module?._id === requestedModuleId);
+      if (found) {
+        setEditingModule(found);
+        setRequestedModuleId(null);
+        setRequestedModuleData(null);
+      }
+      return;
+    }
+
+    if (requestedModuleData) {
+      setEditingModule(requestedModuleData);
+      setRequestedModuleData(null);
+    }
+  }, [requestedModuleId, requestedModuleData, modules]);
   return (
     <div className="module-create">
       <NavigationPanel
@@ -92,3 +122,4 @@ const ModuleNew = () => {
 };
 
 export default ModuleNew;
+
