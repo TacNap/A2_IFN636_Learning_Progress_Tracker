@@ -1,24 +1,39 @@
 ﻿.module-page {
-  background-color: #f4f6fb;
+  display: flex;
   min-height: 100vh;
-  padding: 32px 0 48px;
+  background-color: #f4f6fb;
 }
 
 .module-page__content {
-  width: min(1120px, 94%);
-  margin: 0 auto;
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  padding: 32px 48px 48px;
+}
+
+.module-page__inner {
+  width: min(1120px, 100%);
   display: flex;
   flex-direction: column;
   gap: 24px;
 }
 
-@media (max-width: 640px) {
+@media (max-width: 1024px) {
   .module-page {
-    padding: 20px 0 32px;
+    flex-direction: column;
   }
 
   .module-page__content {
-    width: min(100%, 94%);
+    padding: 28px 32px;
+  }
+}
+
+@media (max-width: 640px) {
+  .module-page__content {
+    padding: 20px 16px;
+  }
+
+  .module-page__inner {
     gap: 20px;
   }
 }

@@ -1,8 +1,11 @@
 ﻿import { useMemo, useState } from 'react';
+import { Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import axiosInstance from '../axiosConfig';
 import './ModuleList.css';
 
+// needs module add button 
+// edit page needs to link to a separate page. 
 const normaliseCount = (value) => {
   const numeric = Number(value);
   if (Number.isNaN(numeric)) {
@@ -242,6 +245,13 @@ const ModuleList = ({ modules, setModules, setEditingModule }) => {
                 aria-label="Search modules"
               />
             </label>
+            <Link
+              to="/modules/new"
+              className="module-list__add-button"
+            >
+              <span aria-hidden="true">+</span>
+              Add Module
+            </Link>
           </div>
         </header>
 
@@ -396,3 +406,4 @@ const ModuleList = ({ modules, setModules, setEditingModule }) => {
 };
 
 export default ModuleList;
+
