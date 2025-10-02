@@ -10,7 +10,7 @@ const Certificate = require('../models/Certificate');
 const User = require('../models/User');
 const { getModules, addModule, updateModule, deleteModule, updateLessons } = require('../controllers/moduleController');
 const { expect } = chai;
-
+test
 chai.use(chaiHttp);
 let server;
 let port;
