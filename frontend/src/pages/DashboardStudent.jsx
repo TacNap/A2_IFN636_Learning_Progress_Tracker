@@ -5,6 +5,10 @@ import axiosInstance from '../axiosConfig';
 import SemesterList from '../components/SemesterList';
 import NavigationPanel from '../components/NavigationPanel';
 import './DashboardStudent.css';
+import { ReactComponent as CertificateIcon } from "../icons/certificate.svg";
+import { ReactComponent as AssignmentIcon } from "../icons/assignment.svg";
+import { ReactComponent as DashboardIcon } from "../icons/dashboard.svg";
+import { ReactComponent as ModuleIcon } from "../icons/module.svg";
 
 const navItems = [
   { id: 'dashboard', label: 'Dashboard', icon: <DashboardIcon />, to: '/student', active: true },
