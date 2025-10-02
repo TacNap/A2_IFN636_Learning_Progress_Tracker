@@ -183,7 +183,7 @@ const Profile = () => {
 
             <div className="profile-actions">
               <button type="submit" className="profile-submit" disabled={isSaving}>
-                {isSaving ? 'Saving…' : 'Edit Profile'}
+                {isSaving ? 'Saving…' : 'Save Profile'}
               </button>
             </div>
           </form>

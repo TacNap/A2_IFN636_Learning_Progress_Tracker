@@ -107,7 +107,7 @@ const DashboardStudent = () => {
           <div className="breadcrumb" aria-label="Breadcrumb">
             <span>Home</span>
             <span aria-hidden="true">></span>
-            <span className="breadcrumb-current">Module</span>
+            <span className="breadcrumb-current">Dashboard</span>
           </div>
         </header>
 

@@ -10,6 +10,7 @@ import Assignment from './pages/Assignment';
 import Certificates from './pages/Certificates';
 import DashboardEducator from './pages/DashboardEducator';
 import DashboardStudent from './pages/DashboardStudent';
+import ModuleTest from './pages/ModuleTest';
 
 // I think i did this one wrong.. 
 const EducatorRoute = ({ children }) => {
@@ -70,7 +71,8 @@ function App() {
       <Navbar />
       <Routes>
         <Route path="/" element={<HomeRoute />} />
-        <Route path="/testing" element={<Testing />} />
+        <Route path="/moduletesting" element={<ModuleTest />} /> {/* Temporary */}
+        <Route path="/testing" element={<Testing />} /> {/* Temporary */}
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/profile" element={<Profile />} />
