@@ -10,10 +10,10 @@
 * View module
 * Update module
 * Delete module
-* Add quiz
-* View quiz
-* Update quiz
-* Delete quiz
+* Add assignment
+* View assignment
+* Update assignment
+* Delete assignment
 * Download certitifcate
 * Delete certificate
 
@@ -26,7 +26,7 @@
 * **VS code editor** [[https://code.visualstudio.com/](https://code.visualstudio.com/)]** **
 * **MongoDB Account** [[https://account.mongodb.com/account/login](https://account.mongodb.com/account/login)]**
 * **GitHub Account** [[https://github.com/signup?source=login](https://github.com/signup?source=login)]** **
-* **Public IP** [[http://13.210.217.2150](http://13.210.217.215)]** **
+* **Public IP** [[http://3.27.235.24](http://3.27.235.24)]** **
 
 ---
 
@@ -40,8 +40,17 @@
 
 ---
 
+**Installation instructions**
+* Clone the repository into your local drive and then install the dependencies.
+* Install the following command in root folder (i.e., A2_IFN636_Learning_Progress_Tracker) for backend and frontend dependencies: npm run install-all
+* Once the installation is complete: npm start
+
+
+---
+
+
 **Usage Example**
 
 * Students can mark modules as completed by finishing all lessons.
-* Quiz scores are logged and stored for review
+* Assignment scores are logged and stored for review
 * Once all lessons are completed, a certificate is generated automatically.
