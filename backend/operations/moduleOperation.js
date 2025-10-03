@@ -79,6 +79,15 @@ class ModuleOperation extends BaseOperation {
     return { certificateEarned: res.certificateEarned };
   }
 
+  async deleteModule(id) {
+    const { deleted } = await super.deleteById(id);
+    return deleted;
+  }
+
+  async afterDelete(module) {
+    await Certificate.deleteMany({ moduleId: module._id });
+  }
+
   async handleCertificateCreation(module, previousCompletedLessons, newCompletedLessons) {
     let certificateEarned = false;
     try {
