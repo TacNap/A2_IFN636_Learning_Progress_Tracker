@@ -6,13 +6,12 @@ import Register from './pages/Register';
 import Profile from './pages/Profile';
 import Module from './pages/Module';
 import ModuleNew from './pages/ModuleNew';
-import Testing from './pages/Testing';
+import SemesterNew from './pages/SemesterNew';
 import Assignment from './pages/Assignment';
 import AssignmentNew from './pages/AssignmentNew';
 import Certificates from './pages/Certificates';
 import DashboardEducator from './pages/DashboardEducator';
 import DashboardStudent from './pages/DashboardStudent';
-import ModuleTest from './pages/ModuleTest';
 
 // I think i did this one wrong.. 
 const EducatorRoute = ({ children }) => {
@@ -73,13 +72,12 @@ function App() {
       <Navbar />
       <Routes>
         <Route path="/" element={<HomeRoute />} />
-        <Route path="/moduletesting" element={<ModuleTest />} /> {/* Temporary */}
-        <Route path="/testing" element={<Testing />} /> {/* Temporary */}
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/profile" element={<Profile />} />
         <Route path="/modules" element={<Module />} />
         <Route path="/modules/new" element={<ModuleNew />} />
+        <Route path="/semester/new" element={<SemesterNew />} />
         <Route path="/assignments" element={<Assignment />} />
         <Route path="/assignments/new" element={<AssignmentNew />} />
         <Route path="/certificates" element={<Certificates />} />

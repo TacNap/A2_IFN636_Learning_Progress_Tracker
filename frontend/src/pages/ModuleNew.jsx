@@ -5,6 +5,11 @@ import { useLocation } from 'react-router-dom';
 import NavigationPanel from '../components/NavigationPanel';
 import { useAuth } from '../context/AuthContext';
 import './ModuleNew.css';
+import { ReactComponent as CertificateIcon } from "../icons/certificate.svg";
+import { ReactComponent as AssignmentIcon } from "../icons/assignment.svg";
+import { ReactComponent as DashboardIcon } from "../icons/dashboard.svg";
+import { ReactComponent as ModuleIcon } from "../icons/module.svg";
+
 
 const navItems = [
   { id: 'dashboard', label: 'Dashboard', icon: 'DB', to: '/student' },

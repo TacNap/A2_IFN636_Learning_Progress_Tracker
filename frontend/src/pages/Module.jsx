@@ -4,12 +4,17 @@ import ModuleList from '../components/ModuleList';
 import NavigationPanel from '../components/NavigationPanel';
 import { useAuth } from '../context/AuthContext';
 import './Module.css';
+import { ReactComponent as CertificateIcon } from "../icons/certificate.svg";
+import { ReactComponent as AssignmentIcon } from "../icons/assignment.svg";
+import { ReactComponent as DashboardIcon } from "../icons/dashboard.svg";
+import { ReactComponent as ModuleIcon } from "../icons/module.svg";
+
 
 const navItems = [
-  { id: 'dashboard', label: 'Dashboard', icon: 'DB', to: '/student' },
-  { id: 'module', label: 'Module', icon: 'MD', to: '/modules', active: true },
-  { id: 'assignment', label: 'Assignment', icon: 'AS', to: '/assignments' },
-  { id: 'certificate', label: 'Certificate', icon: 'CF', to: '/certificates' },
+  { id: 'dashboard', label: 'Dashboard', icon: <DashboardIcon />, to: '/student'},
+  { id: 'module', label: 'Module', icon: <ModuleIcon />, to: '/modules', active: true },
+  { id: 'assignment', label: 'Assignment', icon: <AssignmentIcon />, to: '/assignments' },
+  { id: 'certificate', label: 'Certificate', icon: <CertificateIcon />, to: '/certificates' },
 ];
 
 const Modules = () => {

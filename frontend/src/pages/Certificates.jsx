@@ -3,12 +3,17 @@ import axiosInstance from '../axiosConfig';
 import NavigationPanel from '../components/NavigationPanel';
 import { useAuth } from '../context/AuthContext';
 import './Certificates.css';
+import { ReactComponent as CertificateIcon } from "../icons/certificate.svg";
+import { ReactComponent as AssignmentIcon } from "../icons/assignment.svg";
+import { ReactComponent as DashboardIcon } from "../icons/dashboard.svg";
+import { ReactComponent as ModuleIcon } from "../icons/module.svg";
+
 
 const navItems = [
-    { id: 'dashboard', label: 'Dashboard', icon: 'DB', to: '/student' },
-    { id: 'module', label: 'Module', icon: 'MD', to: '/modules' },
-    { id: 'assignment', label: 'Assignment', icon: 'AS', to: '/assignments' },
-    { id: 'certificate', label: 'Certificate', icon: 'CF', to: '/certificates', active: true },
+  { id: 'dashboard', label: 'Dashboard', icon: <DashboardIcon />, to: '/student'},
+  { id: 'module', label: 'Module', icon: <ModuleIcon />, to: '/modules' },
+  { id: 'assignment', label: 'Assignment', icon: <AssignmentIcon />, to: '/assignments' },
+  { id: 'certificate', label: 'Certificate', icon: <CertificateIcon />, to: '/certificates', active: true },
 ];
 
 const Certificates = () => {

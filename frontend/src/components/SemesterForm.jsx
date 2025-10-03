@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useAuth } from '../context/AuthContext';
 import axiosInstance from '../axiosConfig';
+import './SemesterForm.css';
 
 const defaultFormState = {
   number: '',
@@ -9,16 +10,12 @@ const defaultFormState = {
   modules: [],
 };
 
-const SemesterForm = ({
-  semesters,
-  setSemesters,
-  editingSemester,
-  setEditingSemester,
-}) => {
+const SemesterForm = ({ setSemesters, editingSemester, setEditingSemester }) => {
   const { user } = useAuth();
   const [formData, setFormData] = useState(defaultFormState);
   const [availableModules, setAvailableModules] = useState([]);
-  const [modulesLoading, setModulesLoading] = useState(true);
+  const [modulesLoading, setModulesLoading] = useState(false);
+  const [modulesError, setModulesError] = useState('');
   const [error, setError] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -26,7 +23,6 @@ const SemesterForm = ({
     const fetchModules = async () => {
       if (!user?.token) {
         setAvailableModules([]);
-        setModulesLoading(false);
         return;
       }
 
@@ -35,9 +31,11 @@ const SemesterForm = ({
         const response = await axiosInstance.get('/api/modules', {
           headers: { Authorization: `Bearer ${user.token}` },
         });
-        setAvailableModules(response.data || []);
+        setAvailableModules(Array.isArray(response.data) ? response.data : []);
+        setModulesError('');
       } catch (fetchError) {
-        setError('Failed to load modules. Please refresh and try again.');
+        console.error('Failed to load modules:', fetchError);
+        setModulesError('Failed to load modules. Please refresh and try again.');
       } finally {
         setModulesLoading(false);
       }
@@ -47,38 +45,40 @@ const SemesterForm = ({
   }, [user]);
 
   useEffect(() => {
-    if (editingSemester) {
-      setFormData({
-        number: editingSemester.number?.toString() || '',
-        startDate: editingSemester.startDate
-          ? new Date(editingSemester.startDate).toISOString().split('T')[0]
-          : '',
-        endDate: editingSemester.endDate
-          ? new Date(editingSemester.endDate).toISOString().split('T')[0]
-          : '',
-        modules: (editingSemester.modules || []).map((module) =>
-          typeof module === 'object' ? module._id : module
-        ),
-      });
-      setError('');
-    } else {
+    if (!editingSemester) {
       setFormData(defaultFormState);
       setError('');
+      return;
     }
+
+    setFormData({
+      number: editingSemester.number?.toString() || '',
+      startDate: editingSemester.startDate
+        ? new Date(editingSemester.startDate).toISOString().split('T')[0]
+        : '',
+      endDate: editingSemester.endDate
+        ? new Date(editingSemester.endDate).toISOString().split('T')[0]
+        : '',
+      modules: (editingSemester.modules || [])
+        .map((module) => (typeof module === 'object' ? module?._id : module))
+        .filter(Boolean),
+    });
+    setError('');
   }, [editingSemester]);
 
   const sortedModules = useMemo(() => {
     return [...availableModules].sort((a, b) => {
-      const aTitle = a.title || '';
-      const bTitle = b.title || '';
+      const aTitle = a?.title || '';
+      const bTitle = b?.title || '';
       return aTitle.localeCompare(bTitle, undefined, { sensitivity: 'base' });
     });
   }, [availableModules]);
 
-  const resetForm = () => {
-    setFormData(defaultFormState);
-    setEditingSemester(null);
-    setError('');
+  const isEditing = useMemo(() => Boolean(editingSemester), [editingSemester]);
+
+  const handleFieldChange = (event) => {
+    const { name, value } = event.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
   const handleModulesChange = (event) => {
@@ -93,9 +93,22 @@ const SemesterForm = ({
     setFormData((prev) => ({ ...prev, modules: selected }));
   };
 
+  const handleCancelEdit = () => {
+    if (typeof setEditingSemester === 'function') {
+      setEditingSemester(null);
+    }
+    setFormData(defaultFormState);
+    setError('');
+  };
+
   const handleSubmit = async (event) => {
     event.preventDefault();
     setError('');
+
+    if (!user?.token) {
+      setError('You need to be signed in to manage semesters.');
+      return;
+    }
 
     const parsedNumber = Number(formData.number);
     if (!Number.isInteger(parsedNumber) || parsedNumber < 1) {
@@ -128,156 +141,162 @@ const SemesterForm = ({
     setIsSubmitting(true);
 
     try {
-      if (editingSemester) {
+      if (isEditing) {
         const response = await axiosInstance.put(
           `/api/semesters/${editingSemester._id}`,
           payload,
-          {
-            headers: { Authorization: `Bearer ${user.token}` },
-          }
+          { headers: { Authorization: `Bearer ${user.token}` } }
         );
 
-        setSemesters(
-          semesters.map((semester) =>
-            semester._id === response.data._id ? response.data : semester
+        setSemesters((prev) =>
+          (Array.isArray(prev) ? prev : []).map((semester) =>
+            semester?._id === response.data._id ? response.data : semester
           )
         );
       } else {
         const response = await axiosInstance.post('/api/semesters', payload, {
           headers: { Authorization: `Bearer ${user.token}` },
         });
-        setSemesters([...semesters, response.data]);
+
+        setSemesters((prev) => [
+          ...(Array.isArray(prev) ? prev : []),
+          response.data,
+        ]);
       }
 
-      resetForm();
-    } catch (submitError) {
-      if (submitError.response?.data?.message) {
-        setError(submitError.response.data.message);
-      } else {
-        setError('Failed to save semester.');
+      if (typeof setEditingSemester === 'function') {
+        setEditingSemester(null);
       }
+      setFormData(defaultFormState);
+    } catch (submitError) {
+      const message =
+        submitError.response?.data?.message || 'Failed to save semester. Please try again.';
+      setError(message);
     } finally {
       setIsSubmitting(false);
     }
   };
 
   return (
-    <form onSubmit={handleSubmit} className="bg-white p-6 shadow-md rounded mb-6">
-      <h1 className="text-2xl font-bold mb-4">
-        {editingSemester ? 'Edit Semester' : 'Add Semester'}
-      </h1>
+    <form className="semester-form" onSubmit={handleSubmit}>
+      <header className="semester-form__header">
+        <div>
+          <h2 className="semester-form__title">
+            {isEditing ? 'Edit Semester' : 'Add Semester'}
+          </h2>
+          <p className="semester-form__subtitle">
+            Set the semester timeline and assign the modules your students will follow.
+          </p>
+        </div>
+        {isEditing && (
+          <button
+            type="button"
+            className="semester-form__link"
+            onClick={handleCancelEdit}
+          >
+            Cancel edit
+          </button>
+        )}
+      </header>
 
-      {error && (
-        <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
-          {error}
+      {error && <div className="semester-form__error">{error}</div>}
+      {modulesError && (
+        <div className="semester-form__alert" role="status">
+          {modulesError}
         </div>
       )}
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
-            Semester Number
+      <div className="semester-form__grid">
+        <div className="semester-form__field">
+          <label className="semester-form__label" htmlFor="semester-number">
+            Semester number
           </label>
           <input
+            id="semester-number"
+            name="number"
             type="number"
             min="1"
             value={formData.number}
-            onChange={(event) =>
-              setFormData((prev) => ({ ...prev, number: event.target.value }))
-            }
-            className="w-full p-2 border rounded"
+            onChange={handleFieldChange}
+            className="semester-form__input"
+            placeholder="e.g. 1"
             required
           />
         </div>
 
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
-            Start Date
+        <div className="semester-form__field">
+          <label className="semester-form__label" htmlFor="semester-start">
+            Start date
           </label>
           <input
+            id="semester-start"
+            name="startDate"
             type="date"
             value={formData.startDate}
-            onChange={(event) =>
-              setFormData((prev) => ({ ...prev, startDate: event.target.value }))
-            }
-            className="w-full p-2 border rounded"
+            onChange={handleFieldChange}
+            className="semester-form__input"
             required
           />
         </div>
 
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
-            End Date
+        <div className="semester-form__field">
+          <label className="semester-form__label" htmlFor="semester-end">
+            End date
           </label>
           <input
+            id="semester-end"
+            name="endDate"
             type="date"
             value={formData.endDate}
-            onChange={(event) =>
-              setFormData((prev) => ({ ...prev, endDate: event.target.value }))
-            }
-            className="w-full p-2 border rounded"
+            onChange={handleFieldChange}
+            className="semester-form__input"
             required
           />
         </div>
+
+        <div className="semester-form__field semester-form__field--full">
+          <label className="semester-form__label" htmlFor="semester-modules">
+            Modules (select up to 4)
+          </label>
+          {modulesLoading ? (
+            <p className="semester-form__hint">Loading modules...</p>
+          ) : sortedModules.length === 0 ? (
+            <p className="semester-form__hint">
+              No modules are available yet. Create a module first to link it here.
+            </p>
+          ) : (
+            <>
+              <select
+                id="semester-modules"
+                multiple
+                value={formData.modules}
+                onChange={handleModulesChange}
+                className="semester-form__select"
+                aria-label="Select modules for this semester"
+              >
+                {sortedModules.map((module) => (
+                  <option key={module._id} value={module._id}>
+                    {module.title || 'Untitled module'}
+                  </option>
+                ))}
+              </select>
+              <p className="semester-form__hint">
+                Hold Ctrl (Windows) or Command (Mac) to select multiple modules.
+              </p>
+            </>
+          )}
+        </div>
       </div>
 
-      <div className="mb-4">
-        <label className="block text-sm font-medium text-gray-700 mb-2">
-          Modules (Select up to 4)
-        </label>
-        {modulesLoading ? (
-          <p className="text-sm text-gray-500">Loading modules...</p>
-        ) : sortedModules.length === 0 ? (
-          <p className="text-sm text-gray-500">
-            No modules available yet. Create a module first to link it to a semester.
-          </p>
-        ) : (
-          <select
-            multiple
-            value={formData.modules}
-            onChange={handleModulesChange}
-            className="w-full p-2 border rounded h-32"
-            aria-label="Select modules for this semester"
-          >
-            {sortedModules.map((module) => (
-              <option key={module._id} value={module._id}>
-                {module.title || 'Untitled Module'}
-              </option>
-            ))}
-          </select>
-        )}
-        {sortedModules.length > 0 && (
-          <p className="text-xs text-gray-500 mt-1">
-            Hold Ctrl (Windows) or Command (Mac) to select multiple modules.
-          </p>
-        )}
-      </div>
-
-      <div className="flex items-center justify-end gap-3">
-        {editingSemester && (
-          <button
-            type="button"
-            onClick={resetForm}
-            className="px-4 py-2 border border-gray-300 rounded hover:bg-gray-100"
-            disabled={isSubmitting}
-          >
-            Cancel
-          </button>
-        )}
+      <footer className="semester-form__actions">
         <button
           type="submit"
-          className="bg-[#005691] text-white px-4 py-2 rounded hover:bg-[#004080] disabled:opacity-60"
+          className="semester-form__submit"
           disabled={isSubmitting}
         >
-          {isSubmitting
-            ? editingSemester
-              ? 'Updating...'
-              : 'Saving...'
-            : editingSemester
-            ? 'Update Semester'
-            : 'Add Semester'}
+          {isSubmitting ? (isEditing ? 'Updating...' : 'Saving...') : isEditing ? 'Update Semester' : 'Add Semester'}
         </button>
-      </div>
+      </footer>
     </form>
   );
 };

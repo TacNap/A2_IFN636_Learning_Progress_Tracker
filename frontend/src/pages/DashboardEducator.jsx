@@ -1,4 +1,9 @@
 import { useAuth } from '../context/AuthContext';
+import { ReactComponent as CertificateIcon } from "../icons/certificate.svg";
+import { ReactComponent as AssignmentIcon } from "../icons/assignment.svg";
+import { ReactComponent as DashboardIcon } from "../icons/dashboard.svg";
+import { ReactComponent as ModuleIcon } from "../icons/module.svg";
+
 
 const DashboardEducator = () => {
   const { user } = useAuth();

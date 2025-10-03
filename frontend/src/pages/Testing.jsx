@@ -4,7 +4,7 @@ import SemesterList from '../components/SemesterList';
 import axiosInstance from '../axiosConfig';
 import { useAuth } from '../context/AuthContext';
 
-const Testing = () => {
+const SemesterNew = () => {
   const { user } = useAuth();
   const [semesters, setSemesters] = useState([]);
   const [editingSemester, setEditingSemester] = useState(null);
@@ -86,4 +86,4 @@ const Testing = () => {
   );
 };
 
-export default Testing;
+export default SemesterNew;
