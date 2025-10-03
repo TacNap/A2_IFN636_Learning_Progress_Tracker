@@ -79,7 +79,7 @@ const SemesterNew = () => {
         <SemesterList
           semesters={semesters}
           setSemesters={setSemesters}
-          setEditingSemester={setEditingSemester}
+          onEditSemester={setEditingSemester}
         />
       )}
     </div>

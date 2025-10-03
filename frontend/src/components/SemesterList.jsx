@@ -4,7 +4,14 @@ import { useAuth } from '../context/AuthContext';
 import axiosInstance from '../axiosConfig';
 import './SemesterList.css';
 
-const SemesterList = ({ semesters, setSemesters, setEditingSemester }) => {
+const SemesterList = ({
+  semesters,
+  setSemesters,
+  setEditingSemester,
+  onEditSemester,
+  onEditModule,
+  setEditingModule,
+}) => {
   const { user } = useAuth();
   const navigate = useNavigate();
   const [modulesById, setModulesById] = useState({});
@@ -119,16 +126,41 @@ const SemesterList = ({ semesters, setSemesters, setEditingSemester }) => {
     return searchTarget.includes(term);
   };
 
-  const handleModuleEdit = () => {
-    window.alert('Module editing from this list is coming soon.');
-  };
+  const handleModuleEdit = (module) => {
+    if (!module) {
+      return;
+    }
 
-  const handleModuleDelete = () => {
-    window.alert('Module removal from a semester is coming soon.');
+    if (typeof onEditModule === 'function') {
+      onEditModule(module);
+      return;
+    }
+
+    if (typeof setEditingModule === 'function') {
+      setEditingModule(module);
+      return;
+    }
+
+    const moduleId = module?._id;
+    if (moduleId) {
+      navigate('/modules/new', {
+        state: { moduleId, module },
+      });
+      return;
+    }
+
+    navigate('/modules/new', {
+      state: { module },
+    });
   };
 
   const handleSemesterEdit = (semester) => {
     if (!semester) {
+      return;
+    }
+
+    if (typeof onEditSemester === 'function') {
+      onEditSemester(semester);
       return;
     }
 
@@ -306,16 +338,10 @@ const SemesterList = ({ semesters, setSemesters, setEditingSemester }) => {
                         <button
                           type="button"
                           className="semester-list__row-button"
-                          onClick={handleModuleEdit}
+                          onClick={() => handleModuleEdit(module)}
+                          disabled={!module}
                         >
                           Edit
-                        </button>
-                        <button
-                          type="button"
-                          className="semester-list__row-button semester-list__row-button--danger"
-                          onClick={handleModuleDelete}
-                        >
-                          Delete
                         </button>
                       </div>
                     </div>

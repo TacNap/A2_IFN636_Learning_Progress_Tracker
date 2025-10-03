@@ -88,11 +88,6 @@ const SemesterNew = () => {
       setEditingSemester(requestedSemesterData);
       setRequestedSemesterData(null);
       setRequestedSemesterId(null);
-      return;
-    }
-
-    if (!requestedSemesterId && !requestedSemesterData) {
-      setEditingSemester(null);
     }
   }, [requestedSemesterId, requestedSemesterData, semesters]);
 

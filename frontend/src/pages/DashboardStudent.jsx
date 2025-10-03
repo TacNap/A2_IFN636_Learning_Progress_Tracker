@@ -89,6 +89,19 @@ const DashboardStudent = () => {
     });
   };
 
+  const handleModuleEdit = (module) => {
+    if (!module) {
+      return;
+    }
+
+    navigate('/modules/new', {
+      state: {
+        moduleId: module?._id ?? null,
+        module,
+      },
+    });
+  };
+
   if (!user) {
     return (
       <div className="container mx-auto p-6">
@@ -143,7 +156,8 @@ const DashboardStudent = () => {
             <SemesterList
               semesters={semesters}
               setSemesters={setSemesters}
-              setEditingSemester={handleSemesterEdit}
+              onEditSemester={handleSemesterEdit}
+              onEditModule={handleModuleEdit}
             />
           )}
         </div>
