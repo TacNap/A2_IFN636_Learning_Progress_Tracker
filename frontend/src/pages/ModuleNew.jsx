@@ -12,8 +12,8 @@ import { ReactComponent as ModuleIcon } from "../icons/module.svg";
 
 
 const navItems = [
-  { id: 'dashboard', label: 'Dashboard', icon: <DashboardIcon />, to: '/student', active: true },
-  { id: 'module', label: 'Module', icon: <ModuleIcon />, to: '/modules'},
+  { id: 'dashboard', label: 'Dashboard', icon: <DashboardIcon />, to: '/student'},
+  { id: 'module', label: 'Module', icon: <ModuleIcon />, to: '/modules', active: true},
   { id: 'assignment', label: 'Assignment', icon: <AssignmentIcon />, to: '/assignments'},
   { id: 'certificate', label: 'Certificate', icon: <CertificateIcon />, to: '/certificates' },
 ];
