@@ -93,7 +93,7 @@ const DashboardEducator = () => {
               </div>
               <div className='educator-dashboard__heading'>
                 <h1>Dashboard</h1>
-                <p>Track your modules and progress.</p>
+                <p>Track all students here</p>
               </div>
             </header>
 
