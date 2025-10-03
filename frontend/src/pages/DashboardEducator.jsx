@@ -1,32 +1,45 @@
 import { useState, useEffect } from 'react';
 import axiosInstance from '../axiosConfig';
 import Navbar from "../components/Navbar";
+import { useAuth } from '../context/AuthContext';
 
 const DashboardEducator = () => {
+  const { user } = useAuth();
   const [students, setStudents] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    fetchStudents();
-  }, []);
+    const fetchStudents = async () => {
+      if (!user?.token) {
+        setError('You must be logged in to view students.');
+        setLoading(false);
+        return;
+      }
 
-  const fetchStudents = async () => {
-    try {
-      setLoading(true);
-      const token = localStorage.getItem('token');
-      const response = await axiosInstance.get('/api/auth/students', {
-        headers: { Authorization: `Bearer ${token}` }
-      });
-      setStudents(response.data);
-      setError(null);
-    } catch (err) {
-      setError(err.response?.data?.message || 'Failed to fetch students');
-      console.error('Error fetching students:', err);
-    } finally {
-      setLoading(false);
-    }
-  };
+      if (user.profileType !== 'educator') {
+        setError('Access restricted to educator accounts.');
+        setLoading(false);
+        return;
+      }
+
+      try {
+        setLoading(true);
+        const response = await axiosInstance.get('/api/educator/students', {
+          headers: { Authorization: `Bearer ${user.token}` }
+        });
+        setStudents(response.data);
+        setError(null);
+      } catch (err) {
+        setError(err.response?.data?.message || 'Failed to fetch students');
+        console.error('Error fetching students:', err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchStudents();
+  }, [user]);
 
   return (
     <div>
@@ -43,7 +56,7 @@ const DashboardEducator = () => {
             </div>
           )}
           
-          {error && (
+          {error && !loading && (
             <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
               {error}
             </div>
@@ -64,17 +77,11 @@ const DashboardEducator = () => {
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                       Email
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      University
-                    </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Address
-                    </th>
                   </tr>
                 </thead>
                 <tbody className="bg-white divide-y divide-gray-200">
                   {students.map((student) => (
-                    <tr key={student.id} className="hover:bg-gray-50">
+                    <tr key={student.email} className="hover:bg-gray-50">
                       <td className="px-6 py-4 whitespace-nowrap">
                         <div className="text-sm font-medium text-gray-900">
                           {student.name}
@@ -83,16 +90,6 @@ const DashboardEducator = () => {
                       <td className="px-6 py-4 whitespace-nowrap">
                         <div className="text-sm text-gray-600">
                           {student.email}
-                        </div>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="text-sm text-gray-600">
-                          {student.university || 'N/A'}
-                        </div>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="text-sm text-gray-600">
-                          {student.address || 'N/A'}
                         </div>
                       </td>
                     </tr>

@@ -15,6 +15,7 @@ app.use('/api/modules', require('./routes/moduleRoutes'));
 app.use('/api/assignments', require('./routes/assignmentRoutes'));
 app.use('/api/certificates', require('./routes/certificatesRoutes'));
 app.use('/api/semesters', require('./routes/semesterRoutes'));
+app.use('/api/educator', require('./routes/educatorRoutes'));
 
 if (require.main === module) {
     connectDB();
