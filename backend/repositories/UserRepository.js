@@ -81,6 +81,13 @@ class UserRepository {
     await doc.save();
     return this.mapDoc(doc);
   }
+   // NEW: Find all students
+  async findAllStudents() {
+    const docs = await BaseUserModel.find({ profileType: 'student' })
+      .select('-password')
+      .sort({ name: 1 });
+    return docs.map(doc => this.mapDoc(doc));
+  }
 }
 
 module.exports = new UserRepository();
