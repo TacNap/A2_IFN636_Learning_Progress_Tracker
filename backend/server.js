@@ -2,6 +2,7 @@
 const dotenv = require('dotenv');
 const cors = require('cors');
 const connectDB = require('./config/db');
+const educatorRoutes = require('./routes/educatorRoutes');
 
 dotenv.config();
 
