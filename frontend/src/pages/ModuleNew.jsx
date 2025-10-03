@@ -12,12 +12,7 @@ import { ReactComponent as ModuleIcon } from "../icons/module.svg";
 import Navbar from "../components/Navbar";
 
 
-const navItems = [
-  { id: 'dashboard', label: 'Dashboard', icon: <DashboardIcon />, to: '/student'},
-  { id: 'module', label: 'Module', icon: <ModuleIcon />, to: '/modules', active: true},
-  { id: 'assignment', label: 'Assignment', icon: <AssignmentIcon />, to: '/assignments'},
-  { id: 'certificate', label: 'Certificate', icon: <CertificateIcon />, to: '/certificates' },
-];
+
 
 const ModuleNew = () => {
   const { user } = useAuth();
@@ -26,6 +21,15 @@ const ModuleNew = () => {
   const [editingModule, setEditingModule] = useState(null);
   const [requestedModuleId, setRequestedModuleId] = useState(location.state?.moduleId ?? null);
   const [requestedModuleData, setRequestedModuleData] = useState(location.state?.module ?? null);
+  
+  const dashboardPath = user?.profileType === 'educator' ? '/educator' : '/student';
+
+  const navItems = [
+    { id: 'dashboard', label: 'Dashboard', icon: <DashboardIcon />, to: dashboardPath },
+    { id: 'module', label: 'Module', icon: <ModuleIcon />, to: '/modules', active: true },
+    { id: 'assignment', label: 'Assignment', icon: <AssignmentIcon />, to: '/assignments' },
+    { id: 'certificate', label: 'Certificate', icon: <CertificateIcon />, to: '/certificates' },
+  ];
 
   const initials = useMemo(() => {
     if (user?.name) {

@@ -1,4 +1,3 @@
-
 const jwt = require('jsonwebtoken');
 const userRepository = require('../repositories/UserRepository');
 
@@ -81,5 +80,23 @@ const updateUserProfile = async (req, res) => {
     }
 };
 
-module.exports = { registerUser, loginUser, updateUserProfile, getProfile };
+const getAllStudents = async (req, res) => {
+    try {
+        if (req.user.profileType !== 'educator') {
+            return res.status(403).json({ message: 'Access denied. Educators only.' });
+        }
 
+        const students = await userRepository.findAllStudents();
+        res.json(students);
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
+
+module.exports = { 
+    registerUser, 
+    loginUser, 
+    updateUserProfile, 
+    getProfile,
+    getAllStudents 
+};

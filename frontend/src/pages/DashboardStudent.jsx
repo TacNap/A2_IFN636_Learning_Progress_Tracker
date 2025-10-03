@@ -11,12 +11,8 @@ import { ReactComponent as DashboardIcon } from "../icons/dashboard.svg";
 import { ReactComponent as ModuleIcon } from "../icons/module.svg";
 import Navbar from "../components/Navbar";
 
-const navItems = [
-  { id: 'dashboard', label: 'Dashboard', icon: <DashboardIcon />, to: '/student', active: true },
-  { id: 'module', label: 'Module', icon: <ModuleIcon />, to: '/modules' },
-  { id: 'assignment', label: 'Assignment', icon: <AssignmentIcon />, to: '/assignments' },
-  { id: 'certificate', label: 'Certificate', icon: <CertificateIcon />, to: '/certificates' },
-];
+
+
 
 const DashboardStudent = () => {
   const { user } = useAuth();
@@ -24,6 +20,15 @@ const DashboardStudent = () => {
   const [semesters, setSemesters] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+
+  const dashboardPath = user?.profileType === 'educator' ? '/educator' : '/student';
+
+  const navItems = [
+    { id: 'dashboard', label: 'Dashboard', icon: <DashboardIcon />, to: dashboardPath, active: true },
+    { id: 'module', label: 'Module', icon: <ModuleIcon />, to: '/modules' },
+    { id: 'assignment', label: 'Assignment', icon: <AssignmentIcon />, to: '/assignments' },
+    { id: 'certificate', label: 'Certificate', icon: <CertificateIcon />, to: '/certificates' },
+  ];
   // don't think we need this.
   const initials = useMemo(() => {
     if (user?.name) {

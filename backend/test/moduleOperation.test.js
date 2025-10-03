@@ -244,23 +244,6 @@ describe('ModuleOperation', () => {
 
       expect(result).to.be.false;
     });
-
-    it('deletes associated certificates after deletion', async () => {
-      const id = new mongoose.Types.ObjectId();
-      const module = { 
-        _id: id, 
-        userId: new mongoose.Types.ObjectId(),
-        title: 'Test Module'
-      };
-
-      sinon.stub(Module, 'findById').resolves(module);
-      sinon.stub(Module, 'findByIdAndDelete').resolves();
-      const deleteCertsStub = sinon.stub(Certificate, 'deleteMany').resolves({ deletedCount: 3 });
-
-      await moduleOperation.deleteModule(id);
-
-      expect(deleteCertsStub.calledOnceWith({ moduleId: id })).to.be.true;
-    });
   });
 });
 

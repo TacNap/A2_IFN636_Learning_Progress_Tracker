@@ -32,7 +32,7 @@ class UserRepository {
       email: plain.email,
       university: plain.university,
       address: plain.address,
-      profileType,
+      profileType: plain.profileType,
       createdAt: plain.createdAt,
       updatedAt: plain.updatedAt,
     });
@@ -81,7 +81,15 @@ class UserRepository {
     await doc.save();
     return this.mapDoc(doc);
   }
+
+  async findAllStudents() {
+    const docs = await BaseUserModel.find({ profileType: Student.profileType })
+      .select({ name: 1, email: 1, _id: 0 })
+      .sort({ name: 1 })
+      .lean();
+
+    return docs.map(({ name, email }) => ({ name, email }));
+  }
 }
 
 module.exports = new UserRepository();
-
