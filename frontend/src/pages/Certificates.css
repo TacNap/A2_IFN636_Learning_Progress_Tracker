@@ -1,0 +1,194 @@
+.certificates-page {
+  background-color: #f5f5f7;
+  min-height: 100vh;
+  padding: 32px 48px;
+  font-family: "Inter", "Segoe UI", Arial, sans-serif;
+}
+
+.certificates-container {
+  max-width: 100%;
+  margin: 0 auto;
+}
+
+.certificates-list {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.certificate-card {
+  background-color: #ffffff;
+  border-radius: 24px;
+  padding: 32px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+  border: 1px solid #e5e7eb;
+}
+
+.certificate-header {
+  margin-bottom: 24px;
+}
+
+.certificate-header h1 {
+  margin: 0 0 8px 0;
+  font-size: 28px;
+  font-weight: 700;
+  color: #1a1a1a;
+}
+
+.certificate-header p {
+  margin: 0;
+  font-size: 15px;
+  color: #6b7280;
+}
+
+.certificate-content {
+  background-color: #f9fafb;
+  border-radius: 16px;
+  padding: 64px 48px;
+  text-align: center;
+}
+
+.certificate-content h2 {
+  margin: 0 0 16px 0;
+  font-size: 32px;
+  font-weight: 700;
+  color: #1a1a1a;
+}
+
+.certificate-content p {
+  margin: 0 0 8px 0;
+  font-size: 16px;
+  color: #374151;
+  line-height: 1.6;
+}
+
+.certificate-content p:last-of-type {
+  font-size: 14px;
+  color: #9ca3af;
+  margin-bottom: 32px;
+}
+
+.certificate-module-name {
+  font-weight: 600;
+  color: #1a1a1a;
+}
+
+.certificate-actions {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  align-items: center;
+}
+
+.certificate-download-btn {
+  background-color: #2563eb;
+  color: #ffffff;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.certificate-download-btn:hover {
+  background-color: #1d4ed8;
+}
+
+.certificate-delete-btn {
+  background-color: #ef4444;
+  color: #ffffff;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.certificate-delete-btn:hover {
+  background-color: #dc2626;
+}
+
+.certificates-loading,
+.certificates-error {
+  background-color: #ffffff;
+  border-radius: 24px;
+  padding: 48px;
+  text-align: center;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+}
+
+.certificates-loading {
+  color: #6b7280;
+  font-size: 16px;
+}
+
+.certificates-error {
+  color: #ef4444;
+}
+
+.certificates-error p {
+  margin: 0 0 16px 0;
+  font-size: 16px;
+}
+
+.certificates-retry-btn {
+  background-color: #2563eb;
+  color: #ffffff;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.certificates-retry-btn:hover {
+  background-color: #1d4ed8;
+}
+
+.certificates-empty {
+  background-color: #ffffff;
+  border-radius: 24px;
+  padding: 64px 48px;
+  text-align: center;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+  color: #6b7280;
+  font-size: 16px;
+}
+
+@media (max-width: 768px) {
+  .certificates-page {
+    padding: 24px 16px;
+  }
+
+  .certificate-card {
+    padding: 24px;
+  }
+
+  .certificate-header h1 {
+    font-size: 24px;
+  }
+
+  .certificate-content {
+    padding: 48px 24px;
+  }
+
+  .certificate-content h2 {
+    font-size: 24px;
+  }
+
+  .certificate-actions {
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .certificate-download-btn,
+  .certificate-delete-btn {
+    width: 100%;
+  }
+}

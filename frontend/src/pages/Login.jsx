@@ -3,13 +3,20 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import axiosInstance from "../axiosConfig";
 import "./Login.css";
+import { ReactComponent as PhoneIcon } from "../icons/phone.svg";
+import { ReactComponent as GoogleIcon } from "../icons/google.svg";
+import { ReactComponent as FacebookIcon } from "../icons/facebook.svg";
+import { ReactComponent as AppleIcon } from "../icons/apple.svg";
+import { ReactComponent as EmailIcon } from "../icons/email.svg";
+import { ReactComponent as PasswordIcon } from "../icons/password.svg";
+import heroImage from "../icons/hero.png";
 
 // Placeholders for when we get images for icons
 const socialButtons = [
-  { id: "phone", label: "PH", ariaLabel: "Continue with phone" },
-  { id: "google", label: "G", ariaLabel: "Continue with Google" },
-  { id: "facebook", label: "F", ariaLabel: "Continue with Facebook" },
-  { id: "apple", label: "A", ariaLabel: "Continue with Apple" },
+  { id: "phone", label: "PH", ariaLabel: "Continue with phone", icon: <PhoneIcon /> },
+  { id: "google", label: "G", ariaLabel: "Continue with Google", icon: <GoogleIcon /> },
+  { id: "facebook", label: "F", ariaLabel: "Continue with Facebook", icon: <FacebookIcon /> },
+  { id: "apple", label: "A", ariaLabel: "Continue with Apple", icon: <AppleIcon /> },
 ];
 
 const renderSocialButtons = (variant) => (
@@ -21,7 +28,7 @@ const renderSocialButtons = (variant) => (
         className="social-button"
         aria-label={button.ariaLabel}
       >
-        <span aria-hidden="true">{button.label}</span>
+        <span aria-hidden="true">{button.icon}</span>
       </button>
     ))}
   </div>
@@ -70,8 +77,7 @@ const Login = () => {
     <div className="auth-page">
       <section className="auth-hero" aria-labelledby="auth-welcome-heading">
         <div className="hero-content">
-          <div className="hero-illustration" role="img" aria-label="Illustration placeholder" />
-
+          <img src={heroImage} alt="Illustration of learning progress tracking" className="hero-illustration"/>
           <h1 id="auth-welcome-heading" className="hero-title">
             Welcome to the Online Learning Progress Tracker
           </h1>
@@ -104,7 +110,7 @@ const Login = () => {
           <form className="auth-form" onSubmit={handleSubmit} noValidate>
             <label className="input-field">
               <span className="input-icon" aria-hidden="true">
-                <span className="icon-placeholder">EM</span>
+                <span className="icon-placeholder"><EmailIcon /></span>
               </span>
               <input
                 type="email"
@@ -120,7 +126,7 @@ const Login = () => {
 
             <label className="input-field">
               <span className="input-icon" aria-hidden="true">
-                <span className="icon-placeholder">PW</span>
+                <span className="icon-placeholder"><PasswordIcon /></span>
               </span>
               <input
                 type={showPassword ? "text" : "password"}

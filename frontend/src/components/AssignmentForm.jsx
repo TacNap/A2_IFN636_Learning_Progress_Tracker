@@ -68,7 +68,7 @@ const AssignmentForm = ({assignments, setAssignments, editingAssignment, setEdit
     };
 
     return (
-    <form onSubmit={handleSubmit} className="bg-white p-6 shadow-md rounded mb-6">
+    <form onSubmit={handleSubmit} className="bg-white p-6 shadow-md rounded-3xl mb-6">
       <h1 className="text-2xl font-bold mb-4">{editingAssignment ? 'Edit Assignment' : 'Add Assignment'}</h1>
       
       {error && (
@@ -108,7 +108,7 @@ const AssignmentForm = ({assignments, setAssignments, editingAssignment, setEdit
         />
       </div>
 
-      <button type="submit" className="w-full bg-[#005691] text-white p-2 rounded hover:bg-[#004080]">
+      <button type="submit" className="w-full bg-[#2563eb] text-white px-6 py-3 rounded-lg font-semibold hover:bg-[#1d4ed8] transition-colors">
         {editingAssignment ? 'Update Assignment' : 'Add Assignment'}
       </button>
     </form>

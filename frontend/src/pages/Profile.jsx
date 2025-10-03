@@ -3,6 +3,14 @@ import NavigationPanel from '../components/NavigationPanel';
 import { useAuth } from '../context/AuthContext';
 import axiosInstance from '../axiosConfig';
 import './Profile.css';
+import { ReactComponent as EmailIcon } from "../icons/email.svg";
+import { ReactComponent as UserIcon } from "../icons/user.svg";
+import { ReactComponent as AddressIcon } from "../icons/address.svg";
+import { ReactComponent as CertificateIcon } from "../icons/certificate.svg";
+import { ReactComponent as AssignmentIcon } from "../icons/assignment.svg";
+import { ReactComponent as DashboardIcon } from "../icons/dashboard.svg";
+import { ReactComponent as ModuleIcon } from "../icons/module.svg";
+import { ReactComponent as UniversityIcon } from "../icons/uni.svg";
 
 const createInitialState = () => ({
   name: '',
@@ -33,10 +41,10 @@ const Profile = () => {
 
   const navItems = useMemo(
     () => [
-      { id: 'dashboard', label: 'Dashboard', icon: 'DB', to: user?.profileType === 'educator' ? '/educator' : '/student' },
-      { id: 'module', label: 'Module', icon: 'MD', to: '/modules' },
-      { id: 'assignment', label: 'Assignment', icon: 'AS', to: '/assignments' },
-      { id: 'certificate', label: 'Certificate', icon: 'CF', to: '/certificates' },
+      { id: 'dashboard', label: 'Dashboard', icon: <DashboardIcon />, to: user?.profileType === 'educator' ? '/educator' : '/student' },
+      { id: 'module', label: 'Module', icon: <ModuleIcon />, to: '/modules' },
+      { id: 'assignment', label: 'Assignment', icon: <AssignmentIcon />, to: '/assignments' },
+      { id: 'certificate', label: 'Certificate', icon: <CertificateIcon />, to: '/certificates' },
     ],
     [user?.profileType]
   );
@@ -127,7 +135,7 @@ const Profile = () => {
           <form className="profile-form" onSubmit={handleSubmit} noValidate>
             <label className="profile-field">
               <span className="profile-field__icon" aria-hidden="true">
-                NM
+                <UserIcon />
               </span>
               <input
                 type="text"
@@ -141,7 +149,7 @@ const Profile = () => {
 
             <label className="profile-field">
               <span className="profile-field__icon" aria-hidden="true">
-                EM
+                <EmailIcon />
               </span>
               <input
                 type="email"
@@ -155,7 +163,7 @@ const Profile = () => {
 
             <label className="profile-field">
               <span className="profile-field__icon" aria-hidden="true">
-                UN
+                <UniversityIcon />
               </span>
               <input
                 type="text"
@@ -169,7 +177,7 @@ const Profile = () => {
 
             <label className="profile-field">
               <span className="profile-field__icon" aria-hidden="true">
-                AD
+                <AddressIcon />
               </span>
               <input
                 type="text"
