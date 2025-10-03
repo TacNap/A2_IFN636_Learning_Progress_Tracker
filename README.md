@@ -5,17 +5,24 @@
 * Signup
 * Login
 * Logout
+* View profile
 * Update profile
 * Add module
 * View module
 * Update module
 * Delete module
-* Add quiz
-* View quiz
-* Update quiz
-* Delete quiz
+* Add assignment
+* View assignment
+* Update assignment
+* Delete assignment
 * Download certitifcate
 * Delete certificate
+* Add semester
+* View semester
+* Update semester
+* Delete semester
+* Studnet Dashboard
+* Educator Dashboard
 
 ---------
 
