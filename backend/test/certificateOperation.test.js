@@ -4,8 +4,11 @@ const mongoose = require('mongoose');
 
 const Certificate = require('../models/Certificate');
 const Module = require('../models/Module');
-const User = require('../models/User');
+const userRepository = require('../repositories/UserRepository');
+const Student = require('../domain/Student');
+
 const certificateOperation = require('../operations/certificateOperation');
+const UserRepository = require('../repositories/UserRepository');
 
 describe('CertificateOperation', () => {
   afterEach(() => {
@@ -95,10 +98,12 @@ describe('CertificateOperation', () => {
         completedLessons: 10
       };
       
-      const user = {
-        _id: userId,
-        name: 'Test User'
-      };
+      const user = new Student({
+        id: userId.toString(),
+        name: 'Test User',
+        email: 'test@example.com',
+        profileType: 'student'
+      });
 
       const createdCert = {
         _id: new mongoose.Types.ObjectId(),
@@ -110,7 +115,7 @@ describe('CertificateOperation', () => {
       };
 
       sinon.stub(Module, 'findById').resolves(module);
-      sinon.stub(User, 'findById').resolves(user);
+      sinon.stub(userRepository, 'findById').resolves(user);
       sinon.stub(Certificate, 'findOne').resolves(null);
       sinon.stub(Certificate, 'create').resolves(createdCert);
 
@@ -124,7 +129,7 @@ describe('CertificateOperation', () => {
       const moduleId = new mongoose.Types.ObjectId();
 
       sinon.stub(Module, 'findById').resolves(null);
-      sinon.stub(User, 'findById').resolves({ _id: userId });
+      sinon.stub(userRepository, 'findById').resolves({ _id: userId });
       sinon.stub(Certificate, 'findOne').resolves(null);
 
       try {
@@ -140,8 +145,13 @@ describe('CertificateOperation', () => {
       const userId = new mongoose.Types.ObjectId();
       const moduleId = new mongoose.Types.ObjectId();
 
-      sinon.stub(Module, 'findById').resolves({ _id: moduleId, totalLessons: 10 });
-      sinon.stub(User, 'findById').resolves(null);
+      sinon.stub(Module, 'findById').resolves({ 
+        _id: moduleId, 
+        title: 'Test Module',  
+        totalLessons: 10,
+        completedLessons: 10   
+      });
+      sinon.stub(userRepository, 'findById').resolves(null);
       sinon.stub(Certificate, 'findOne').resolves(null);
 
       try {
@@ -157,12 +167,19 @@ describe('CertificateOperation', () => {
       const userId = new mongoose.Types.ObjectId();
       const moduleId = new mongoose.Types.ObjectId();
 
+      const user = new Student({
+        id: userId.toString(),
+        name: 'Test User',
+        email: 'test@example.com',
+        profileType: 'student'
+      });
+
       sinon.stub(Module, 'findById').resolves({ 
         _id: moduleId, 
         totalLessons: 0,
         completedLessons: 0 
       });
-      sinon.stub(User, 'findById').resolves({ _id: userId });
+      sinon.stub(userRepository, 'findById').resolves(user);
       sinon.stub(Certificate, 'findOne').resolves(null);
 
       try {
@@ -178,12 +195,19 @@ describe('CertificateOperation', () => {
       const userId = new mongoose.Types.ObjectId();
       const moduleId = new mongoose.Types.ObjectId();
 
+      const user = new Student({
+        id: userId.toString(),
+        name: 'Test User',
+        email: 'test@example.com',
+        profileType: 'student'
+      });
+
       sinon.stub(Module, 'findById').resolves({ 
         _id: moduleId, 
         totalLessons: 10,
         completedLessons: 5
       });
-      sinon.stub(User, 'findById').resolves({ _id: userId });
+      sinon.stub(userRepository, 'findById').resolves(user);
       sinon.stub(Certificate, 'findOne').resolves(null);
 
       try {
@@ -199,12 +223,20 @@ describe('CertificateOperation', () => {
       const userId = new mongoose.Types.ObjectId();
       const moduleId = new mongoose.Types.ObjectId();
 
+      const user = new Student({
+        id: userId.toString(),
+        name: 'Test User',
+        email: 'test@example.com',
+        profileType: 'student'
+      });
+
       sinon.stub(Module, 'findById').resolves({ 
-        _id: moduleId, 
+        _id: moduleId,
+        title: 'Test Module',
         totalLessons: 10,
         completedLessons: 10
       });
-      sinon.stub(User, 'findById').resolves({ _id: userId });
+      sinon.stub(userRepository, 'findById').resolves(user);
       sinon.stub(Certificate, 'findOne').resolves({ _id: new mongoose.Types.ObjectId() });
 
       try {
