@@ -69,7 +69,21 @@ const Assignments = () => {
       />
       <main className="assignment-page__content">
         <div className="assignment-page__inner">
+          <header className='assignment-create__header'>
+          <div className='assignment-create__breadcrumb' aria-label='Breadcrumb'>
+            <span>Home</span>
+            <span aria-hidden='true'>&gt;</span>
+            <span>Assignments</span>
+            <span aria-hidden='true'>&gt;</span>
+            <span className='assignment-create__breadcrumb-current'>Assignment</span>
+          </div>
+          <div className='assignment-create__heading'>
+            <h1>Assignments</h1>
+          </div>
+        </header>
+          <section className='assignment-create__form-area' aria-label='Assignment form'>
           <AssignmentList assignments={assignments} setAssignments={setAssignments} />
+          </section>
         </div>
       </main>
     </div>

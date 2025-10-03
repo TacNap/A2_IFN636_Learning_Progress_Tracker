@@ -189,7 +189,19 @@ Completed by ${certificate.userName || user.name} on ${formatDate(certificate.co
                 items={navItems}
             />
             <main className="certificates-page__content">
-                <div className="certificates-container">{mainContent}</div>
+                
+                <div className="certificates-container">
+                    <header className='assignment-create__header'>
+                    <div className='assignment-create__breadcrumb' aria-label='Breadcrumb'>
+                        <span>Home</span>
+                        <span aria-hidden='true'>&gt;</span>
+                        <span className='assignment-create__breadcrumb-current'>Certificates</span>
+                    </div>
+                    <div className='assignment-create__heading'>
+                    </div>
+                    </header>
+                    {mainContent}
+                </div>
             </main>
         </div>
     );

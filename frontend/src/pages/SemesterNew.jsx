@@ -5,12 +5,16 @@ import SemesterForm from '../components/SemesterForm';
 import NavigationPanel from '../components/NavigationPanel';
 import { useAuth } from '../context/AuthContext';
 import './SemesterNew.css';
+import { ReactComponent as CertificateIcon } from "../icons/certificate.svg";
+import { ReactComponent as AssignmentIcon } from "../icons/assignment.svg";
+import { ReactComponent as DashboardIcon } from "../icons/dashboard.svg";
+import { ReactComponent as ModuleIcon } from "../icons/module.svg";
 
 const navItems = [
-  { id: 'dashboard', label: 'Dashboard', icon: 'DB', to: '/student' },
-  { id: 'module', label: 'Module', icon: 'MD', to: '/modules' },
-  { id: 'assignment', label: 'Assignment', icon: 'AS', to: '/assignments' },
-  { id: 'certificate', label: 'Certificate', icon: 'CF', to: '/certificates' },
+  { id: 'dashboard', label: 'Dashboard', icon: <DashboardIcon />, to: '/student'},
+  { id: 'module', label: 'Module', icon: <ModuleIcon />, to: '/modules', active: true },
+  { id: 'assignment', label: 'Assignment', icon: <AssignmentIcon />, to: '/assignments' },
+  { id: 'certificate', label: 'Certificate', icon: <CertificateIcon />, to: '/certificates' },
 ];
 
 const SemesterNew = () => {
@@ -33,7 +37,7 @@ const SemesterNew = () => {
     return 'KK';
   }, [user]);
 
-  const displayName = user?.name || 'Ka Ki Yeung';
+  const displayName = user?.name || 'Guest';
   const roleLabel = user?.profileType === 'student' ? 'Student' : 'Educator';
   const welcomeMessage = user?.name ? `Welcome back, ${user.name}` : 'Welcome back!';
 
@@ -107,7 +111,7 @@ const SemesterNew = () => {
           <div className="semester-create__breadcrumb" aria-label="Breadcrumb">
             <span>Home</span>
             <span aria-hidden="true">&gt;</span>
-            <span>Semesters</span>
+            <span>Dashboard</span>
             <span aria-hidden="true">&gt;</span>
             <span className="semester-create__breadcrumb-current">
               {editingSemester ? 'Edit Semester' : 'Add Semester'}
@@ -115,7 +119,7 @@ const SemesterNew = () => {
           </div>
           <div className="semester-create__heading">
             <h1>{editingSemester ? 'Edit semester details' : 'Add a new semester'}</h1>
-            <p>Define semester dates and attach modules so students have a clear plan.</p>
+            <p>Define semester dates and attached modules.</p>
           </div>
         </header>
 

@@ -30,10 +30,10 @@ const Modules = () => {
         .slice(0, 2)
         .toUpperCase();
     }
-    return 'KK';
+    return 'NA';
   }, [user]);
 
-  const displayName = user?.name || 'Ka Ki Yeung';
+  const displayName = user?.name || 'Guest';
   const roleLabel = user?.profileType === 'student' ? 'Student' : 'Educator';
   const welcomeMessage = user?.name ? 'Welcome back, ' + user.name : 'Welcome back!';
 
@@ -68,7 +68,8 @@ const Modules = () => {
         items={navItems}
       />
       <main className="module-page__content">
-        <header className="module-create__header">
+        <div className="module-page__inner">
+          <header className="module-create__header">
           <div className="module-create__breadcrumb" aria-label="Breadcrumb">
             <span>Home</span>
             <span aria-hidden="true">&gt;</span>
@@ -79,7 +80,6 @@ const Modules = () => {
             <p>Track your modules and progress.</p>
           </div>
         </header>
-        <div className="module-page__inner">
           <ModuleList modules={modules} setModules={setModules} />
         </div>
       </main>
