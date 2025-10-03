@@ -68,7 +68,7 @@ const AssignmentForm = ({assignments, setAssignments, editingAssignment, setEdit
     };
 
     return (
-    <form onSubmit={handleSubmit} className="bg-white p-6 shadow-md rounded mb-6">
+    <form onSubmit={handleSubmit} className="bg-white p-6 shadow-md rounded-3xl mb-6">
       <h1 className="text-2xl font-bold mb-4">{editingAssignment ? 'Edit Assignment' : 'Add Assignment'}</h1>
       
       {error && (
