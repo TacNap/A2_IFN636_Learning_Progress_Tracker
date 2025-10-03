@@ -11,6 +11,7 @@ import { ReactComponent as AssignmentIcon } from "../icons/assignment.svg";
 import { ReactComponent as DashboardIcon } from "../icons/dashboard.svg";
 import { ReactComponent as ModuleIcon } from "../icons/module.svg";
 import { ReactComponent as UniversityIcon } from "../icons/uni.svg";
+import Navbar from "../components/Navbar";
 
 const createInitialState = () => ({
   name: '',
@@ -112,6 +113,8 @@ const Profile = () => {
   };
 
   return (
+    <div>
+      <Navbar />
     <div className="profile-page">
       <NavigationPanel
         className="profile-navigation"
@@ -197,6 +200,7 @@ const Profile = () => {
           </form>
         )}
       </main>
+    </div>
     </div>
   );
 };

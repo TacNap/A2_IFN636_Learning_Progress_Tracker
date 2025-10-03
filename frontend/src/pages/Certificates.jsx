@@ -1,13 +1,43 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import axiosInstance from '../axiosConfig';
+import NavigationPanel from '../components/NavigationPanel';
 import { useAuth } from '../context/AuthContext';
 import './Certificates.css';
+import { ReactComponent as CertificateIcon } from "../icons/certificate.svg";
+import { ReactComponent as AssignmentIcon } from "../icons/assignment.svg";
+import { ReactComponent as DashboardIcon } from "../icons/dashboard.svg";
+import { ReactComponent as ModuleIcon } from "../icons/module.svg";
+import Navbar from "../components/Navbar";
+
+
+const navItems = [
+  { id: 'dashboard', label: 'Dashboard', icon: <DashboardIcon />, to: '/student'},
+  { id: 'module', label: 'Module', icon: <ModuleIcon />, to: '/modules' },
+  { id: 'assignment', label: 'Assignment', icon: <AssignmentIcon />, to: '/assignments' },
+  { id: 'certificate', label: 'Certificate', icon: <CertificateIcon />, to: '/certificates', active: true },
+];
 
 const Certificates = () => {
     const { user } = useAuth();
     const [certificates, setCertificates] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+
+    const initials = useMemo(() => {
+        if (user?.name) {
+            return user.name
+                .split(' ')
+                .map((part) => part[0])
+                .join('')
+                .slice(0, 2)
+                .toUpperCase();
+        }
+        return 'KK';
+    }, [user]);
+
+    const displayName = user?.name || 'Ka Ki Yeung';
+    const roleLabel = user?.profileType === 'student' ? 'Student' : 'Educator';
+    const welcomeMessage = user?.name ? `Welcome back, ${user.name}` : 'Welcome back!';
 
     const formatDate = (dateString) => {
         if (!dateString) return 'Date not available';
@@ -17,7 +47,7 @@ const Certificates = () => {
             return date.toLocaleDateString('en-US', {
                 year: 'numeric',
                 month: 'long',
-                day: 'numeric'
+                day: 'numeric',
             });
         } catch (e) {
             return 'Date not available';
@@ -73,91 +103,110 @@ Completed by ${certificate.userName || user.name} on ${formatDate(certificate.co
             await axiosInstance.delete(`/api/certificates/${certificateId}`, {
                 headers: { Authorization: `Bearer ${user.token}` },
             });
-            setCertificates(prev => prev.filter(cert => cert._id !== certificateId));
+            setCertificates((prev) => prev.filter((cert) => cert._id !== certificateId));
         } catch (error) {
             console.error('Error deleting certificate:', error);
             alert('Failed to delete certificate. Please try again.');
         }
     };
 
+    let mainContent;
+
     if (loading) {
-        return (
-            <div className="certificates-page">
-                <div className="certificates-container">
-                    <div className="certificates-loading">
-                        Loading certificates...
-                    </div>
-                </div>
+        mainContent = (
+            <div className="certificates-loading">
+                Loading certificates...
             </div>
         );
-    }
-
-    if (error) {
-        return (
-            <div className="certificates-page">
-                <div className="certificates-container">
-                    <div className="certificates-error">
-                        <p>{error}</p>
-                        <button 
-                            onClick={() => window.location.reload()}
-                            className="certificates-retry-btn"
-                        >
-                            Try Again
-                        </button>
-                    </div>
+    } else if (error) {
+        mainContent = (
+            <div className="certificates-error">
+                <p>{error}</p>
+                <button
+                    onClick={() => window.location.reload()}
+                    className="certificates-retry-btn"
+                >
+                    Try Again
+                </button>
+            </div>
+        );
+    } else if (certificates.length === 0) {
+        mainContent = (
+            <div className="certificates-empty">
+                No certificates yet. Complete a module to earn your first certificate!
+            </div>
+        );
+    } else {
+        mainContent = (
+            <div className="certificate-card">
+                <div className="certificate-header">
+                    <h1>Your Certificates ({certificates.length})</h1>
+                    <p>Congratulations on completing these modules!</p>
+                </div>
+                <div className="certificates-list">
+                    {certificates.map((certificate) => (
+                        <div key={certificate._id} className="certificate-content">
+                            <h2>Congratulations!</h2>
+                            <p>
+                                You have successfully completed the{' '}
+                                <span className="certificate-module-name">
+                                    {certificate.moduleName}
+                                </span>{' '}
+                                module
+                            </p>
+                            <p>
+                                completed by {certificate.userName || user.name} on{' '}
+                                {formatDate(certificate.completionDate)}
+                            </p>
+                            <div className="certificate-actions">
+                                <button
+                                    onClick={() => handleDownload(certificate)}
+                                    className="certificate-download-btn"
+                                >
+                                    Download TXT
+                                </button>
+                                <button
+                                    onClick={() => handleDelete(certificate._id)}
+                                    className="certificate-delete-btn"
+                                >
+                                    Delete
+                                </button>
+                            </div>
+                        </div>
+                    ))}
                 </div>
             </div>
         );
     }
 
     return (
+        <div>
+      <Navbar />
         <div className="certificates-page">
-            <div className="certificates-container">
-                {certificates.length === 0 ? (
-                    <div className="certificates-empty">
-                        No certificates yet. Complete a module to earn your first certificate!
+            <NavigationPanel
+                title="Navigation"
+                welcomeMessage={welcomeMessage}
+                initials={initials}
+                userName={displayName}
+                userRole={roleLabel}
+                items={navItems}
+            />
+            <main className="certificates-page__content">
+                
+                <div className="certificates-container">
+                    <header className='assignment-create__header'>
+                    <div className='assignment-create__breadcrumb' aria-label='Breadcrumb'>
+                        <span>Home</span>
+                        <span aria-hidden='true'>&gt;</span>
+                        <span className='assignment-create__breadcrumb-current'>Certificates</span>
                     </div>
-                ) : (
-                    <div className="certificate-card">
-                        <div className="certificate-header">
-                            <h1>Your Certificates ({certificates.length})</h1>
-                            <p>Congratulations on completing these modules!</p>
-                        </div>
-                        <div className="certificates-list">
-                            {certificates.map((certificate) => (
-                                <div key={certificate._id} className="certificate-content">
-                                    <h2>Congratulations!</h2>
-                                    <p>
-                                        You have successfully completed the{' '}
-                                        <span className="certificate-module-name">
-                                            {certificate.moduleName}
-                                        </span>{' '}
-                                        module
-                                    </p>
-                                    <p>
-                                        completed by {certificate.userName || user.name} on{' '}
-                                        {formatDate(certificate.completionDate)}
-                                    </p>
-                                    <div className="certificate-actions">
-                                        <button
-                                            onClick={() => handleDownload(certificate)}
-                                            className="certificate-download-btn"
-                                        >
-                                            Download TXT
-                                        </button>
-                                        <button
-                                            onClick={() => handleDelete(certificate._id)}
-                                            className="certificate-delete-btn"
-                                        >
-                                            Delete
-                                        </button>
-                                    </div>
-                                </div>
-                            ))}
-                        </div>
+                    <div className='assignment-create__heading'>
                     </div>
-                )}
-            </div>
+                    </header>
+                    {mainContent}
+                </div>
+            </main>
+        </div>
         </div>
     );
 };

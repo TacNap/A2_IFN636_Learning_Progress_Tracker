@@ -1,10 +1,19 @@
 import { useEffect, useMemo, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import axiosInstance from '../axiosConfig';
 import './SemesterList.css';
 
-const SemesterList = ({ semesters, setSemesters, setEditingSemester }) => {
+const SemesterList = ({
+  semesters,
+  setSemesters,
+  setEditingSemester,
+  onEditSemester,
+  onEditModule,
+  setEditingModule,
+}) => {
   const { user } = useAuth();
+  const navigate = useNavigate();
   const [modulesById, setModulesById] = useState({});
   const [modulesLoading, setModulesLoading] = useState(true);
   const [moduleError, setModuleError] = useState('');
@@ -117,15 +126,63 @@ const SemesterList = ({ semesters, setSemesters, setEditingSemester }) => {
     return searchTarget.includes(term);
   };
 
-  const handleModuleEdit = () => {
-    window.alert('Module editing from this list is coming soon.');
+  const handleModuleEdit = (module) => {
+    if (!module) {
+      return;
+    }
+
+    if (typeof onEditModule === 'function') {
+      onEditModule(module);
+      return;
+    }
+
+    if (typeof setEditingModule === 'function') {
+      setEditingModule(module);
+      return;
+    }
+
+    const moduleId = module?._id;
+    if (moduleId) {
+      navigate('/modules/new', {
+        state: { moduleId, module },
+      });
+      return;
+    }
+
+    navigate('/modules/new', {
+      state: { module },
+    });
   };
 
-  const handleModuleDelete = () => {
-    window.alert('Module removal from a semester is coming soon.');
+  const handleSemesterEdit = (semester) => {
+    if (!semester) {
+      return;
+    }
+
+    if (typeof onEditSemester === 'function') {
+      onEditSemester(semester);
+      return;
+    }
+
+    if (typeof setEditingSemester === 'function') {
+      setEditingSemester(semester);
+      return;
+    }
+
+    const semesterId = semester?._id;
+    if (semesterId) {
+      navigate('/semester/new', {
+        state: { semesterId, semester },
+      });
+      return;
+    }
+
+    navigate('/semester/new', {
+      state: { semester },
+    });
   };
 
-  const canEditSemester = typeof setEditingSemester === 'function';
+  const canEditSemester = true;
 
   if (!sortedSemesters.length) {
     return (
@@ -200,7 +257,7 @@ const SemesterList = ({ semesters, setSemesters, setEditingSemester }) => {
                     <button
                       type="button"
                       className="semester-list__edit-button"
-                      onClick={() => setEditingSemester(semester)}
+                      onClick={() => handleSemesterEdit(semester)}
                     >
                       Edit Semester
                     </button>
@@ -281,16 +338,10 @@ const SemesterList = ({ semesters, setSemesters, setEditingSemester }) => {
                         <button
                           type="button"
                           className="semester-list__row-button"
-                          onClick={handleModuleEdit}
+                          onClick={() => handleModuleEdit(module)}
+                          disabled={!module}
                         >
                           Edit
-                        </button>
-                        <button
-                          type="button"
-                          className="semester-list__row-button semester-list__row-button--danger"
-                          onClick={handleModuleDelete}
-                        >
-                          Delete
                         </button>
                       </div>
                     </div>

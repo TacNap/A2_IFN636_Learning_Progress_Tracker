@@ -4,12 +4,18 @@ import AssignmentList from "../components/AssignmentList";
 import NavigationPanel from "../components/NavigationPanel";
 import { useAuth } from "../context/AuthContext";
 import "./Assignment.css";
+import { ReactComponent as CertificateIcon } from "../icons/certificate.svg";
+import { ReactComponent as AssignmentIcon } from "../icons/assignment.svg";
+import { ReactComponent as DashboardIcon } from "../icons/dashboard.svg";
+import { ReactComponent as ModuleIcon } from "../icons/module.svg";
+import Navbar from "../components/Navbar";
+
 
 const navItems = [
-  { id: "dashboard", label: "Dashboard", icon: "DB", to: "/student" },
-  { id: "module", label: "Module", icon: "MD", to: "/modules" },
-  { id: "assignment", label: "Assignment", icon: "AS", to: "/assignments", active: true },
-  { id: "certificate", label: "Certificate", icon: "CF", to: "/certificates" },
+  { id: 'dashboard', label: 'Dashboard', icon: <DashboardIcon />, to: '/student'},
+  { id: 'module', label: 'Module', icon: <ModuleIcon />, to: '/modules' },
+  { id: 'assignment', label: 'Assignment', icon: <AssignmentIcon />, to: '/assignments', active: true },
+  { id: 'certificate', label: 'Certificate', icon: <CertificateIcon />, to: '/certificates' },
 ];
 
 const Assignments = () => {
@@ -53,6 +59,8 @@ const Assignments = () => {
   }, [user]);
 
   return (
+    <div>
+      <Navbar />
     <div className="assignment-page">
       <NavigationPanel
         title="Navigation"
@@ -64,9 +72,24 @@ const Assignments = () => {
       />
       <main className="assignment-page__content">
         <div className="assignment-page__inner">
+          <header className='assignment-create__header'>
+          <div className='assignment-create__breadcrumb' aria-label='Breadcrumb'>
+            <span>Home</span>
+            <span aria-hidden='true'>&gt;</span>
+            <span>Assignments</span>
+            <span aria-hidden='true'>&gt;</span>
+            <span className='assignment-create__breadcrumb-current'>Assignment</span>
+          </div>
+          <div className='assignment-create__heading'>
+            <h1>Assignments</h1>
+          </div>
+        </header>
+          <section className='assignment-create__form-area' aria-label='Assignment form'>
           <AssignmentList assignments={assignments} setAssignments={setAssignments} />
+          </section>
         </div>
       </main>
+    </div>
     </div>
   );
 };

@@ -1,0 +1,173 @@
+.semester-form {
+  background-color: #ffffff;
+  border: 1px solid #e7e9f3;
+  border-radius: 18px;
+  box-shadow: 0 20px 45px rgba(15, 23, 42, 0.08);
+  padding: 28px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.semester-form__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 16px;
+}
+
+.semester-form__title {
+  margin: 0;
+  font-size: 22px;
+  font-weight: 700;
+  color: #181d27;
+}
+
+.semester-form__subtitle {
+  margin: 6px 0 0;
+  font-size: 14px;
+  color: #6d7280;
+  max-width: 520px;
+}
+
+.semester-form__link {
+  border: none;
+  background: transparent;
+  color: #2563eb;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 6px 0;
+}
+
+.semester-form__link:hover {
+  text-decoration: underline;
+}
+
+.semester-form__error {
+  padding: 14px 18px;
+  border-radius: 14px;
+  background-color: #fee2e2;
+  border: 1px solid #fecaca;
+  color: #991b1b;
+  font-size: 14px;
+}
+
+.semester-form__alert {
+  padding: 12px 16px;
+  border-radius: 12px;
+  background-color: #eff6ff;
+  border: 1px solid #bfdbfe;
+  color: #1d4ed8;
+  font-size: 13px;
+}
+
+.semester-form__grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px 24px;
+}
+
+.semester-form__field {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.semester-form__field--full {
+  grid-column: 1 / -1;
+}
+
+.semester-form__label {
+  font-size: 13px;
+  font-weight: 600;
+  color: #4b5563;
+}
+
+.semester-form__input,
+.semester-form__select {
+  border: 1px solid #d9dce6;
+  border-radius: 12px;
+  padding: 12px 14px;
+  font-size: 14px;
+  color: #1f2937;
+  background-color: #fbfcff;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.semester-form__input::placeholder {
+  color: #a0a5b8;
+}
+
+.semester-form__input:focus,
+.semester-form__select:focus {
+  outline: none;
+  border-color: #2563eb;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+  background-color: #ffffff;
+}
+
+.semester-form__select {
+  min-height: 140px;
+}
+
+.semester-form__hint {
+  font-size: 12px;
+  color: #6d7280;
+  margin-top: 4px;
+}
+
+.semester-form__actions {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.semester-form__submit {
+  border: none;
+  padding: 12px 28px;
+  border-radius: 14px;
+  background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+  color: #ffffff;
+  font-weight: 600;
+  font-size: 15px;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.semester-form__submit:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 12px 24px rgba(37, 99, 235, 0.25);
+}
+
+.semester-form__submit:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.3);
+}
+
+.semester-form__submit:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+  box-shadow: none;
+  transform: none;
+}
+
+@media (max-width: 840px) {
+  .semester-form__grid {
+    grid-template-columns: 1fr;
+  }
+
+  .semester-form__header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .semester-form__actions {
+    justify-content: flex-start;
+  }
+}
+
+@media (max-width: 540px) {
+  .semester-form {
+    padding: 22px;
+    gap: 20px;
+  }
+}

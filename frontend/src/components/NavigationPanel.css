@@ -4,8 +4,16 @@
   color: #ffffff;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
+  gap: 32px;
   padding: 32px 24px;
+  position: sticky;
+  top: 0;
+  align-self: flex-start;
+  min-height: 100vh;
+  max-height: 100vh;
+  box-sizing: border-box;
+  overflow-y: auto;
+  overflow-x: hidden;
 }
 
 .sidebar-header h2 {
@@ -67,6 +75,8 @@
 }
 
 .sidebar-footer {
+  margin-top: auto;
+  margin-bottom: 80px;
   display: flex;
   align-items: center;
   gap: 12px;
@@ -128,6 +138,10 @@
     align-items: center;
     gap: 24px;
     border-radius: 0 0 32px 32px;
+    position: static;
+    min-height: auto;
+    max-height: none;
+    overflow: visible;
   }
 
   .sidebar-nav {
@@ -139,6 +153,7 @@
   }
 
   .sidebar-footer {
+    margin-top: 0;
     align-self: stretch;
   }
 }

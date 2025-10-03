@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import axiosInstance from '../axiosConfig';
 import SemesterList from '../components/SemesterList';
@@ -9,6 +9,7 @@ import { ReactComponent as CertificateIcon } from "../icons/certificate.svg";
 import { ReactComponent as AssignmentIcon } from "../icons/assignment.svg";
 import { ReactComponent as DashboardIcon } from "../icons/dashboard.svg";
 import { ReactComponent as ModuleIcon } from "../icons/module.svg";
+import Navbar from "../components/Navbar";
 
 const navItems = [
   { id: 'dashboard', label: 'Dashboard', icon: <DashboardIcon />, to: '/student', active: true },
@@ -19,11 +20,10 @@ const navItems = [
 
 const DashboardStudent = () => {
   const { user } = useAuth();
+  const navigate = useNavigate();
   const [semesters, setSemesters] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
-  const [selectedSemester, setSelectedSemester] = useState(null);
-
   // don't think we need this.
   const initials = useMemo(() => {
     if (user?.name) {
@@ -77,12 +77,30 @@ const DashboardStudent = () => {
     };
   }, [user]);
 
-  useEffect(() => {
-    setSelectedSemester(null);
-  }, [user]);
-  
   const handleSemesterEdit = (semester) => {
-    setSelectedSemester(semester);
+    if (!semester) {
+      return;
+    }
+
+    navigate('/semester/new', {
+      state: {
+        semesterId: semester?._id ?? null,
+        semester,
+      },
+    });
+  };
+
+  const handleModuleEdit = (module) => {
+    if (!module) {
+      return;
+    }
+
+    navigate('/modules/new', {
+      state: {
+        moduleId: module?._id ?? null,
+        module,
+      },
+    });
   };
 
   if (!user) {
@@ -96,6 +114,8 @@ const DashboardStudent = () => {
   }
 
   return (
+    <div>
+      <Navbar />
     <div className="student-dashboard">
       <NavigationPanel
         title="Navigation"
@@ -115,33 +135,18 @@ const DashboardStudent = () => {
           </div>
         </header>
 
+        <div className="student-dashboard__actions mb-4">
+          <Link
+            to="/semester/new"
+            className="inline-flex items-center gap-2 bg-[#005691] text-white px-4 py-2 rounded shadow-sm hover:bg-[#004080] transition-colors"
+          >
+            Add Semester
+          </Link>
+        </div>
+
         {error && (
           <div className="bg-red-100 border border-red-300 text-red-700 px-4 py-3 rounded">
             {error}
-          </div>
-        )}
-
-        {selectedSemester && (
-          <div className="bg-blue-50 border border-blue-200 text-blue-800 px-4 py-3 rounded flex flex-col gap-2">
-            <div>
-              <strong>Heads up:</strong> Editing from this dashboard is coming soon.
-              Semester {selectedSemester.number} is ready to edit in the management preview.
-            </div>
-            <div className="flex flex-wrap gap-2">
-              <Link
-                to="/testing"
-                className="bg-[#005691] text-white px-3 py-2 rounded hover:bg-[#004080]"
-              >
-                Open Semester Management
-              </Link>
-              <button
-                type="button"
-                onClick={() => setSelectedSemester(null)}
-                className="px-3 py-2 border border-blue-200 rounded hover:bg-blue-100"
-              >
-                Dismiss
-              </button>
-            </div>
           </div>
         )}
 
@@ -154,11 +159,13 @@ const DashboardStudent = () => {
             <SemesterList
               semesters={semesters}
               setSemesters={setSemesters}
-              setEditingSemester={handleSemesterEdit}
+              onEditSemester={handleSemesterEdit}
+              onEditModule={handleModuleEdit}
             />
           )}
         </div>
       </main>
+    </div>
     </div>
   );
 };
