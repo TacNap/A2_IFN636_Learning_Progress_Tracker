@@ -108,7 +108,7 @@ const AssignmentForm = ({assignments, setAssignments, editingAssignment, setEdit
         />
       </div>
 
-      <button type="submit" className="w-full bg-[#005691] text-white p-2 rounded hover:bg-[#004080]">
+      <button type="submit" className="w-full bg-[#2563eb] text-white px-6 py-3 rounded-lg font-semibold hover:bg-[#1d4ed8] transition-colors">
         {editingAssignment ? 'Update Assignment' : 'Add Assignment'}
       </button>
     </form>
