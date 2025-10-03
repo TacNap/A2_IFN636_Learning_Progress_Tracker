@@ -15,7 +15,7 @@ const DashboardEducator = () => {
     try {
       setLoading(true);
       const token = localStorage.getItem('token');
-      const response = await axiosInstance.get('/api/auth/students', {
+      const response = await axiosInstance.get('/api/educator/students', {
         headers: { Authorization: `Bearer ${token}` }
       });
       setStudents(response.data);

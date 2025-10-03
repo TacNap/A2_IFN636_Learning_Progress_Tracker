@@ -32,7 +32,7 @@ class UserRepository {
       email: plain.email,
       university: plain.university,
       address: plain.address,
-      profileType,
+      profileType: plain.profileType,
       createdAt: plain.createdAt,
       updatedAt: plain.updatedAt,
     });
