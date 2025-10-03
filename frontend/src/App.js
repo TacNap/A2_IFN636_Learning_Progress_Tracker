@@ -5,8 +5,10 @@ import Login from './pages/Login';
 import Register from './pages/Register';
 import Profile from './pages/Profile';
 import Module from './pages/Module';
+import ModuleNew from './pages/ModuleNew';
 import Testing from './pages/Testing';
 import Assignment from './pages/Assignment';
+import AssignmentNew from './pages/AssignmentNew';
 import Certificates from './pages/Certificates';
 import DashboardEducator from './pages/DashboardEducator';
 import DashboardStudent from './pages/DashboardStudent';
@@ -77,7 +79,9 @@ function App() {
         <Route path="/register" element={<Register />} />
         <Route path="/profile" element={<Profile />} />
         <Route path="/modules" element={<Module />} />
+        <Route path="/modules/new" element={<ModuleNew />} />
         <Route path="/assignments" element={<Assignment />} />
+        <Route path="/assignments/new" element={<AssignmentNew />} />
         <Route path="/certificates" element={<Certificates />} />
         <Route
           path="/educator"

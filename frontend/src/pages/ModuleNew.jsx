@@ -1,9 +1,10 @@
 import { useEffect, useMemo, useState } from 'react';
 import axiosInstance from '../axiosConfig';
-import ModuleList from '../components/ModuleList';
+import ModuleForm from '../components/ModuleForm';
+import { useLocation } from 'react-router-dom';
 import NavigationPanel from '../components/NavigationPanel';
 import { useAuth } from '../context/AuthContext';
-import './Module.css';
+import './ModuleNew.css';
 
 const navItems = [
   { id: 'dashboard', label: 'Dashboard', icon: 'DB', to: '/student' },
@@ -12,9 +13,13 @@ const navItems = [
   { id: 'certificate', label: 'Certificate', icon: 'CF', to: '/certificates' },
 ];
 
-const Modules = () => {
+const ModuleNew = () => {
   const { user } = useAuth();
+  const location = useLocation();
   const [modules, setModules] = useState([]);
+  const [editingModule, setEditingModule] = useState(null);
+  const [requestedModuleId, setRequestedModuleId] = useState(location.state?.moduleId ?? null);
+  const [requestedModuleData, setRequestedModuleData] = useState(location.state?.module ?? null);
 
   const initials = useMemo(() => {
     if (user?.name) {
@@ -31,6 +36,16 @@ const Modules = () => {
   const displayName = user?.name || 'Ka Ki Yeung';
   const roleLabel = user?.profileType === 'student' ? 'Student' : 'Educator';
   const welcomeMessage = user?.name ? 'Welcome back, ' + user.name : 'Welcome back!';
+
+  useEffect(() => {
+    if (location.state?.moduleId || location.state?.module) {
+      setRequestedModuleId(location.state?.moduleId ?? null);
+      setRequestedModuleData(location.state?.module ?? null);
+    } else {
+      setRequestedModuleId(null);
+      setRequestedModuleData(null);
+    }
+  }, [location.state]);
 
   useEffect(() => {
     const fetchModules = async () => {
@@ -52,8 +67,24 @@ const Modules = () => {
     fetchModules();
   }, [user]);
 
+  useEffect(() => {
+    if (requestedModuleId) {
+      const found = (Array.isArray(modules) ? modules : []).find((module) => module?._id === requestedModuleId);
+      if (found) {
+        setEditingModule(found);
+        setRequestedModuleId(null);
+        setRequestedModuleData(null);
+      }
+      return;
+    }
+
+    if (requestedModuleData) {
+      setEditingModule(requestedModuleData);
+      setRequestedModuleData(null);
+    }
+  }, [requestedModuleId, requestedModuleData, modules]);
   return (
-    <div className="module-page">
+    <div className="module-create">
       <NavigationPanel
         title="Navigation"
         welcomeMessage={welcomeMessage}
@@ -62,24 +93,33 @@ const Modules = () => {
         userRole={roleLabel}
         items={navItems}
       />
-      <main className="module-page__content">
+      <main className="module-create__content">
         <header className="module-create__header">
           <div className="module-create__breadcrumb" aria-label="Breadcrumb">
             <span>Home</span>
             <span aria-hidden="true">&gt;</span>
-            <span className="module-create__breadcrumb-current">Modules</span>
+            <span>Modules</span>
+            <span aria-hidden="true">&gt;</span>
+            <span className="module-create__breadcrumb-current">Add Module</span>
           </div>
           <div className="module-create__heading">
-            <h1>Modules</h1>
-            <p>Track your modules and progress.</p>
+            <h1>Add a new module</h1>
+            <p>Create a module so students can begin tracking their lesson progress right away.</p>
           </div>
         </header>
-        <div className="module-page__inner">
-          <ModuleList modules={modules} setModules={setModules} />
-        </div>
+
+        <section className="module-create__form-area" aria-label="Module form">
+          <ModuleForm
+            modules={modules}
+            setModules={setModules}
+            editingModule={editingModule}
+            setEditingModule={setEditingModule}
+          />
+        </section>
       </main>
     </div>
   );
 };
 
-export default Modules;
+export default ModuleNew;
+

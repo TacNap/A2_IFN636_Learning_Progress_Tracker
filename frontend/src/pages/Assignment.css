@@ -1,24 +1,39 @@
-﻿.assignment-page {
-  background-color: #f4f6fb;
+.assignment-page {
+  display: flex;
   min-height: 100vh;
-  padding: 32px 0 48px;
+  background-color: #f4f6fb;
 }
 
 .assignment-page__content {
-  width: 95%;
-  margin: 0 auto;
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  padding: 32px 48px 48px;
+}
+
+.assignment-page__inner {
+  width: min(1120px, 100%);
   display: flex;
   flex-direction: column;
   gap: 24px;
 }
 
-@media (max-width: 640px) {
+@media (max-width: 1024px) {
   .assignment-page {
-    padding: 20px 0 32px;
+    flex-direction: column;
   }
 
   .assignment-page__content {
-    width: min(100%, 94%);
+    padding: 28px 32px;
+  }
+}
+
+@media (max-width: 640px) {
+  .assignment-page__content {
+    padding: 20px 16px;
+  }
+
+  .assignment-page__inner {
     gap: 20px;
   }
 }
