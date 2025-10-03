@@ -70,10 +70,10 @@
 							"let response = pm.response.json();\r",
 							"\r",
 							"pm.test(\"Status code is 201 (Created)\", function () {\r",
-							"pm.response.to.have.status(201);\r",
+							"    pm.response.to.have.status(201);\r",
 							"});\r",
 							"pm.test(\"Content-Type is present\", function () {\r",
-							"pm.response.to.have.header(\"Content-Type\");\r",
+							"    pm.response.to.have.header(\"Content-Type\");\r",
 							"});\r",
 							"\r",
 							"pm.test(\"User registered as student\", function () {\r",
@@ -82,8 +82,8 @@
 							"\r",
 							"\r",
 							"if (response.token) {\r",
-							"pm.environment.set(\"jwt_token\", response.token);\r",
-							"console.log(\"JWT Token saved from registration response\");\r",
+							"    pm.environment.set(\"jwt_token\", response.token);\r",
+							"    console.log(\"JWT Token saved from registration response\");\r",
 							"}"
 						],
 						"type": "text/javascript",
@@ -125,21 +125,21 @@
 					"listen": "test",
 					"script": {
 						"exec": [
-							"// Parse the response body\r",
+							"\r",
 							"let response = pm.response.json();\r",
-							"// Basic test: status code should be 200\r",
+							"\r",
 							"pm.test(\"Status code is 200\", function () {\r",
 							" pm.response.to.have.status(200);\r",
 							"});\r",
 							"pm.test(\"Content-Type is present\", function () {\r",
-							" pm.response.to.have.header(\"Content-Type\");\r",
+							"    pm.response.to.have.header(\"Content-Type\");\r",
 							"});\r",
-							"pm.test(\"Response time is less than 200ms\", function\r",
-							"() {\r",
 							"\r",
-							"pm.expect(pm.response.responseTime).to.be.below(200);\r",
+							"pm.test(\"Response time is less than 200ms\", function() {\r",
+							"    pm.expect(pm.response.responseTime).to.be.below(200);\r",
 							"});\r",
-							"// Save JWT token to environment variable (adjust key as needed)\r",
+							"\r",
+							"\r",
 							"if (response.token) {\r",
 							" pm.environment.set(\"jwt_token\", response.token);\r",
 							" console.log(\"JWT Token saved to environment\");\r",
@@ -414,6 +414,127 @@
 			"response": []
 		},
 		{
+			"name": "Create Semester",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 201\", function () {\r",
+							"    pm.response.to.have.status(201);\r",
+							"});\r",
+							"\r",
+							"const response = pm.response.json();\r",
+							"\r",
+							"pm.test(\"Semester created successfully\", function () {\r",
+							"    pm.expect(response).to.have.property('_id');\r",
+							"});\r",
+							"\r",
+							"if (response._id) {\r",
+							"    pm.environment.set(\"semester_id\", response._id);\r",
+							"    console.log(\"Semester ID saved:\", response._id);\r",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{jwt_token}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"number\": 4,\r\n    \"startDate\": \"2024-02-01\",\r\n    \"endDate\": \"2024-06-30\",\r\n    \"modules\": []\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseURL}}/api/semesters",
+					"host": [
+						"{{baseURL}}"
+					],
+					"path": [
+						"api",
+						"semesters"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update Semester",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"const response = pm.response.json();\r",
+							"\r",
+							"\r",
+							"pm.test(\"Modules array contains module\", function () {\r",
+							"    pm.expect(response.modules).to.be.an('array');\r",
+							"    pm.expect(response.modules.length).to.be.greaterThan(0);\r",
+							"});\r",
+							"\r",
+							"if (response._id) {\r",
+							"    pm.environment.set(\"semester_id\", response._id);\r",
+							"    console.log(\"Semester ID saved:\", response._id);\r",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {}
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{jwt_token}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"number\": 4,\r\n    \"startDate\": \"2024-02-01\",\r\n    \"endDate\": \"2024-06-30\",\r\n    \"modules\": [\"{{module_id}}\"]\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseURL}}/api/semesters/{{semester_id}}",
+					"host": [
+						"{{baseURL}}"
+					],
+					"path": [
+						"api",
+						"semesters",
+						"{{semester_id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
 			"name": "Update module",
 			"event": [
 				{
@@ -495,7 +616,7 @@
 							"    pm.expect(pm.response.responseTime).to.be.below(1000);\r",
 							"});\r",
 							"\r",
-							"pm.test(\"Module Completed'\", function () {\r",
+							"pm.test(\"Module Completed\", function () {\r",
 							"    pm.expect(response.completedLessons).to.equal(15);\r",
 							"});\r",
 							"\r",
@@ -641,55 +762,6 @@
 			"response": []
 		},
 		{
-			"name": "Delete module",
-			"event": [
-				{
-					"listen": "test",
-					"script": {
-						"exec": [
-							"pm.test(\"Status code is 200\", function () {\r",
-							"    pm.response.to.have.status(200);\r",
-							"});\r",
-							"\r",
-							"pm.test(\"Module deleted successfully\", function () {\r",
-							"    let response = pm.response.json();\r",
-							"    pm.expect(response.message).to.equal(\"Module deleted\");\r",
-							"});\r",
-							"\r",
-							"pm.test(\"Response time is acceptable\", function () {\r",
-							"    pm.expect(pm.response.responseTime).to.be.below(1000);\r",
-							"});"
-						],
-						"type": "text/javascript",
-						"packages": {},
-						"requests": {}
-					}
-				}
-			],
-			"request": {
-				"method": "DELETE",
-				"header": [
-					{
-						"key": "Authorization",
-						"value": "Bearer {{jwt_token}}",
-						"type": "text"
-					}
-				],
-				"url": {
-					"raw": "{{baseURL}}/api/modules/{{module_id}}",
-					"host": [
-						"{{baseURL}}"
-					],
-					"path": [
-						"api",
-						"modules",
-						"{{module_id}}"
-					]
-				}
-			},
-			"response": []
-		},
-		{
 			"name": "Get all Semester",
 			"event": [
 				{
@@ -735,128 +807,6 @@
 					"path": [
 						"api",
 						"semesters"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Create Semester",
-			"event": [
-				{
-					"listen": "test",
-					"script": {
-						"exec": [
-							"pm.test(\"Status code is 201\", function () {\r",
-							"    pm.response.to.have.status(201);\r",
-							"});\r",
-							"\r",
-							"const response = pm.response.json();\r",
-							"\r",
-							"pm.test(\"Semester created successfully\", function () {\r",
-							"    pm.expect(response).to.have.property('_id');\r",
-							"});\r",
-							"\r",
-							"if (response._id) {\r",
-							"    pm.environment.set(\"semester_id\", response._id);\r",
-							"    console.log(\"Semester ID saved:\", response._id);\r",
-							"}"
-						],
-						"type": "text/javascript",
-						"packages": {},
-						"requests": {}
-					}
-				}
-			],
-			"request": {
-				"method": "POST",
-				"header": [
-					{
-						"key": "Authorization",
-						"value": "Bearer {{jwt_token}}",
-						"type": "text"
-					}
-				],
-				"body": {
-					"mode": "raw",
-					"raw": "{\r\n    \"number\": \"04\",\r\n    \"startDate\": \"2024-02-01\",\r\n    \"endDate\": \"2024-06-30\",\r\n    \"modules\": []\r\n}",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
-				},
-				"url": {
-					"raw": "{{baseURL}}/api/semesters",
-					"host": [
-						"{{baseURL}}"
-					],
-					"path": [
-						"api",
-						"semesters"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Update Semester",
-			"event": [
-				{
-					"listen": "test",
-					"script": {
-						"exec": [
-							"pm.test(\"Status code is 200\", function () {\r",
-							"    pm.response.to.have.status(200);\r",
-							"});\r",
-							"\r",
-							"const response = pm.response.json();\r",
-							"\r",
-							"pm.test(\"Updated modules have module_id\", function () {\r",
-							"    pm.expect(pm.response.json().modules).to.be.an('array').that.is.not.empty;\r",
-							"    pm.response.json().modules.forEach(module => {\r",
-							"        pm.expect(module).to.have.property('module_id');\r",
-							"    });\r",
-							"});\r",
-							"\r",
-							"if (response._id) {\r",
-							"    pm.environment.set(\"semester_id\", response._id);\r",
-							"    console.log(\"Semester ID saved:\", response._id);\r",
-							"}"
-						],
-						"type": "text/javascript",
-						"packages": {},
-						"requests": {}
-					}
-				}
-			],
-			"request": {
-				"method": "PUT",
-				"header": [
-					{
-						"key": "Authorization",
-						"value": "Bearer {{jwt_token}}",
-						"type": "text"
-					}
-				],
-				"body": {
-					"mode": "raw",
-					"raw": "{\r\n    \"number\": \"04\",\r\n    \"startDate\": \"2024-02-01\",\r\n    \"endDate\": \"2024-06-30\",\r\n    \"modules\": [\"{{module_id}}\"]\r\n}",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
-				},
-				"url": {
-					"raw": "{{baseURL}}/api/semesters/{{semester_id}}",
-					"host": [
-						"{{baseURL}}"
-					],
-					"path": [
-						"api",
-						"semesters",
-						"{{semester_id}}"
 					]
 				}
 			},
@@ -1113,6 +1063,55 @@
 						"api",
 						"assignments",
 						"{{assignment_id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete module",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Module deleted successfully\", function () {\r",
+							"    let response = pm.response.json();\r",
+							"    pm.expect(response.message).to.equal(\"Module deleted\");\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response time is acceptable\", function () {\r",
+							"    pm.expect(pm.response.responseTime).to.be.below(1000);\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {}
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{jwt_token}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{baseURL}}/api/modules/{{module_id}}",
+					"host": [
+						"{{baseURL}}"
+					],
+					"path": [
+						"api",
+						"modules",
+						"{{module_id}}"
 					]
 				}
 			},
