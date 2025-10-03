@@ -1,5 +1,6 @@
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { ReactComponent as HomeIcon } from "../icons/homelogo.svg";
 
 const Navbar = () => {
   const { user, logout } = useAuth();
@@ -16,7 +17,7 @@ const Navbar = () => {
     <nav className="p-4 flex justify-between items-center">
       <Link to="/" className="flex items-center gap-4">
           <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-[#005691] to-[#0f1c77] text-lg font-semibold text-white shadow-lg">
-            LP
+            <HomeIcon />
           </div>
         </Link>
       <Link to="/" className="text-2xl font-bold">Online Learning Progress Tracker</Link>
