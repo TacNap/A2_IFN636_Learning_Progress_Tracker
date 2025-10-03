@@ -12,12 +12,7 @@ import { ReactComponent as ModuleIcon } from "../icons/module.svg";
 import Navbar from "../components/Navbar";
 
 
-const navItems = [
-  { id: 'dashboard', label: 'Dashboard', icon: <DashboardIcon />, to: '/student'},
-  { id: 'module', label: 'Module', icon: <ModuleIcon />, to: '/modules' },
-  { id: 'assignment', label: 'Assignment', icon: <AssignmentIcon />, to: '/assignments', active: true },
-  { id: 'certificate', label: 'Certificate', icon: <CertificateIcon />, to: '/certificates' },
-];
+
 
 const AssignmentNew = () => {
   const { user } = useAuth();
@@ -30,6 +25,15 @@ const AssignmentNew = () => {
   const [requestedAssignmentData, setRequestedAssignmentData] = useState(
     location.state?.assignment ?? null
   );
+
+  const dashboardPath = user?.profileType === 'educator' ? '/educator' : '/student';
+
+  const navItems = [
+    { id: 'dashboard', label: 'Dashboard', icon: <DashboardIcon />, to: dashboardPath },
+    { id: 'module', label: 'Module', icon: <ModuleIcon />, to: '/modules' },
+    { id: 'assignment', label: 'Assignment', icon: <AssignmentIcon />, to: '/assignments', active: true },
+    { id: 'certificate', label: 'Certificate', icon: <CertificateIcon />, to: '/certificates' },
+  ];
 
   const initials = useMemo(() => {
     if (user?.name) {

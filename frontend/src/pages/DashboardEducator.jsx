@@ -1,13 +1,42 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import axiosInstance from '../axiosConfig';
-import Navbar from "../components/Navbar";
+import NavigationPanel from '../components/NavigationPanel';
 import { useAuth } from '../context/AuthContext';
+import { ReactComponent as CertificateIcon } from "../icons/certificate.svg";
+import { ReactComponent as AssignmentIcon } from "../icons/assignment.svg";
+import { ReactComponent as DashboardIcon } from "../icons/dashboard.svg";
+import { ReactComponent as ModuleIcon } from "../icons/module.svg";
+import Navbar from "../components/Navbar";
+import './DashboardEducator.css';
+
+const navItems = [
+  { id: 'dashboard', label: 'Dashboard', icon: <DashboardIcon />, to: '/educator', active: true },
+  { id: 'module', label: 'Module', icon: <ModuleIcon />, to: '/modules' },
+  { id: 'assignment', label: 'Assignment', icon: <AssignmentIcon />, to: '/assignments' },
+  { id: 'certificate', label: 'Certificate', icon: <CertificateIcon />, to: '/certificates' },
+];
 
 const DashboardEducator = () => {
   const { user } = useAuth();
   const [students, setStudents] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+
+  const initials = useMemo(() => {
+    if (user?.name) {
+      return user.name
+        .split(' ')
+        .map((part) => part[0])
+        .join('')
+        .slice(0, 2)
+        .toUpperCase();
+    }
+    return 'KK';
+  }, [user]);
+
+  const displayName = user?.name || 'Educator';
+  const roleLabel = 'Educator';
+  const welcomeMessage = user?.name ? `Welcome back, ${user.name}` : 'Welcome back!';
 
   useEffect(() => {
     const fetchStudents = async () => {
@@ -44,65 +73,83 @@ const DashboardEducator = () => {
   return (
     <div>
       <Navbar />
-      <div className="container mx-auto p-6">
-        <h1 className="text-3xl font-bold mb-6">Educator Dashboard</h1>
+      <div className="educator-dashboard">
+        <NavigationPanel
+          title="Navigation"
+          welcomeMessage={welcomeMessage}
+          initials={initials}
+          userName={displayName}
+          userRole={roleLabel}
+          items={navItems}
+        />
         
-        <div className="bg-white rounded-lg shadow p-6">
-          <h2 className="text-2xl font-semibold mb-4">Students</h2>
-          
-          {loading && (
-            <div className="text-center py-4">
-              <p className="text-gray-600">Loading students...</p>
-            </div>
-          )}
-          
-          {error && !loading && (
-            <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
-              {error}
-            </div>
-          )}
-          
-          {!loading && !error && students.length === 0 && (
-            <p className="text-gray-600">No students found.</p>
-          )}
-          
-          {!loading && !error && students.length > 0 && (
-            <div className="overflow-x-auto">
-              <table className="min-w-full divide-y divide-gray-200">
-                <thead className="bg-gray-50">
-                  <tr>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Name
-                    </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Email
-                    </th>
-                  </tr>
-                </thead>
-                <tbody className="bg-white divide-y divide-gray-200">
-                  {students.map((student) => (
-                    <tr key={student.email} className="hover:bg-gray-50">
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="text-sm font-medium text-gray-900">
-                          {student.name}
-                        </div>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="text-sm text-gray-600">
-                          {student.email}
-                        </div>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-              
-              <div className="mt-4 text-sm text-gray-600">
-                Total students: {students.length}
+        <main className="educator-dashboard__content">
+          <div className="educator-dashboard__inner">
+            <header className='educator-dashboard__header'>
+              <div className='educator-dashboard__breadcrumb' aria-label='Breadcrumb'>
+                <span>Home</span>
+                <span aria-hidden='true'>&gt;</span>
+                <span className='educator-dashboard__breadcrumb-current'>Dashboard</span>
               </div>
-            </div>
-          )}
-        </div>
+              <div className='educator-dashboard__heading'>
+                <h1>Dashboard</h1>
+                <p>Track your modules and progress.</p>
+              </div>
+            </header>
+
+            {loading && (
+              <div className="educator-dashboard__loading">
+                <p>Loading students...</p>
+              </div>
+            )}
+
+            {error && !loading && (
+              <div className="educator-dashboard__error">
+                <p>{error}</p>
+                <button
+                  onClick={() => window.location.reload()}
+                  className="educator-dashboard__retry-btn"
+                >
+                  Try Again
+                </button>
+              </div>
+            )}
+
+            {!loading && !error && (
+              <section className="educator-dashboard__students">
+                <div className="students-card">
+                  <div className="students-card__header">
+                    <h2>Students</h2>
+                    <p>Total students: {students.length}</p>
+                  </div>
+
+                  {students.length === 0 ? (
+                    <div className="students-empty">
+                      No students found.
+                    </div>
+                  ) : (
+                    <div className="students-table">
+                      <div className="students-table__header">
+                        <span>Name</span>
+                        <span>Email</span>
+                      </div>
+                      {students.map((student) => (
+                        <div key={student._id || student.email} className="students-table__row">
+                          <div className="student-name">
+                            {student.name}
+                          </div>
+                          <div className="student-email">
+                            {student.email}
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              </section>
+            )}
+          </div>
+        </main>
       </div>
     </div>
   );
