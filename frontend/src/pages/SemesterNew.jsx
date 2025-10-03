@@ -9,6 +9,7 @@ import { ReactComponent as CertificateIcon } from "../icons/certificate.svg";
 import { ReactComponent as AssignmentIcon } from "../icons/assignment.svg";
 import { ReactComponent as DashboardIcon } from "../icons/dashboard.svg";
 import { ReactComponent as ModuleIcon } from "../icons/module.svg";
+import Navbar from "../components/Navbar";
 
 const navItems = [
   { id: 'dashboard', label: 'Dashboard', icon: <DashboardIcon />, to: '/student', active: true },
@@ -92,6 +93,8 @@ const SemesterNew = () => {
   }, [requestedSemesterId, requestedSemesterData, semesters]);
 
   return (
+    <div>
+      <Navbar />
     <div className="semester-create">
       <NavigationPanel
         title="Navigation"
@@ -127,6 +130,7 @@ const SemesterNew = () => {
           />
         </section>
       </main>
+    </div>
     </div>
   );
 };

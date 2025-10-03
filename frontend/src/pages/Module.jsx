@@ -8,6 +8,7 @@ import { ReactComponent as CertificateIcon } from "../icons/certificate.svg";
 import { ReactComponent as AssignmentIcon } from "../icons/assignment.svg";
 import { ReactComponent as DashboardIcon } from "../icons/dashboard.svg";
 import { ReactComponent as ModuleIcon } from "../icons/module.svg";
+import Navbar from "../components/Navbar";
 
 
 const navItems = [
@@ -58,6 +59,8 @@ const Modules = () => {
   }, [user]);
 
   return (
+    <div>
+      <Navbar />
     <div className="module-page">
       <NavigationPanel
         title="Navigation"
@@ -83,6 +86,7 @@ const Modules = () => {
           <ModuleList modules={modules} setModules={setModules} />
         </div>
       </main>
+    </div>
     </div>
   );
 };

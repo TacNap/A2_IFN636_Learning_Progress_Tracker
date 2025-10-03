@@ -69,7 +69,7 @@ const HomeRoute = () => {
 function App() {
   return (
     <Router>
-      <Navbar />
+      {/* <Navbar /> */}
       <Routes>
         <Route path="/" element={<HomeRoute />} />
         <Route path="/login" element={<Login />} />

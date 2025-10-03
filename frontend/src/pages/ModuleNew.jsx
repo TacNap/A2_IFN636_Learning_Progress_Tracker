@@ -9,6 +9,7 @@ import { ReactComponent as CertificateIcon } from "../icons/certificate.svg";
 import { ReactComponent as AssignmentIcon } from "../icons/assignment.svg";
 import { ReactComponent as DashboardIcon } from "../icons/dashboard.svg";
 import { ReactComponent as ModuleIcon } from "../icons/module.svg";
+import Navbar from "../components/Navbar";
 
 
 const navItems = [
@@ -89,6 +90,8 @@ const ModuleNew = () => {
     }
   }, [requestedModuleId, requestedModuleData, modules]);
   return (
+    <div>
+      <Navbar />
     <div className="module-create">
       <NavigationPanel
         title="Navigation"
@@ -122,6 +125,7 @@ const ModuleNew = () => {
           />
         </section>
       </main>
+    </div>
     </div>
   );
 };

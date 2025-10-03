@@ -8,6 +8,7 @@ import { ReactComponent as CertificateIcon } from "../icons/certificate.svg";
 import { ReactComponent as AssignmentIcon } from "../icons/assignment.svg";
 import { ReactComponent as DashboardIcon } from "../icons/dashboard.svg";
 import { ReactComponent as ModuleIcon } from "../icons/module.svg";
+import Navbar from "../components/Navbar";
 
 
 const navItems = [
@@ -58,6 +59,8 @@ const Assignments = () => {
   }, [user]);
 
   return (
+    <div>
+      <Navbar />
     <div className="assignment-page">
       <NavigationPanel
         title="Navigation"
@@ -86,6 +89,7 @@ const Assignments = () => {
           </section>
         </div>
       </main>
+    </div>
     </div>
   );
 };

@@ -7,6 +7,7 @@ import { ReactComponent as CertificateIcon } from "../icons/certificate.svg";
 import { ReactComponent as AssignmentIcon } from "../icons/assignment.svg";
 import { ReactComponent as DashboardIcon } from "../icons/dashboard.svg";
 import { ReactComponent as ModuleIcon } from "../icons/module.svg";
+import Navbar from "../components/Navbar";
 
 
 const navItems = [
@@ -179,6 +180,8 @@ Completed by ${certificate.userName || user.name} on ${formatDate(certificate.co
     }
 
     return (
+        <div>
+      <Navbar />
         <div className="certificates-page">
             <NavigationPanel
                 title="Navigation"
@@ -203,6 +206,7 @@ Completed by ${certificate.userName || user.name} on ${formatDate(certificate.co
                     {mainContent}
                 </div>
             </main>
+        </div>
         </div>
     );
 };
